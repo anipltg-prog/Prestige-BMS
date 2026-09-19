@@ -52,15 +52,19 @@ const getBuildingClientNames = (buildingId) => {
   const numberedFloorEntries =
     getNumberedFloorEntries(buildingId);
 
+  const commonClients =
+    buildingClients[buildingId]?.floors?.common ?? [];
+
   return [
-    ...new Set(
-      numberedFloorEntries.flatMap(
+    ...new Set([
+      ...numberedFloorEntries.flatMap(
         ([, floorClients]) =>
           Array.isArray(floorClients)
             ? floorClients
             : []
-      )
-    ),
+      ),
+      ...(Array.isArray(commonClients) ? commonClients : []),
+    ]),
   ];
 };
 
@@ -108,7 +112,7 @@ const floorOptions = buildingOptions.flatMap(
   (building) => {
     const blockId = `${building.id}-core`;
 
-    return Array.from(
+    const numberedFloors = Array.from(
       { length: building.floors },
       (_, index) => {
         const floorNumber = String(index + 1);
@@ -129,6 +133,28 @@ const floorOptions = buildingOptions.flatMap(
         };
       }
     );
+
+    const commonClients =
+      buildingClients[building.id]?.floors?.common ?? [];
+
+    return [
+      ...numberedFloors,
+      {
+        id: `${building.id}:common`,
+        name: `${building.name} Common`,
+        floorNumber: "common",
+        buildingId: building.id,
+        blockId,
+
+        clientCount: Array.isArray(commonClients)
+          ? commonClients.length
+          : 0,
+        isVacant:
+          !Array.isArray(commonClients) ||
+          commonClients.length === 0,
+        isCommon: true,
+      },
+    ];
   }
 );
 
