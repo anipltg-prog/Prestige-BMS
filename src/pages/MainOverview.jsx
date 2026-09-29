@@ -22657,6 +22657,10828 @@
 //   </>
 // )}
 
+// {activePopup === "buildings" && <BuildingsPopup />}    
+//     </main>
+//     </>
+//   );
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+// import React, { useEffect, useMemo, useState } from "react";
+// import { Link, useNavigate } from "react-router-dom";
+// import {
+//   Activity,
+//   ArrowLeft,
+//   Bell,
+//   Bluetooth,
+//   BluetoothOff,
+//   Building2,
+//   Cable,
+//   CircuitBoard,
+//   CloudSun,
+//   Droplets,
+//   Factory,
+//   Flame,
+//   Gauge,
+//   Grid2X2,
+//   Leaf,
+//   Lock,
+//   Maximize2,
+//   Network,
+//   PanelsTopLeft,
+//   Radio,
+//   ShieldAlert,
+//   ShieldCheck,
+//   Snowflake,
+//   TowerControl,
+//   TriangleAlert,
+//   UtilityPole,
+//   X,
+//   Zap,
+// } from "lucide-react";
+// import aiLogo from "../assets/AI LOGO.png";
+// import prestigeLogo from "../assets/ser-removebg.png";
+// import skyscraperBg from "../assets/detail-shot-skyscrapers.jpg";
+// import { tempApi } from "../tempAdminApi";
+// import { SYSTEM_ROLES, USER_PERMISSIONS } from "../data/permissionOptions";
+// import { buildings } from "../data/bmsData";
+// import {
+//   canInteractWithInternalFlow,
+//   canAccessWing,
+//   hasPermission as accountHasPermission,
+// } from "../utils/accessControl";
+// import {
+//   Area,
+//   AreaChart,
+//   Bar,
+//   BarChart,
+//   CartesianGrid,
+//   Cell,
+//   LabelList,
+//   Line,
+//   LineChart,
+//   PolarAngleAxis,
+//   RadialBar,
+//   RadialBarChart,
+//   ReferenceLine,
+//   ResponsiveContainer,
+//   Tooltip,
+//   XAxis,
+//   YAxis,
+// } from "recharts";
+
+// export default function MainOverview() {
+//   const [activePopup, setActivePopup] = useState(null);
+//   const [transformersExpanded, setTransformersExpanded] = useState(true);
+//   const [kiosksExpanded, setKiosksExpanded] = useState(true);
+//   const [dgsExpanded, setDgsExpanded] = useState(true);
+//   const [busbarsExpanded, setBusbarsExpanded] = useState(true);
+//   const [accessMessage, setAccessMessage] = useState("");
+
+// const [openedBusbars, setOpenedBusbars] = useState([]);
+// const navigate = useNavigate();
+
+//   const currentUser = tempApi.getCurrentAccount();
+//   const canInteractWithFlow = canInteractWithInternalFlow(currentUser);
+//   const isAdminAccount = currentUser?.systemRole === SYSTEM_ROLES.ADMIN;
+
+//   useEffect(() => {
+//     if (!canInteractWithFlow && activePopup && activePopup !== "buildings") {
+//       setActivePopup(null);
+//     }
+//   }, [activePopup, canInteractWithFlow, currentUser?.id]);
+
+//   const hasPermission = (permission) =>
+//     accountHasPermission(currentUser, permission);
+
+//   const openPermittedPopup = (permission, popupName) => {
+//     if (!canInteractWithFlow) {
+//       return;
+//     }
+
+//     if (!hasPermission(permission)) {
+//       navigate("/unauthorized", { replace: true });
+//       return;
+//     }
+
+//     setActivePopup(popupName);
+//   };
+
+//   const showLockedMessage = (resourceName) => {
+//     setAccessMessage(`${resourceName} is visible in the site hierarchy, but operational access is not assigned to your account.`);
+//     window.setTimeout(() => setAccessMessage(""), 3200);
+//   };
+
+//   const handleLogout = () => {
+//     tempApi.logout();
+//     navigate("/auth", { replace: true });
+//   };
+
+//   if (!currentUser) {
+//     return (
+//       <main className="flex min-h-screen items-center justify-center bg-[#020B24] p-6 text-white">
+//         <section className="w-full max-w-lg border border-red-400/30 bg-red-400/[0.06] p-8 text-center">
+//           <h1 className="text-2xl font-semibold">User session not found</h1>
+//           <p className="mt-3 text-sm text-slate-400">
+//             Please sign in using an active User account.
+//           </p>
+//           <button
+//             type="button"
+//             onClick={handleLogout}
+//             className="mt-6 border border-cyan-400 bg-cyan-400 px-5 py-2.5 text-sm font-semibold text-[#020B24]"
+//           >
+//             Go to Login
+//           </button>
+//         </section>
+//       </main>
+//     );
+//   }
+
+//   const outgoing = [
+//     { name: "OG-1", transformer: "TR-1" },
+//     { name: "OG-2", transformer: "TR-2" },
+//     { name: "OG-3", transformer: "TR-3" },
+//     { name: "OG-4", transformer: "TR-4" },
+//     { name: "OG-5", transformer: "TR-5" },
+//     { name: "OG-6", transformer: "TR-6" },
+//   ];
+
+//   const transformers = [
+//     { id: "TR-1", oilTemp: "54°C", windingTemp: "61°C", buchholz: "Healthy", load: "68%" },
+//     { id: "TR-2", oilTemp: "52°C", windingTemp: "59°C", buchholz: "Healthy", load: "62%" },
+//     { id: "TR-3", oilTemp: "55°C", windingTemp: "60°C", buchholz: "Healthy", load: "71%" },
+//     { id: "TR-4", oilTemp: "53°C", windingTemp: "58°C", buchholz: "Healthy", load: "65%" },
+//     { id: "TR-5", oilTemp: "56°C", windingTemp: "63°C", buchholz: "Healthy", load: "74%" },
+//     { id: "TR-6", oilTemp: "51°C", windingTemp: "57°C", buchholz: "Healthy", load: "60%" },
+//   ];
+
+
+// const OverviewBox = ({
+//   title,
+//   subtitle,
+//   icon,
+//   accent = "#1687C9",
+//   onClick,
+//   badge = "Healthy",
+//   badgeTone = "healthy",
+//   liveStatus = {
+//     on: true,
+//     healthy: true,
+//     off: false,
+//   },
+// }) => {
+//   const conditions = [
+//     {
+//       key: "on",
+//       label: "ON",
+//       value: liveStatus.on ? "ACTIVE" : "INACTIVE",
+//       active: liveStatus.on,
+//       dot: "#28B984",
+//     },
+//     {
+//       key: "healthy",
+//       label: "HEALTHY",
+//       value: liveStatus.healthy ? "NORMAL" : "WARNING",
+//       active: liveStatus.healthy,
+//       dot: "#F1BD37",
+//     },
+//     {
+//       key: "off",
+//       label: "OFF",
+//       value: liveStatus.off ? "STOPPED" : "NO FAULT",
+//       active: liveStatus.off,
+//       dot: "#98A2AD",
+//     },
+//   ];
+
+//   const badgeClasses =
+//     badgeTone === "warning"
+//       ? "border-[#E6B92E]/70 bg-[#FFD34A] text-[#5A4300]"
+//       : badgeTone === "active"
+//         ? "border-[#1497A1]/70 bg-[#1BA5AE] text-white"
+//         : "border-[#20A36A]/70 bg-[#31B878] text-white";
+
+//   return (
+//     <button
+//       type="button"
+//       onClick={onClick}
+//       className="group relative z-10 flex h-full min-h-0 w-full flex-col overflow-hidden rounded-[clamp(14px,1.4vw,22px)] border border-white/90 bg-[linear-gradient(145deg,rgba(255,255,255,0.97),rgba(235,240,243,0.90))] text-left shadow-[0_18px_42px_rgba(26,48,66,0.15),0_4px_12px_rgba(26,48,66,0.07),inset_0_1px_0_rgba(255,255,255,1)] backdrop-blur-[18px] transition-all duration-200 hover:-translate-y-[2px] hover:border-white hover:shadow-[0_24px_52px_rgba(24,47,66,0.18),0_6px_16px_rgba(24,47,66,0.09),inset_0_1px_0_rgba(255,255,255,1)] focus:outline-none focus:ring-2 focus:ring-[#2E7898]/25 disabled:cursor-default disabled:hover:translate-y-0"
+//     >
+//       <div
+//         className="pointer-events-none absolute inset-x-0 top-0 h-[4px] opacity-90"
+//         style={{
+//           background: `linear-gradient(90deg, transparent 0%, ${accent} 20%, ${accent} 80%, transparent 100%)`,
+//         }}
+//       />
+//       <div className="pointer-events-none absolute -right-14 -top-14 h-36 w-36 rounded-full bg-white/70 blur-3xl" />
+//       <div className="pointer-events-none absolute bottom-0 left-0 h-24 w-24 rounded-full bg-[#9FBBC9]/18 blur-3xl" />
+
+//       <div
+//         className={`absolute right-[clamp(10px,1vw,16px)] top-[clamp(10px,1vw,16px)] flex h-[clamp(23px,3vh,28px)] items-center gap-1.5 rounded-full border px-[clamp(7px,0.7vw,10px)] text-[clamp(8px,0.7vw,10px)] font-semibold shadow-[0_5px_12px_rgba(31,53,70,0.10)] ${badgeClasses}`}
+//       >
+//         <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-white/25 text-[9px]">✓</span>
+//         {badge}
+//       </div>
+
+//       <div className="flex min-h-0 flex-1 items-center gap-[clamp(10px,1.3vw,20px)] px-[clamp(12px,1.5vw,24px)] pb-[clamp(8px,1.1vh,16px)] pt-[clamp(12px,1.5vh,24px)]">
+//         <div
+//           className="relative flex h-[clamp(56px,6vw,84px)] w-[clamp(56px,6vw,84px)] shrink-0 items-center justify-center text-[#11181F] [&>svg]:h-[clamp(28px,3vw,42px)] [&>svg]:w-[clamp(28px,3vw,42px)]"
+//           style={{ color: "#11181F" }}
+//         >
+//           <div
+//             className="pointer-events-none absolute inset-0 rounded-[clamp(12px,1.3vw,20px)] border border-white/90 bg-[linear-gradient(145deg,rgba(255,255,255,0.88),rgba(224,232,236,0.70))] shadow-[0_12px_28px_rgba(39,61,76,0.08),inset_0_1px_0_rgba(255,255,255,0.95)]"
+//             style={{ boxShadow: `0 14px 28px rgba(39,61,76,0.08), inset 0 0 0 1px ${accent}20` }}
+//           />
+//           <div className="relative z-10 flex items-center justify-center">{icon}</div>
+//         </div>
+
+//         <div className="min-w-0 flex-1 pt-[clamp(0px,0.5vh,8px)]">
+//           <h4 className="truncate text-[clamp(14px,1.25vw,22px)] font-black uppercase leading-none tracking-[-0.035em] text-[#132131]">
+//             {title}
+//           </h4>
+//           <p className="mt-[clamp(4px,0.6vh,8px)] truncate text-[clamp(8px,0.72vw,12px)] font-semibold tracking-[0.01em] text-[#5C6874]">
+//             {subtitle}
+//           </p>
+//           <div className="mt-[clamp(6px,1vh,16px)] h-px w-full bg-gradient-to-r from-[#AFC0C9]/80 via-[#D8E1E5]/70 to-transparent" />
+//         </div>
+//       </div>
+
+//       <div className="grid h-[clamp(42px,6vh,52px)] shrink-0 grid-cols-3 border-t border-[#C5D0D6]/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.78),rgba(231,237,240,0.92))] backdrop-blur-md">
+//         {conditions.map((item, index) => (
+//           <div
+//             key={item.key}
+//             className={`flex flex-col items-center justify-center px-1 ${index !== 2 ? "border-r border-[#D0D9DE]/80" : ""}`}
+//           >
+//             <div
+//               className="flex items-center gap-1.5 text-[clamp(7px,0.62vw,9px)] font-black"
+//               style={{ color: item.active ? item.dot : "#858E97" }}
+//             >
+//               <span
+//                 className="h-2 w-2 rounded-full"
+//                 style={{ backgroundColor: item.active ? item.dot : "#A8AFB6" }}
+//               />
+//               {item.label}
+//             </div>
+//             <span className="mt-0.5 text-[clamp(6px,0.5vw,7px)] font-black tracking-[0.04em] text-[#31404D]">
+//               {item.value}
+//             </span>
+//           </div>
+//         ))}
+//       </div>
+//     </button>
+//   );
+// };
+
+// const FlowLineH = () => (
+//   <div className="relative flex h-full w-full items-center">
+//     <div className="absolute left-0 right-0 top-1/2 h-[3px] -translate-y-1/2 rounded-full bg-[linear-gradient(90deg,#48BDD0,#1798B3)] shadow-[0_2px_6px_rgba(23,152,179,0.18)]" />
+//     <div className="absolute right-0 top-1/2 -translate-y-1/2">
+//       <div className="h-0 w-0 border-y-[6px] border-l-[9px] border-y-transparent border-l-[#17A8DB]" />
+//     </div>
+//   </div>
+// );
+
+// const FlowLineHReverse = () => (
+//   <div className="relative flex h-full w-full items-center">
+//     <div className="absolute left-0 right-0 top-1/2 h-[3px] -translate-y-1/2 rounded-full bg-[linear-gradient(90deg,#48BDD0,#1798B3)] shadow-[0_2px_6px_rgba(23,152,179,0.18)]" />
+//     <div className="absolute left-0 top-1/2 -translate-y-1/2">
+//       <div className="h-0 w-0 border-y-[6px] border-r-[9px] border-y-transparent border-r-[#17A8DB]" />
+//     </div>
+//   </div>
+// );
+
+// const FlowLineV = () => (
+//   <div className="w-[4px] h-full bg-cyan-400 relative overflow-hidden">
+//     <div className="flow-pulse-vertical" />
+//   </div>
+// );
+
+//  const PopupShell = ({ title, children, onBack }) => (
+//   <div className="fixed left-0 right-0 top-[72px] bottom-0 z-[999] bg-black/60 backdrop-blur-sm flex items-center justify-center p-5">
+// <div className="w-full max-w-7xl h-[calc(100vh-110px)] overflow-y-auto bg-slate-50 border-2 border-[#004AAD] rounded-xl shadow-2xl p-6 relative">      <div className="sticky top-0 z-20 bg-slate-50 border-b border-slate-200 pb-4 mb-6 flex items-center justify-between">
+//         <div>
+//           <span className="text-[10px] font-black tracking-[0.25em] uppercase text-[#004AAD]">
+//             BMS Detail View
+//           </span>
+//           <h2 className="text-xl font-black text-[#081F5C] uppercase mt-1">
+//             {title}
+//           </h2>
+//         </div>
+
+//         <div className="flex items-center gap-2">
+//           {onBack && (
+//             <button
+//               type="button"
+//               onClick={onBack}
+//               className="h-9 w-9 rounded bg-[#004AAD] text-white flex items-center justify-center hover:bg-[#003A86] transition-colors"
+//             >
+//               ←
+//             </button>
+//           )}
+
+//           <button
+//             type="button"
+//             onClick={() => setActivePopup(null)}
+//             className="h-9 w-9 rounded bg-[#081F5C] text-white flex items-center justify-center hover:bg-[#0A276E] transition-colors"
+//           >
+//             <X className="h-5 w-5" />
+//           </button>
+//         </div>
+//       </div>
+
+//       {children}
+//     </div>
+//   </div>
+// );
+
+// const sourceAnalytics = {
+//   inc1Analytics: {
+//     title: "INC1 Incoming Feeder",
+//     subtitle: "Primary Incoming Supply",
+//     kwh: "1,280",
+//     kvah: "1,195",
+//     current: "420 A",
+//     voltage: "33.0 kV",
+//     pf: "0.98",
+//     load: 78,
+//     health: 94,
+//     status: "Stable",
+//   },
+
+//   outAnalytics: {
+//     title: "Outgoing Busbar",
+//     subtitle: "Outgoing Distribution Supply",
+//     kwh: "1,560",
+//     kvah: "1,430",
+//     current: "460 A",
+//     voltage: "33.0 kV",
+//     pf: "0.99",
+//     load: 86,
+//     health: 96,
+//     status: "Stable",
+//   },
+
+//   inc2Analytics: {
+//     title: "INC2 Incoming Feeder",
+//     subtitle: "Secondary Incoming Supply",
+//     kwh: "1,110",
+//     kvah: "1,020",
+//     current: "390 A",
+//     voltage: "33.0 kV",
+//     pf: "0.97",
+//     load: 72,
+//     health: 92,
+//     status: "Stable",
+//   },
+
+//   meterAnalytics: {
+//     title: "Metering Unit",
+//     subtitle: "33kV Energy Monitoring Meter",
+//     kwh: "1,420",
+//     kvah: "1,300",
+//     current: "435 A",
+//     voltage: "33.0 kV",
+//     pf: "0.98",
+//     load: 81,
+//     health: 95,
+//     status: "Stable",
+//   },
+
+//   feederAnalytics: {
+//     title: "33kV Feeder",
+//     subtitle: "Feeder Switchgear Panel",
+//     kwh: "1,385",
+//     kvah: "1,260",
+//     current: "410 A",
+//     voltage: "33.0 kV",
+//     pf: "0.97",
+//     load: 76,
+//     health: 93,
+//     status: "Stable",
+//   },
+// };
+
+// const numberFrom = (value, fallback = 0) => {
+//   const parsed = Number(String(value ?? "").replace(/[^\d.-]/g, ""));
+//   return Number.isFinite(parsed) ? parsed : fallback;
+// };
+
+// const clampValue = (value, min, max) =>
+//   Math.min(Math.max(value, min), max);
+
+// const analyticsTooltipStyle = {
+//   background: "#061737",
+//   border: "1px solid rgba(56,189,248,0.35)",
+//   borderRadius: "8px",
+//   color: "#ffffff",
+//   boxShadow: "0 14px 35px rgba(0,0,0,0.35)",
+// };
+
+// const MetricAnalyticsCard = ({
+//   number,
+//   icon,
+//   title,
+//   subtitle,
+//   value,
+//   unit,
+//   change,
+//   children,
+//   footer,
+//   className = "",
+// }) => (
+//   <article
+//     className={`relative min-h-0 overflow-hidden rounded-xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] shadow-[0_18px_45px_rgba(0,0,0,0.24)] ${className}`}
+//   >
+//     <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300/80 to-transparent" />
+
+//     <div className="flex h-full min-h-0 flex-col p-4">
+//       <div className="flex items-start justify-between gap-3">
+//         <div className="flex min-w-0 items-center gap-3">
+//           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-cyan-400/60 bg-cyan-400/[0.06] text-cyan-300">
+//             {icon}
+//           </div>
+
+//           <div className="min-w-0">
+//             <div className="flex items-center gap-2">
+//               <span className="flex h-6 w-6 items-center justify-center rounded bg-[#06316E] text-[11px] font-black text-cyan-300">
+//                 {number}
+//               </span>
+
+//               <h3 className="truncate text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em] text-white">
+//                 {title}
+//               </h3>
+//             </div>
+
+//             <p className="mt-1 text-[8px] font-bold uppercase tracking-[0.12em] text-sky-400">
+//               {subtitle}
+//             </p>
+//           </div>
+//         </div>
+
+//         <div className="shrink-0 rounded-md border border-emerald-400/25 bg-emerald-400/[0.06] px-2.5 py-1.5 text-right">
+//           <p className="text-[11px] font-black text-emerald-400">
+//             ↑ {change}
+//           </p>
+//           <p className="text-[8px] text-slate-400">vs yesterday</p>
+//         </div>
+//       </div>
+
+//       <div className="mt-2 pl-[52px]">
+//         <div className="flex items-end gap-2">
+//           <strong className="text-[25px] font-semibold leading-none tracking-tight text-white">
+//             {value}
+//           </strong>
+
+//           {unit && (
+//             <span className="pb-0.5 text-[clamp(11px,1.5vh,14px)] font-semibold text-slate-200">
+//               {unit}
+//             </span>
+//           )}
+//         </div>
+//       </div>
+
+//       <div className="mt-2 min-h-0 flex-1">{children}</div>
+
+//       <div className="mt-2 grid grid-cols-3 overflow-hidden rounded-lg border border-[#153B69] bg-[#061737]">
+//         {footer.map((item, index) => (
+//           <div
+//             key={item.label}
+//             className={`px-3 py-2 ${
+//               index !== footer.length - 1
+//                 ? "border-r border-[#153B69]"
+//                 : ""
+//             }`}
+//           >
+//             <p className="text-[8px] font-bold uppercase tracking-[0.08em] text-sky-400">
+//               {item.label}
+//             </p>
+//             <p className="mt-0.5 truncate text-[11px] font-bold text-white">
+//               {item.value}
+//             </p>
+//           </div>
+//         ))}
+//       </div>
+//     </div>
+//   </article>
+// );
+
+// const createElectricalAnalytics = (data) => {
+//   const kwh = numberFrom(data.kwh, 1280);
+//   const kvah = numberFrom(data.kvah, 1195);
+//   const current = numberFrom(data.current, 420);
+//   const voltage = numberFrom(data.voltage, 33);
+//   const isHighVoltage = /kv/i.test(String(data.voltage));
+//   const voltageUnit = isHighVoltage ? "kV" : "V";
+
+//   const kwhTrend = [
+//     80, 235, 390, 525, 650, 780, 920, 1050, 1130, 1110, 1275, 1310, kwh,
+//   ].map((value, index) => ({
+//     time: `${String(index * 2).padStart(2, "0")}:00`,
+//     value,
+//   }));
+
+//   const currentWave = Array.from({ length: 42 }, (_, index) => ({
+//     time: `${Math.round((index / 41) * 100)}ms`,
+//     value:
+//       Math.sin(index * 0.68) * current * 1.28 +
+//       Math.sin(index * 1.84) * current * 0.06,
+//   }));
+
+//   const baseVoltage = voltage;
+//   const voltageSpread = isHighVoltage ? 0.55 : 7;
+//   const voltageTrend = Array.from({ length: 38 }, (_, index) => ({
+//     time:
+//       index % 7 === 0
+//         ? `13:${String(27 + Math.floor(index / 7)).padStart(2, "0")}`
+//         : "",
+//     phaseR:
+//       baseVoltage +
+//       Math.sin(index * 0.36) * voltageSpread +
+//       Math.sin(index * 0.12) * voltageSpread * 0.45,
+//     phaseY:
+//       baseVoltage -
+//       voltageSpread * 0.2 +
+//       Math.sin(index * 0.41 + 1.1) * voltageSpread * 0.72,
+//     phaseB:
+//       baseVoltage +
+//       voltageSpread * 0.12 +
+//       Math.sin(index * 0.47 + 2.2) * voltageSpread * 0.64,
+//   }));
+
+//   return {
+//     ...data,
+//     kwh,
+//     kvah,
+//     current,
+//     voltage,
+//     voltageUnit,
+//     isHighVoltage,
+//     kwhTrend,
+//     kvahComparison: [
+//       { label: "Today", value: kvah },
+//       { label: "Yesterday", value: Math.round(kvah * 0.904) },
+//     ],
+//     kvahMonthlyTrend: [
+//       { day: "1", current: 4.2, previous: 2.1 },
+//       { day: "4", current: 7.1, previous: 6.9 },
+//       { day: "7", current: 8.1, previous: 12.4 },
+//       { day: "10", current: 16.8, previous: 13.3 },
+//       { day: "13", current: 9.4, previous: 10.2 },
+//       { day: "16", current: 10.1, previous: 4.3 },
+//       { day: "19", current: 6.5, previous: 3.0 },
+//       { day: "22", current: 14.2, previous: 1.2 },
+//       { day: "25", current: 18.4, previous: 4.5 },
+//       { day: "28", current: 13.1, previous: 7.6 },
+//     ],
+//     currentWave,
+//     voltageTrend,
+//   };
+// };
+
+// const IndividualSourceAnalytics = ({
+//   type,
+//   data,
+//   onBack,
+//   backLabel = "Back to Source",
+// }) => {
+//   const sourceData = data || sourceAnalytics[type];
+
+//   const initialAnalytics = useMemo(
+//     () => (sourceData ? createElectricalAnalytics(sourceData) : null),
+//     [type]
+//   );
+
+//   const [analytics, setAnalytics] = useState(initialAnalytics);
+//   const [isFullscreen, setIsFullscreen] = useState(false);
+//   const [lastUpdated, setLastUpdated] = useState(new Date());
+
+//   useEffect(() => {
+//     setAnalytics(initialAnalytics);
+//   }, [initialAnalytics]);
+
+//   useEffect(() => {
+//     if (!analytics) return undefined;
+
+//     const timer = window.setInterval(() => {
+//       setAnalytics((previous) => {
+//         if (!previous) return previous;
+
+//         const now = Date.now();
+//         const currentPoint = {
+//           time: `${now % 1000}ms`,
+//           value:
+//             Math.sin(now / 170) * previous.current * 1.28 +
+//             Math.sin(now / 61) * previous.current * 0.06,
+//         };
+
+//         const lastVoltage =
+//           previous.voltageTrend[previous.voltageTrend.length - 1];
+
+//         const step = previous.isHighVoltage ? 0.12 : 1.4;
+//         const minVoltage = previous.isHighVoltage
+//           ? previous.voltage * 0.9
+//           : previous.voltage * 0.88;
+//         const maxVoltage = previous.isHighVoltage
+//           ? previous.voltage * 1.1
+//           : previous.voltage * 1.12;
+
+//         const voltagePoint = {
+//           time: new Date().toLocaleTimeString([], {
+//             hour: "2-digit",
+//             minute: "2-digit",
+//           }),
+//           phaseR: clampValue(
+//             lastVoltage.phaseR + (Math.random() - 0.5) * step,
+//             minVoltage,
+//             maxVoltage
+//           ),
+//           phaseY: clampValue(
+//             lastVoltage.phaseY + (Math.random() - 0.5) * step,
+//             minVoltage,
+//             maxVoltage
+//           ),
+//           phaseB: clampValue(
+//             lastVoltage.phaseB + (Math.random() - 0.5) * step,
+//             minVoltage,
+//             maxVoltage
+//           ),
+//         };
+
+//         return {
+//           ...previous,
+//           currentWave: [...previous.currentWave.slice(1), currentPoint],
+//           voltageTrend: [...previous.voltageTrend.slice(1), voltagePoint],
+//         };
+//       });
+
+//       setLastUpdated(new Date());
+//     }, 1400);
+
+//     return () => window.clearInterval(timer);
+//   }, [Boolean(analytics)]);
+
+//   if (!sourceData || !analytics) {
+//     return (
+//       <div className="fixed inset-x-0 bottom-0 top-[72px] z-[999] flex items-center justify-center bg-[#020B24] text-white">
+//         <div className="rounded-xl border border-cyan-400/35 bg-[#071633] p-7 text-center">
+//           <h2 className="text-xl font-semibold">Analytics data not found</h2>
+//           <button
+//             type="button"
+//             onClick={onBack}
+//             className="mt-4 rounded-md border border-cyan-400/40 px-5 py-2 text-cyan-300 hover:bg-cyan-400/10"
+//           >
+//             ← Back
+//           </button>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   const pf = clampValue(numberFrom(analytics.pf, 0.98), 0, 1);
+//   const voltageMin = analytics.isHighVoltage
+//     ? Math.floor(analytics.voltage * 0.88)
+//     : Math.floor(analytics.voltage * 0.85);
+//   const voltageMax = analytics.isHighVoltage
+//     ? Math.ceil(analytics.voltage * 1.12)
+//     : Math.ceil(analytics.voltage * 1.15);
+//   const warningLow = analytics.voltage * 0.95;
+//   const warningHigh = analytics.voltage * 1.05;
+
+//   return (
+//     <div
+//       className={`fixed inset-x-0 bottom-0 z-[1100] overflow-hidden bg-[#020B24] text-white ${
+//         isFullscreen ? "top-0" : "top-[72px]"
+//       }`}
+//     >
+//       <div className="flex h-full min-h-0 flex-col bg-[radial-gradient(circle_at_top_left,rgba(0,74,173,0.24),transparent_28%),radial-gradient(circle_at_top_right,rgba(34,211,238,0.08),transparent_26%),linear-gradient(180deg,#020B24_0%,#020817_100%)]">
+//         <div className="shrink-0 border-b border-[#174575] bg-[#020B24]/95 px-5 py-3 backdrop-blur-xl">
+//           <div className="mx-auto flex max-w-[1600px] items-center gap-4">
+//             <button
+//               type="button"
+//               onClick={onBack}
+//               className="flex h-[58px] shrink-0 items-center gap-2 rounded-lg border border-[#1B4D83] bg-[#061737] px-4 text-[12px] font-semibold text-slate-100 transition hover:border-cyan-400/60 hover:bg-[#092452]"
+//             >
+//               <ArrowLeft className="h-4 w-4 text-cyan-300" />
+//               {backLabel}
+//             </button>
+
+//             <div className="min-w-0 flex-1">
+//               <h2 className="truncate text-[25px] font-semibold tracking-tight text-white">
+//                 {analytics.title}
+//               </h2>
+//               <p className="mt-0.5 text-[clamp(10px,1.4vh,13px)] font-medium text-cyan-300">
+//                 {analytics.subtitle}
+//               </p>
+//             </div>
+
+//             <div className="hidden items-center gap-3 md:flex">
+//               <div className="rounded-lg border border-[#174575] bg-[#061737] px-4 py-2">
+//                 <div className="flex items-center gap-2 text-[clamp(10px,1.4vh,13px)] font-semibold text-emerald-400">
+//                   <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 shadow-[0_0_14px_rgba(52,211,153,0.9)]" />
+//                   Live
+//                 </div>
+//                 <p className="mt-1 text-[9px] text-slate-400">
+//                   Updated {lastUpdated.toLocaleTimeString()}
+//                 </p>
+//               </div>
+
+//               <button
+//                 type="button"
+//                 onClick={() => setIsFullscreen((value) => !value)}
+//                 className="flex h-[46px] w-[46px] items-center justify-center rounded-lg border border-[#1B4D83] bg-[#061737] text-cyan-300 transition hover:border-cyan-300 hover:bg-[#092452]"
+//                 aria-label="Toggle fullscreen analytics"
+//               >
+//                 <Maximize2 className="h-5 w-5" />
+//               </button>
+//             </div>
+//           </div>
+//         </div>
+
+//         <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 2xl:overflow-hidden">
+//           <div className="mx-auto grid min-h-[840px] max-w-[1600px] grid-cols-1 gap-4 lg:h-full lg:min-h-0 lg:grid-cols-6 lg:grid-rows-2">
+//             <MetricAnalyticsCard
+//               number="1"
+//               icon={<Zap className="h-5 w-5" />}
+//               title="kWh"
+//               subtitle="Active energy"
+//               value={analytics.kwh.toLocaleString()}
+//               unit="kWh"
+//               change="12.4%"
+//               className="lg:col-span-2"
+//               footer={[
+//                 // { label: "Today", value: `${analytics.kwh.toLocaleString()} kWh` },
+//                 // { label: "Yesterday", value: `${Math.round(analytics.kwh * 0.89).toLocaleString()} kWh` },
+//                 // { label: "This month", value: `${Math.round(analytics.kwh * 30.02).toLocaleString()} kWh` },
+//               ]}
+//             >
+//               <ResponsiveContainer width="100%" height="100%">
+//                 <AreaChart
+//                   data={analytics.kwhTrend}
+//                   margin={{ top: 12, right: 4, left: -24, bottom: -4 }}
+//                 >
+//                   <defs>
+//                     <linearGradient id={`kwhFill-${type}`} x1="0" y1="0" x2="0" y2="1">
+//                       <stop offset="0%" stopColor="#1D9BF0" stopOpacity={0.92} />
+//                       <stop offset="100%" stopColor="#0876DE" stopOpacity={0.03} />
+//                     </linearGradient>
+//                   </defs>
+//                   <CartesianGrid vertical={false} stroke="rgba(148,163,184,0.14)" strokeDasharray="3 3" />
+//                   <XAxis dataKey="time" axisLine={false} tickLine={false} tick={{ fill: "#8EA6C4", fontSize: 8 }} interval={1} />
+//                   <YAxis axisLine={false} tickLine={false} tick={{ fill: "#8EA6C4", fontSize: 8 }} />
+//                   <Tooltip contentStyle={analyticsTooltipStyle} formatter={(value) => [`${Math.round(value)} kWh`, "Energy"]} />
+//                   <Area type="monotone" dataKey="value" stroke="#38BDF8" strokeWidth={2} fill={`url(#kwhFill-${type})`} />
+//                 </AreaChart>
+//               </ResponsiveContainer>
+//             </MetricAnalyticsCard>
+
+//             <MetricAnalyticsCard
+//               number="2"
+//               icon={<Activity className="h-5 w-5" />}
+//               title="kvah"
+//               subtitle="Monthly apparent energy comparison"
+//               value={analytics.kvah.toLocaleString()}
+//               unit="kvah"
+//               change="10.7%"
+//               className="lg:col-span-2"
+//               footer={[
+//                 // { label: "Current month", value: `${Math.round(analytics.kvah * 30).toLocaleString()} kvah` },
+//                 // { label: "Last month", value: `${Math.round(analytics.kvah * 27.2).toLocaleString()} kvah` },
+//                 // { label: "Difference", value: "+10.7%" },
+//               ]}
+//             >
+//               <div className="relative h-full min-h-[155px]">
+//                 <div className="absolute left-2 top-0 z-10 flex items-center gap-5 text-[9px] font-semibold text-slate-300">
+//                   <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-violet-400" />Current Month</span>
+//                   <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-cyan-400" />Last Month</span>
+//                 </div>
+
+//                 <ResponsiveContainer width="100%" height="100%">
+//                   <AreaChart
+//                     data={analytics.kvahMonthlyTrend}
+//                     margin={{ top: 24, right: 8, left: -18, bottom: -4 }}
+//                   >
+//                     <defs>
+//                       <linearGradient id={`kvahCurrentArea-${type}`} x1="0" y1="0" x2="0" y2="1">
+//                         <stop offset="0%" stopColor="#8B5CF6" stopOpacity={0.34} />
+//                         <stop offset="100%" stopColor="#8B5CF6" stopOpacity={0.02} />
+//                       </linearGradient>
+//                       <linearGradient id={`kvahPreviousArea-${type}`} x1="0" y1="0" x2="0" y2="1">
+//                         <stop offset="0%" stopColor="#22D3EE" stopOpacity={0.28} />
+//                         <stop offset="100%" stopColor="#22D3EE" stopOpacity={0.02} />
+//                       </linearGradient>
+//                     </defs>
+//                     <CartesianGrid vertical={false} stroke="rgba(148,163,184,0.14)" />
+//                     <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fill: "#8EA6C4", fontSize: 8 }} />
+//                     <YAxis domain={[0, 20]} ticks={[0, 5, 10, 15, 20]} axisLine={false} tickLine={false} tick={{ fill: "#8EA6C4", fontSize: 8 }} tickFormatter={(value) => `${value}k`} />
+//                     <Tooltip contentStyle={analyticsTooltipStyle} formatter={(value, name) => [`${value}k kvah`, name === "current" ? "Current Month" : "Last Month"]} />
+//                     <Area type="monotone" dataKey="previous" stroke="#22D3EE" strokeWidth={2.2} fill={`url(#kvahPreviousArea-${type})`} dot={{ r: 2.8, fill: "#22D3EE", stroke: "#CFFAFE", strokeWidth: 1 }} activeDot={{ r: 4 }} />
+//                     <Area type="monotone" dataKey="current" stroke="#8B5CF6" strokeWidth={2.2} fill={`url(#kvahCurrentArea-${type})`} dot={{ r: 2.8, fill: "#8B5CF6", stroke: "#EDE9FE", strokeWidth: 1 }} activeDot={{ r: 4 }} />
+//                   </AreaChart>
+//                 </ResponsiveContainer>
+//               </div>
+//             </MetricAnalyticsCard>
+
+//             <MetricAnalyticsCard
+//               number="3"
+//               icon={<Radio className="h-5 w-5" />}
+//               title="Current"
+//               subtitle="Live current waveform"
+//               value={analytics.current.toLocaleString()}
+//               unit="A"
+//               change="5.3%"
+//               className="lg:col-span-2"
+//               footer={[
+//                 // { label: "Average", value: `${analytics.current} A` },
+//                 // { label: "Maximum", value: `${Math.round(analytics.current * 1.46)} A` },
+//                 // { label: "Minimum", value: `${Math.round(analytics.current * 0.54)} A` },
+//               ]}
+//             >
+//               <ResponsiveContainer width="100%" height="100%">
+//                 <LineChart
+//                   data={analytics.currentWave}
+//                   margin={{ top: 8, right: 4, left: -25, bottom: -4 }}
+//                 >
+//                   <CartesianGrid vertical={false} stroke="rgba(148,163,184,0.14)" strokeDasharray="3 3" />
+//                   <XAxis dataKey="time" axisLine={false} tickLine={false} tick={{ fill: "#8EA6C4", fontSize: 8 }} interval={8} />
+//                   <YAxis
+//                     domain={[-analytics.current * 1.7, analytics.current * 1.7]}
+//                     axisLine={false}
+//                     tickLine={false}
+//                     tick={{ fill: "#8EA6C4", fontSize: 8 }}
+//                   />
+//                   <ReferenceLine y={0} stroke="rgba(148,163,184,0.34)" />
+//                   <Tooltip contentStyle={analyticsTooltipStyle} formatter={(value) => [`${Math.round(value)} A`, "Current"]} />
+//                   <Line type="monotone" dataKey="value" stroke="#22D3EE" strokeWidth={1.8} dot={false} isAnimationActive={false} />
+//                 </LineChart>
+//               </ResponsiveContainer>
+//             </MetricAnalyticsCard>
+
+//             <article className="relative min-h-0 overflow-hidden rounded-xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] shadow-[0_18px_45px_rgba(0,0,0,0.24)] lg:col-span-4">
+//               <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-yellow-300/80 to-transparent" />
+
+//               <div className="flex h-full min-h-0 flex-col p-4">
+//                 <div className="flex items-start justify-between gap-3">
+//                   <div className="flex min-w-0 items-center gap-3">
+//                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-yellow-400/80 bg-yellow-400/[0.06] text-[15px] font-black text-yellow-300">
+//                       PF
+//                     </div>
+
+//                     <div className="min-w-0">
+//                       <div className="flex items-center gap-2">
+//                         <span className="flex h-6 w-6 items-center justify-center rounded bg-yellow-400/15 text-[11px] font-black text-yellow-300">
+//                           4
+//                         </span>
+
+//                         <h3 className="truncate text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em] text-white">
+//                           Power Factor
+//                         </h3>
+//                       </div>
+
+//                       <p className="mt-1 text-[8px] font-bold uppercase tracking-[0.12em] text-sky-400">
+//                         Real-time power efficiency
+//                       </p>
+//                     </div>
+//                   </div>
+
+//                   <div className="shrink-0 rounded-md border border-emerald-400/25 bg-emerald-400/[0.06] px-2.5 py-1.5 text-right">
+//                     <p className="text-[11px] font-black text-emerald-400">
+//                       ↑ 0.02
+//                     </p>
+//                     <p className="text-[8px] text-slate-400">vs yesterday</p>
+//                   </div>
+//                 </div>
+
+//                 <div className="mt-3 grid min-h-0 flex-1 grid-cols-[1.08fr_0.92fr] gap-3">
+//                   <div className="relative min-h-[190px]">
+//                     <svg
+//                       viewBox="0 0 300 230"
+//                       className="h-full w-full overflow-visible"
+//                       role="img"
+//                       aria-label={`Power factor ${pf.toFixed(2)}`}
+//                     >
+//                       <defs>
+//                         <linearGradient
+//                           id={`pfPowerArc-${type}`}
+//                           x1="0%"
+//                           y1="100%"
+//                           x2="100%"
+//                           y2="0%"
+//                         >
+//                           <stop offset="0%" stopColor="#60A5FA" />
+//                           <stop offset="55%" stopColor="#93C5FD" />
+//                           <stop offset="100%" stopColor="#FFFFFF" />
+//                         </linearGradient>
+//                       </defs>
+
+//                       <path
+//                         d="M 58 190 A 100 100 0 1 1 242 190"
+//                         fill="none"
+//                         stroke="rgba(255,255,255,0.13)"
+//                         strokeWidth="17"
+//                         strokeLinecap="round"
+//                       />
+
+//                       <path
+//                         d="M 58 190 A 100 100 0 1 1 242 190"
+//                         fill="none"
+//                         stroke={`url(#pfPowerArc-${type})`}
+//                         strokeWidth="17"
+//                         strokeLinecap="round"
+//                         pathLength="100"
+//                         strokeDasharray={`${Math.max(4, pf * 100)} 100`}
+//                       />
+
+//                       <g
+//                         stroke="#6B9BCB"
+//                         strokeWidth="1.5"
+//                         strokeLinecap="round"
+//                         opacity="0.75"
+//                       >
+//                         <line x1="45" y1="191" x2="35" y2="196" />
+//                         <line x1="50" y1="129" x2="39" y2="125" />
+//                         <line x1="83" y1="77" x2="76" y2="67" />
+//                         <line x1="150" y1="55" x2="150" y2="42" />
+//                         <line x1="217" y1="77" x2="224" y2="67" />
+//                         <line x1="250" y1="129" x2="261" y2="125" />
+//                         <line x1="255" y1="191" x2="265" y2="196" />
+//                       </g>
+
+//                       <g
+//                         fill="#E2E8F0"
+//                         fontSize="13"
+//                         fontWeight="600"
+//                         textAnchor="middle"
+//                       >
+//                         <text x="37" y="211">0</text>
+//                         <text x="24" y="133">0.2</text>
+//                         <text x="74" y="58">0.4</text>
+//                         <text x="150" y="31">0.6</text>
+//                         <text x="227" y="58">0.8</text>
+//                         <text x="276" y="133">1.0</text>
+//                       </g>
+
+//                       <text
+//                         x="150"
+//                         y="144"
+//                         fill="#FFFFFF"
+//                         fontSize="38"
+//                         fontWeight="700"
+//                         textAnchor="middle"
+//                       >
+//                         {pf.toFixed(2)}
+//                       </text>
+
+//                       <text
+//                         x="150"
+//                         y="171"
+//                         fill="#CBD5E1"
+//                         fontSize="18"
+//                         fontWeight="600"
+//                         textAnchor="middle"
+//                       >
+//                         {Math.round(pf * 100)}%
+//                       </text>
+//                     </svg>
+//                   </div>
+
+//                   <div className="grid min-h-0 grid-cols-2 gap-2">
+//                     {[
+//                       {
+//                         label: "Gauge Value",
+//                         value: pf.toFixed(2),
+//                       },
+//                       {
+//                         label: "Capacity Percentage",
+//                         value: `${Math.round(pf * 100)}%`,
+//                       },
+//                       {
+//                         label: "Gauge Range",
+//                         value: "0 – 1.0",
+//                       },
+//                       {
+//                         label: "Avg Power (10 min)",
+//                         value: `${Math.round(analytics.current * pf)} kW`,
+//                       },
+//                     ].map((item) => (
+//                       <div
+//                         key={item.label}
+//                         className="flex min-h-[82px] flex-col justify-center rounded-xl border border-slate-300/80 bg-[linear-gradient(145deg,#FFFFFF,#E8EEF5)] px-3 py-2.5 shadow-[0_8px_20px_rgba(0,0,0,0.16)]"
+//                       >
+//                         <p className="text-[9px] font-semibold leading-tight text-slate-600">
+//                           {item.label}
+//                         </p>
+//                         <p className="mt-2 whitespace-nowrap text-[18px] font-bold leading-none tracking-tight text-slate-950">
+//                           {item.value}
+//                         </p>
+//                       </div>
+//                     ))}
+//                   </div>
+//                 </div>
+//               </div>
+//             </article>
+
+//             <MetricAnalyticsCard
+//               number="5"
+//               icon={<Zap className="h-5 w-5" />}
+//               title="Voltage"
+//               subtitle="Three-phase voltage monitoring"
+//               value={analytics.voltage.toFixed(analytics.isHighVoltage ? 1 : 0)}
+//               unit={analytics.voltageUnit}
+//               change="1.2%"
+//               className="lg:col-span-2"
+//               footer={[
+//                 // { label: "Average", value: `${analytics.voltage.toFixed(analytics.isHighVoltage ? 1 : 0)} ${analytics.voltageUnit}` },
+//                 // { label: "Maximum", value: `${(analytics.voltage * 1.03).toFixed(analytics.isHighVoltage ? 1 : 0)} ${analytics.voltageUnit}` },
+//                 // { label: "Minimum", value: `${(analytics.voltage * 0.97).toFixed(analytics.isHighVoltage ? 1 : 0)} ${analytics.voltageUnit}` },
+//               ]}
+//             >
+//               <div className="relative h-full min-h-[155px]">
+//                 <div className="absolute right-2 top-0 z-10 flex items-center gap-4 text-[8px] font-semibold text-slate-300">
+//                   <span className="flex items-center gap-1"><span className="h-[2px] w-4 bg-red-400" />Phase R</span>
+//                   <span className="flex items-center gap-1"><span className="h-[2px] w-4 bg-blue-400" />Phase Y</span>
+//                   <span className="flex items-center gap-1"><span className="h-[2px] w-4 bg-green-400" />Phase B</span>
+//                 </div>
+//                 <ResponsiveContainer width="100%" height="100%">
+//                 <LineChart
+//                   data={analytics.voltageTrend}
+//                   margin={{ top: 8, right: 55, left: -16, bottom: -4 }}
+//                 >
+//                   <CartesianGrid stroke="rgba(148,163,184,0.15)" strokeDasharray="3 3" />
+//                   <XAxis dataKey="time" axisLine={{ stroke: "rgba(148,163,184,0.3)" }} tickLine={false} tick={{ fill: "#8EA6C4", fontSize: 8 }} />
+//                   <YAxis domain={[voltageMin, voltageMax]} axisLine={false} tickLine={false} tick={{ fill: "#8EA6C4", fontSize: 8 }} width={42} />
+//                   <Tooltip
+//                     contentStyle={analyticsTooltipStyle}
+//                     formatter={(value, name) => [
+//                       `${Number(value).toFixed(analytics.isHighVoltage ? 2 : 1)} ${analytics.voltageUnit}`,
+//                       name,
+//                     ]}
+//                   />
+//                   <ReferenceLine
+//                     y={warningHigh}
+//                     stroke="#EF4444"
+//                     strokeWidth={1.2}
+//                     label={{ value: `Upper ${warningHigh.toFixed(analytics.isHighVoltage ? 1 : 0)}`, position: "right", fill: "#FFFFFF", fontSize: 8 }}
+//                   />
+//                   <ReferenceLine
+//                     y={warningLow}
+//                     stroke="#FACC15"
+//                     strokeWidth={1.2}
+//                     label={{ value: `Lower ${warningLow.toFixed(analytics.isHighVoltage ? 1 : 0)}`, position: "right", fill: "#FFFFFF", fontSize: 8 }}
+//                   />
+//                   <Line name="Phase R" type="monotone" dataKey="phaseR" stroke="#EF5547" strokeWidth={1.45} dot={false} isAnimationActive={false} />
+//                   <Line name="Phase Y" type="monotone" dataKey="phaseY" stroke="#4C96E8" strokeWidth={1.45} dot={false} isAnimationActive={false} />
+//                   <Line name="Phase B" type="monotone" dataKey="phaseB" stroke="#65A657" strokeWidth={1.45} dot={false} isAnimationActive={false} />
+//                 </LineChart>
+//               </ResponsiveContainer>
+//               </div>
+//             </MetricAnalyticsCard>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// const SourceBox = ({
+//   id,
+//   title,
+//   subtitle,
+//   icon,
+//   hoverMonitor = false,
+//   openedBoxes,
+//   setOpenedBoxes,
+//   onClick,
+// }) => {
+//   const monitorData = [
+//     ["kWh", "1,280"],
+//     ["kvah", "1,195"],
+//     ["PF", "0.98"],
+//     ["Voltage", "33.0 kV"],
+//     ["Current", "420 A"],
+//   ];
+
+//   const showMonitor = hoverMonitor && openedBoxes.includes(id);
+
+//   const handleHover = () => {
+//     if (!hoverMonitor) return;
+//     setOpenedBoxes((prev) => (prev.includes(id) ? prev : [...prev, id]));
+//   };
+
+//   const handleClick = (event) => {
+//     event.stopPropagation();
+//     if (onClick) onClick();
+//   };
+
+//   return (
+//     <div
+//       onMouseEnter={handleHover}
+//       onClick={handleClick}
+//       className="relative h-[145px] w-full bg-[#081F5C] border-2 border-[#004AAD] text-white shadow-xl panel-active-glow overflow-hidden cursor-pointer"
+//     >
+//       {!showMonitor ? (
+//         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
+//           {icon && (
+//             <div className="bg-[#05143C] p-2 border border-blue-900 mb-2">
+//               <Zap className="h-4 w-4 text-emerald-400" />
+//             </div>
+//           )}
+
+//           <h4 className="text-[clamp(13px,1.8vh,16px)] font-bold uppercase tracking-[0.05em] leading-none">
+//             {title}
+//           </h4>
+
+//           <span className="mt-2 text-[8px] font-black text-blue-300 tracking-[0.18em] uppercase leading-none">
+//             {subtitle}
+//           </span>
+//         </div>
+//       ) : (
+//         <div
+//           onClick={handleClick}
+//           className="absolute inset-0 z-20 bg-[#081F5C] px-5 py-2.5"
+//         >
+//           <div className="text-center border-b border-[#2B5DA8] pb-1.5 mb-1.5">
+//             <h4 className="text-[11px] font-black text-white uppercase tracking-[0.14em] leading-none">
+//               {title}
+//             </h4>
+//           </div>
+
+//           <div className="flex items-center justify-between mb-1.5">
+//             <span className="text-[7px] font-bold text-blue-300 uppercase">
+//               {subtitle}
+//             </span>
+
+//             <span className="flex items-center gap-1 text-[7px] font-bold text-emerald-400 uppercase">
+//               <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)]" />
+//               Live
+//             </span>
+//           </div>
+
+//           <div className="px-2 space-y-[2px]">
+//             {monitorData.map(([label, value]) => (
+//               <div
+//                 key={label}
+//                 className="flex items-center justify-between px-2"
+//               >
+//                 <span className="text-[9px] font-medium text-slate-300 tracking-wide">
+//                   {label}
+//                 </span>
+
+//                 <span className="text-[10px] font-bold text-white tabular-nums tracking-wide">
+//                   {value}
+//                 </span>
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// const SourcePopup = () => {
+//   const [openedBoxes, setOpenedBoxes] = React.useState([]);
+//   const [activeSourceAnalytics, setActiveSourceAnalytics] =
+//     React.useState(null);
+
+//   return (
+//     <>
+//       <PopupShell title="33kV Source → 2 Incoming / 1 Outgoing">
+//         <div className="max-w-6xl mx-auto pt-2 pb-4">
+//           <div className="flex justify-center">
+//             <div className="w-[320px]">
+//               <SourceBox
+//                 id="source"
+//                 title="33kV SOURCE"
+//                 subtitle="CENTRAL CONTROL PANEL"
+//                 icon
+//                 openedBoxes={openedBoxes}
+//                 setOpenedBoxes={setOpenedBoxes}
+//               />
+//             </div>
+//           </div>
+
+//           <div className="flex justify-center h-8">
+//             <div className="flow-line-vertical h-full">
+//               <div className="flow-pulse-vertical" />
+//             </div>
+//           </div>
+
+//           <div className="relative h-[4px] w-[760px] mx-auto bg-cyan-400 overflow-hidden">
+//             <div className="flow-pulse-horizontal" />
+//           </div>
+
+//           <div className="relative h-10 w-[760px] mx-auto">
+//             <div className="absolute left-0 top-0 h-full">
+//               <div className="flow-line-vertical h-full">
+//                 <div className="flow-pulse-vertical" />
+//               </div>
+//             </div>
+
+//             <div className="absolute right-0 top-0 h-full">
+//               <div className="flow-line-vertical h-full">
+//                 <div className="flow-pulse-vertical" />
+//               </div>
+//             </div>
+//           </div>
+
+//           <div className="grid grid-cols-[300px_55px_300px_55px_300px] items-center justify-center mx-auto">
+//             <SourceBox
+//               id="inc1"
+//               title="INC1"
+//               subtitle="FEEDER BREAKER"
+//               hoverMonitor
+//               openedBoxes={openedBoxes}
+//               setOpenedBoxes={setOpenedBoxes}
+//               onClick={() => setActiveSourceAnalytics("inc1Analytics")}
+//             />
+
+//             <div className="h-[4px] w-full bg-cyan-400 relative overflow-hidden">
+//               <div className="flow-pulse-horizontal" />
+//             </div>
+
+//             <SourceBox
+//               id="out"
+//               title="OUT"
+//               subtitle="OUTGOING BUSBAR"
+//               hoverMonitor
+//               openedBoxes={openedBoxes}
+//               setOpenedBoxes={setOpenedBoxes}
+//               onClick={() => setActiveSourceAnalytics("outAnalytics")}
+//             />
+
+//             <div className="h-[4px] w-full bg-cyan-400 relative overflow-hidden">
+//               <div className="flow-pulse-horizontal" />
+//             </div>
+
+//             <SourceBox
+//               id="inc2"
+//               title="INC2"
+//               subtitle="FEEDER BREAKER"
+//               hoverMonitor
+//               openedBoxes={openedBoxes}
+//               setOpenedBoxes={setOpenedBoxes}
+//               onClick={() => setActiveSourceAnalytics("inc2Analytics")}
+//             />
+//           </div>
+
+//           <div className="flex justify-center h-8">
+//             <div className="flow-line-vertical h-full">
+//               <div className="flow-pulse-vertical" />
+//             </div>
+//           </div>
+
+//           <div className="flex justify-center">
+//             <div className="w-[320px]">
+//             <SourceBox
+//   id="meter"
+//   title="METER"
+//   subtitle="METERING UNIT"
+//   hoverMonitor
+//   openedBoxes={openedBoxes}
+//   setOpenedBoxes={setOpenedBoxes}
+//   onClick={() => setActiveSourceAnalytics("meterAnalytics")}
+// />
+//             </div>
+//           </div>
+
+//           <div className="flex justify-center h-8">
+//             <div className="flow-line-vertical h-full">
+//               <div className="flow-pulse-vertical" />
+//             </div>
+//           </div>
+
+//           <div className="flex justify-center">
+//             <div className="w-[320px]">
+//              <SourceBox
+//   id="feeder"
+//   title="33kV FEEDER"
+//   subtitle="FEEDER SWITCHGEAR PANEL"
+//   hoverMonitor
+//   openedBoxes={openedBoxes}
+//   setOpenedBoxes={setOpenedBoxes}
+//   onClick={() => setActiveSourceAnalytics("feederAnalytics")}
+// />
+//             </div>
+//           </div>
+
+          
+//         </div>
+//       </PopupShell>
+
+//       {activeSourceAnalytics && (
+//         <IndividualSourceAnalytics
+//           type={activeSourceAnalytics}
+//           onBack={() => setActiveSourceAnalytics(null)}
+//         />
+//       )}
+//     </>
+//   );
+// };
+
+
+// const feederAnalytics = {
+//   incomingFeederAnalytics: {
+//     title: "Incoming Feeder 1",
+//     subtitle: "33kV Incoming Feeder Supply",
+//     kwh: "1,480",
+//     kvah: "1,360",
+//     current: "430 A",
+//     voltage: "33.0 kV",
+//     pf: "0.98",
+//     load: 82,
+//     health: 95,
+//     status: "Stable",
+//   },
+
+//   og1Analytics: {
+//     title: "OG 1 Feeder",
+//     subtitle: "Outgoing Feeder to Transformer",
+//     kwh: "980",
+//     kvah: "910",
+//     current: "280 A",
+//     voltage: "33.0 kV",
+//     pf: "0.97",
+//     load: 68,
+//     health: 92,
+//     status: "ON",
+//   },
+
+//   og2Analytics: {
+//     title: "OG 2 Feeder",
+//     subtitle: "Outgoing Feeder to Transformer",
+//     kwh: "1,020",
+//     kvah: "960",
+//     current: "295 A",
+//     voltage: "33.0 kV",
+//     pf: "0.98",
+//     load: 72,
+//     health: 94,
+//     status: "ON",
+//   },
+
+//   og3Analytics: {
+//     title: "OG 3 Feeder",
+//     subtitle: "Outgoing Feeder to Transformer",
+//     kwh: "1,120",
+//     kvah: "1,040",
+//     current: "310 A",
+//     voltage: "33.0 kV",
+//     pf: "0.98",
+//     load: 76,
+//     health: 95,
+//     status: "ON",
+//   },
+
+//   og4Analytics: {
+//     title: "OG 4 Feeder",
+//     subtitle: "Outgoing Feeder to Transformer",
+//     kwh: "940",
+//     kvah: "870",
+//     current: "265 A",
+//     voltage: "33.0 kV",
+//     pf: "0.96",
+//     load: 64,
+//     health: 91,
+//     status: "ON",
+//   },
+
+//   og5Analytics: {
+//     title: "OG 5 Feeder",
+//     subtitle: "Outgoing Feeder to Transformer",
+//     kwh: "1,080",
+//     kvah: "990",
+//     current: "300 A",
+//     voltage: "33.0 kV",
+//     pf: "0.98",
+//     load: 74,
+//     health: 93,
+//     status: "ON",
+//   },
+
+//   og6Analytics: {
+//     title: "OG 6 Feeder",
+//     subtitle: "Outgoing Feeder to Transformer",
+//     kwh: "1,150",
+//     kvah: "1,080",
+//     current: "325 A",
+//     voltage: "33.0 kV",
+//     pf: "0.99",
+//     load: 79,
+//     health: 96,
+//     status: "ON",
+//   },
+// };
+
+// const FeederAnalyticsView = ({ type, data, onBack }) => {
+//   const analyticsData = data || feederAnalytics[type];
+
+//   if (!analyticsData) {
+//     return (
+//       <div className="fixed inset-x-0 bottom-0 top-[72px] z-[1100] flex items-center justify-center bg-[#020B24] text-white">
+//         <div className="rounded-xl border border-cyan-400/35 bg-[#071633] p-7 text-center shadow-2xl">
+//           <h2 className="text-xl font-semibold">
+//             Feeder analytics not found
+//           </h2>
+
+//           <p className="mt-2 text-sm text-slate-400">
+//             The selected outgoing feeder does not have monitoring data.
+//           </p>
+
+//           <button
+//             type="button"
+//             onClick={onBack}
+//             className="mt-5 rounded-md border border-cyan-400/40 px-5 py-2 text-cyan-300 transition hover:bg-cyan-400/10"
+//           >
+//             ← Back to Feeder Panel
+//           </button>
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <IndividualSourceAnalytics
+//       type={type}
+//       data={analyticsData}
+//       onBack={onBack}
+//       backLabel="Back to Feeder Panel"
+//     />
+//   );
+// };
+// const FeederMonitorBox = ({
+//   id,
+//   title,
+//   subtitle,
+//   transformer,
+//   openedFeeders,
+//   setOpenedFeeders,
+//   onClick,
+//   monitorData,
+// }) => {
+//   const showMonitor = openedFeeders.includes(id);
+
+//   const handleHover = () => {
+//     setOpenedFeeders((previous) => {
+//       if (previous.includes(id)) return previous;
+//       return [...previous, id];
+//     });
+//   };
+
+//   const handleClick = (event) => {
+//     event.stopPropagation();
+//     onClick?.();
+//   };
+
+//   return (
+//     <div
+//       onMouseEnter={handleHover}
+//       onClick={handleClick}
+//       className="
+//         relative h-[175px] w-full cursor-pointer overflow-hidden
+//         rounded border-2 border-[#004AAD]
+//         bg-[#081F5C] text-white
+//         shadow-md panel-active-glow
+//       "
+//     >
+//       {!showMonitor ? (
+//         <div className="absolute inset-0 flex flex-col items-center justify-center px-3 text-center">
+//           <span className="text-[9px] font-black uppercase tracking-wider text-blue-300">
+//             Outgoing Feeder
+//           </span>
+
+//           <strong className="mt-2 text-[18px] font-black tracking-widest">
+//             {title}
+//           </strong>
+
+//           <span className="mt-1 text-[8px] font-bold uppercase text-blue-300">
+//             {subtitle}
+//           </span>
+
+//           <span className="mt-2 text-[9px] font-semibold text-slate-300">
+//             To {transformer}
+//           </span>
+
+//           <div className="mt-3 flex items-center gap-1.5 text-[9px] font-bold uppercase text-emerald-400">
+//             <span className="h-2 w-2 rounded-full bg-emerald-400" />
+//             Active
+//           </div>
+//         </div>
+//       ) : (
+//         <div className="absolute inset-0 z-20 bg-[#081F5C] px-4 py-3">
+//           <div className="mb-2 border-b border-[#2B5DA8] pb-2 text-center">
+//             <h4 className="text-[12px] font-black uppercase leading-none tracking-[0.12em] text-white">
+//               {title}
+//             </h4>
+
+//             <span className="mt-1 block text-[7px] font-black uppercase tracking-[0.15em] text-blue-300">
+//               Monitoring
+//             </span>
+//           </div>
+
+//           <div className="mb-2 flex items-center justify-between">
+//             <span className="text-[7px] font-bold uppercase text-blue-300">
+//               {subtitle}
+//             </span>
+
+//             <span className="flex items-center gap-1 text-[7px] font-bold uppercase text-emerald-400">
+//               <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+//               Live
+//             </span>
+//           </div>
+
+//           <div className="space-y-[4px] px-2">
+//             {monitorData.map(([label, value]) => (
+//               <div
+//                 key={label}
+//                 className="flex items-center justify-between px-1"
+//               >
+//                 <span className="text-[10px] font-medium text-slate-300">
+//                   {label}
+//                 </span>
+
+//                 <span className="text-[11px] font-bold tabular-nums text-white">
+//                   {value}
+//                 </span>
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// const IncomingFeederMonitorBox = ({
+//   opened,
+//   setOpened,
+//   onClick,
+// }) => {
+//   const monitorData = [
+//     ["kWh", "1,480"],
+//     ["kvah", "1,360"],
+//     ["PF", "0.98"],
+//     ["AMPS", "430 A"],
+//     ["Voltage", "33.0 kV"],
+//   ];
+
+//   const handleClick = (event) => {
+//     event.stopPropagation();
+//     onClick?.();
+//   };
+
+//   return (
+//     <div
+//       onMouseEnter={() => setOpened(true)}
+//       onMouseLeave={() => setOpened(false)}
+//       onClick={handleClick}
+//       className="
+//         relative h-[175px] w-full max-w-[250px] cursor-pointer overflow-hidden
+//         rounded border-2 border-[#004AAD]
+//         bg-[#081F5C] text-white
+//         shadow-md panel-active-glow
+//       "
+//     >
+//       {!opened ? (
+//         <div className="absolute inset-0 flex flex-col items-center justify-center px-3 text-center">
+//           <span className="text-[9px] font-black uppercase tracking-wider text-blue-300">
+//             Incoming Feeder
+//           </span>
+
+//           <strong className="mt-2 text-[18px] font-black tracking-widest">
+//             INCOMING FEEDER 1
+//           </strong>
+
+//           <span className="mt-1 text-[8px] font-bold uppercase text-blue-300">
+//             33kV Supply
+//           </span>
+
+//           <span className="mt-2 text-[9px] font-semibold text-slate-300">
+//             Main Incoming
+//           </span>
+
+//           <div className="mt-3 flex items-center gap-1.5 text-[9px] font-bold uppercase text-emerald-400">
+//             <span className="h-2 w-2 rounded-full bg-emerald-400" />
+//             Active
+//           </div>
+//         </div>
+//       ) : (
+//         <div className="absolute inset-0 z-20 bg-[#081F5C] px-4 py-3">
+//           <div className="mb-2 border-b border-[#2B5DA8] pb-2 text-center">
+//             <h4 className="text-[12px] font-black uppercase leading-none tracking-[0.12em] text-white">
+//               INCOMING FEEDER 1
+//             </h4>
+
+//             <span className="mt-1 block text-[7px] font-black uppercase tracking-[0.15em] text-blue-300">
+//               Monitoring
+//             </span>
+//           </div>
+
+//           <div className="mb-2 flex items-center justify-between">
+//             <span className="text-[7px] font-bold uppercase text-blue-300">
+//               33kV Supply
+//             </span>
+
+//             <span className="flex items-center gap-1 text-[7px] font-bold uppercase text-emerald-400">
+//               <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+//               Live
+//             </span>
+//           </div>
+
+//           <div className="space-y-[4px] px-2">
+//             {monitorData.map(([label, value]) => (
+//               <div
+//                 key={label}
+//                 className="flex items-center justify-between px-1"
+//               >
+//                 <span className="text-[10px] font-medium text-slate-300">
+//                   {label}
+//                 </span>
+
+//                 <span className="text-[11px] font-bold tabular-nums text-white">
+//                   {value}
+//                 </span>
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// const FeederPopup = () => {
+//   const [openedFeeders, setOpenedFeeders] = React.useState([]);
+//   const [activeFeederAnalytics, setActiveFeederAnalytics] =
+//     React.useState(null);
+
+//   const incomingFeeder = {
+//     id: "incoming-feeder-1",
+//     title: "INCOMING FEEDER 1",
+//     subtitle: "33kV SUPPLY",
+//     transformer: "MAIN INCOMING",
+
+//     monitorData: [
+//       ["kWh", "1,480"],
+//       ["kvah", "1,360"],
+//       ["PF", "0.98"],
+//       ["AMPS", "430 A"],
+//       ["Voltage", "33.0 kV"],
+//     ],
+//   };
+
+//   const feederCards = outgoing.map((item, index) => ({
+//     id: `feeder-${index + 1}`,
+//     title: item.name,
+//     subtitle: "33kV FEEDER",
+//     transformer: item.transformer,
+
+//     monitorData: [
+//       ["kWh", `${980 + index * 40}`],
+//       ["kvah", `${910 + index * 35}`],
+//       ["PF", index % 2 === 0 ? "0.98" : "0.97"],
+//       ["AMPS", `${280 + index * 15} A`],
+//       ["Voltage", "33.0 kV"],
+//     ],
+//   }));
+
+//   return (
+//     <>
+//       <PopupShell title="33kV Feeder Panel">
+//         {/* MAIN FEEDER PANEL */}
+//         <div className="my-3 flex w-full justify-center">
+//           <div
+//             className="
+//               h-32 w-[90%] max-w-xl
+//               rounded-md border-2 border-[#004AAD]
+//               bg-[#081F5C] text-white shadow-lg
+//               md:w-[70%] lg:w-[45%]
+//             "
+//           >
+//             <div className="flex h-full flex-col items-center justify-center text-center">
+//               <span className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-300">
+//                 Feeder Switchgear Panel
+//               </span>
+
+//               <h3 className="mt-1 text-lg font-black tracking-wider text-white">
+//                 33kV FEEDER PANEL
+//               </h3>
+//             </div>
+//           </div>
+//         </div>
+
+//         {/* MAIN PANEL → INCOMING */}
+//         <div className="flex h-9 justify-center">
+//           <div className="flow-line-vertical h-full">
+//             <div className="flow-pulse-vertical" />
+//           </div>
+//         </div>
+
+//         {/* INCOMING FEEDER — SAME CARD AS OG */}
+//         <div className="flex justify-center">
+//           <div className="w-full max-w-[210px]">
+//             <FeederMonitorBox
+//               id={incomingFeeder.id}
+//               title={incomingFeeder.title}
+//               subtitle={incomingFeeder.subtitle}
+//               transformer={incomingFeeder.transformer}
+//               monitorData={incomingFeeder.monitorData}
+//               openedFeeders={openedFeeders}
+//               setOpenedFeeders={setOpenedFeeders}
+//               onClick={() =>
+//                 setActiveFeederAnalytics(
+//                   "incomingFeederAnalytics"
+//                 )
+//               }
+//             />
+//           </div>
+//         </div>
+
+//         {/* INCOMING → BUS */}
+//         <div className="flex h-9 justify-center">
+//           <div className="flow-line-vertical h-full">
+//             <div className="flow-pulse-vertical" />
+//           </div>
+//         </div>
+
+//         <div className="mx-auto max-w-7xl px-4">
+//           {/* HORIZONTAL BUS */}
+//           <div className="relative mx-auto h-[2px] w-[84%] overflow-hidden bg-cyan-400">
+//             <div className="flow-pulse-horizontal" />
+//           </div>
+
+//           {/* CONNECTORS AND OUTGOING FEEDERS */}
+//           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+//             {feederCards.map((feeder, index) => (
+//               <div
+//                 key={feeder.id}
+//                 className="flex min-w-0 flex-col items-center"
+//               >
+//                 <div className="flex h-8 justify-center">
+//                   <div className="flow-line-vertical h-full">
+//                     <div className="flow-pulse-vertical" />
+//                   </div>
+//                 </div>
+
+//                 <FeederMonitorBox
+//                   id={feeder.id}
+//                   title={feeder.title}
+//                   subtitle={feeder.subtitle}
+//                   transformer={feeder.transformer}
+//                   monitorData={feeder.monitorData}
+//                   openedFeeders={openedFeeders}
+//                   setOpenedFeeders={setOpenedFeeders}
+//                   onClick={() =>
+//                     setActiveFeederAnalytics(
+//                       `og${index + 1}Analytics`
+//                     )
+//                   }
+//                 />
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+//       </PopupShell>
+
+//       {activeFeederAnalytics && (
+//         <FeederAnalyticsView
+//           type={activeFeederAnalytics}
+//           onBack={() => setActiveFeederAnalytics(null)}
+//         />
+//       )}
+//     </>
+//   );
+// };
+
+// const TransformerAnalyticsView = ({ data, onBack }) => {
+//   if (!data) return null;
+
+//   const loadNumber =
+//     Number(String(data.load).replace("%", "")) || 0;
+
+//   const oilTemp =
+//     Number(String(data.oilTemp).replace("°C", "")) || 0;
+
+//   const windingTemp =
+//     Number(String(data.windingTemp).replace("°C", "")) || 0;
+
+//   const graphValues = [
+//     {
+//       time: "08:00",
+//       load: Math.max(loadNumber - 18, 0),
+//       oilTemp: Math.max(oilTemp - 7, 0),
+//       windingTemp: Math.max(windingTemp - 9, 0),
+//     },
+//     {
+//       time: "09:00",
+//       load: Math.max(loadNumber - 14, 0),
+//       oilTemp: Math.max(oilTemp - 6, 0),
+//       windingTemp: Math.max(windingTemp - 7, 0),
+//     },
+//     {
+//       time: "10:00",
+//       load: Math.max(loadNumber - 10, 0),
+//       oilTemp: Math.max(oilTemp - 5, 0),
+//       windingTemp: Math.max(windingTemp - 6, 0),
+//     },
+//     {
+//       time: "11:00",
+//       load: Math.max(loadNumber - 5, 0),
+//       oilTemp: Math.max(oilTemp - 3, 0),
+//       windingTemp: Math.max(windingTemp - 4, 0),
+//     },
+//     {
+//       time: "12:00",
+//       load: Math.min(loadNumber + 2, 100),
+//       oilTemp: Math.max(oilTemp - 2, 0),
+//       windingTemp: Math.max(windingTemp - 2, 0),
+//     },
+//     {
+//       time: "13:00",
+//       load: Math.min(loadNumber + 7, 100),
+//       oilTemp: oilTemp + 1,
+//       windingTemp: windingTemp + 2,
+//     },
+//     {
+//       time: "14:00",
+//       load: Math.min(loadNumber + 10, 100),
+//       oilTemp: oilTemp + 3,
+//       windingTemp: windingTemp + 4,
+//     },
+//     {
+//       time: "15:00",
+//       load: Math.min(loadNumber + 6, 100),
+//       oilTemp: oilTemp + 2,
+//       windingTemp: windingTemp + 3,
+//     },
+//     {
+//       time: "16:00",
+//       load: Math.min(loadNumber + 3, 100),
+//       oilTemp: oilTemp + 1,
+//       windingTemp: windingTemp + 1,
+//     },
+//     {
+//       time: "Now",
+//       load: loadNumber,
+//       oilTemp,
+//       windingTemp,
+//     },
+//   ];
+
+//   const avg = Math.round(
+//     graphValues.reduce(
+//       (total, item) => total + item.load,
+//       0
+//     ) / graphValues.length
+//   );
+
+//   const oilStatus =
+//     oilTemp >= 85
+//       ? "Critical"
+//       : oilTemp >= 75
+//         ? "Warning"
+//         : "Normal";
+
+//   const windingStatus =
+//     windingTemp >= 105
+//       ? "Critical"
+//       : windingTemp >= 90
+//         ? "Warning"
+//         : "Normal";
+
+//   const loadStatus =
+//     loadNumber >= 95
+//       ? "Critical"
+//       : loadNumber >= 80
+//         ? "High"
+//         : "Normal";
+
+//   const relayHealthy = [
+//     "healthy",
+//     "normal",
+//     "active",
+//     "ok",
+//   ].some((status) =>
+//     String(data.buchholz ?? "")
+//       .toLowerCase()
+//       .includes(status)
+//   );
+
+//   /*
+//    * Relay event analytics:
+//    * 0 means no event.
+//    * 1 means one event was detected during that interval.
+//    *
+//    * Replace this array later with API/IoT relay event history.
+//    */
+//   const relayEvents = [
+//     {
+//       time: "08:00",
+//       gas: 0,
+//       oilSurge: 0,
+//       alarm: 0,
+//       trip: 0,
+//     },
+//     {
+//       time: "09:00",
+//       gas: 0,
+//       oilSurge: 0,
+//       alarm: 0,
+//       trip: 0,
+//     },
+//     {
+//       time: "10:00",
+//       gas: 0,
+//       oilSurge: 0,
+//       alarm: 0,
+//       trip: 0,
+//     },
+//     {
+//       time: "11:00",
+//       gas: 0,
+//       oilSurge: 0,
+//       alarm: 0,
+//       trip: 0,
+//     },
+//     {
+//       time: "12:00",
+//       gas: 0,
+//       oilSurge: 0,
+//       alarm: 0,
+//       trip: 0,
+//     },
+//     {
+//       time: "13:00",
+//       gas: 0,
+//       oilSurge: 0,
+//       alarm: 0,
+//       trip: 0,
+//     },
+//     {
+//       time: "14:00",
+//       gas: 0,
+//       oilSurge: 0,
+//       alarm: 0,
+//       trip: 0,
+//     },
+//     {
+//       time: "15:00",
+//       gas: relayHealthy ? 0 : 1,
+//       oilSurge: 0,
+//       alarm: relayHealthy ? 0 : 1,
+//       trip: 0,
+//     },
+//     {
+//       time: "16:00",
+//       gas: relayHealthy ? 0 : 1,
+//       oilSurge: relayHealthy ? 0 : 1,
+//       alarm: relayHealthy ? 0 : 1,
+//       trip: relayHealthy ? 0 : 1,
+//     },
+//     {
+//       time: "Now",
+//       gas: relayHealthy ? 0 : 1,
+//       oilSurge: relayHealthy ? 0 : 1,
+//       alarm: relayHealthy ? 0 : 1,
+//       trip: relayHealthy ? 0 : 1,
+//     },
+//   ];
+
+//   const latestRelayState =
+//     relayEvents[relayEvents.length - 1];
+
+//   const relayActiveCount =
+//     latestRelayState.gas +
+//     latestRelayState.oilSurge +
+//     latestRelayState.alarm +
+//     latestRelayState.trip;
+
+//   const relayStatusItems = [
+//     {
+//       label: "Gas",
+//       active: latestRelayState.gas === 1,
+//       activeText: "Detected",
+//       normalText: "Clear",
+//       activeColor: "text-amber-300",
+//       activeDot: "bg-amber-400",
+//     },
+//     {
+//       label: "Oil Surge",
+//       active: latestRelayState.oilSurge === 1,
+//       activeText: "Detected",
+//       normalText: "Normal",
+//       activeColor: "text-orange-300",
+//       activeDot: "bg-orange-400",
+//     },
+//     {
+//       label: "Alarm",
+//       active: latestRelayState.alarm === 1,
+//       activeText: "Active",
+//       normalText: "Inactive",
+//       activeColor: "text-red-300",
+//       activeDot: "bg-red-400",
+//     },
+//     {
+//       label: "Trip",
+//       active: latestRelayState.trip === 1,
+//       activeText: "Active",
+//       normalText: "Inactive",
+//       activeColor: "text-purple-300",
+//       activeDot: "bg-purple-400",
+//     },
+//   ];
+
+//   return (
+//     <div className="fixed inset-x-0 bottom-0 top-[72px] z-[1100] overflow-hidden bg-[#020B24] text-white">
+//       <div className="flex h-full min-h-0 flex-col bg-[radial-gradient(circle_at_top_left,rgba(0,74,173,0.24),transparent_28%),radial-gradient(circle_at_top_right,rgba(34,211,238,0.08),transparent_26%),linear-gradient(180deg,#020B24_0%,#020817_100%)] px-4 pb-4">
+//         <div className="mx-auto flex h-full min-h-0 w-full max-w-[1600px] flex-col">
+//           <div className="shrink-0 border-b border-[#174575] bg-[#020B24]/95 py-3 backdrop-blur-xl">
+//             <div className="flex items-stretch gap-4">
+//               <button
+//                 type="button"
+//                 onClick={onBack}
+//                 className="flex h-[64px] shrink-0 items-center justify-center rounded-lg border border-[#1B4D83] bg-[#061737] px-5 text-[12px] font-semibold text-slate-100 transition hover:border-cyan-400/60 hover:bg-[#092452]"
+//               >
+//                 <ArrowLeft className="mr-2 h-4 w-4 text-cyan-300" />
+//                 Back to Transformers
+//               </button>
+
+//               <div className="relative flex-1 overflow-hidden rounded-lg border border-[#1B4D83] bg-[#071633] px-4 py-3">
+//                 <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400" />
+
+//                 <div className="flex h-full items-center justify-between">
+//                   <div>
+//                     <h2 className="text-[23px] font-semibold tracking-tight text-white">
+//                       {data.id} Transformer Analytics
+//                     </h2>
+
+//                     <p className="mt-1 text-[12px] font-medium text-cyan-300">
+//                       Oil Temperature, Winding Temperature,
+//                       Buchholz Relay and Load
+//                     </p>
+//                   </div>
+
+//                   <div
+//                     className={`rounded-md border px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.1em] ${
+//                       relayHealthy
+//                         ? "border-emerald-400/30 bg-emerald-400/[0.08] text-emerald-300"
+//                         : "border-red-400/30 bg-red-400/[0.08] text-red-300"
+//                     }`}
+//                   >
+//                     <span className="flex items-center gap-2">
+//                       <span
+//                         className={`h-2.5 w-2.5 rounded-full ${
+//                           relayHealthy
+//                             ? "bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)]"
+//                             : "bg-red-400 shadow-[0_0_10px_rgba(248,113,113,0.8)]"
+//                         }`}
+//                       />
+
+//                       {data.buchholz}
+//                     </span>
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+
+//           <div className="mt-3 grid min-h-0 flex-1 grid-cols-1 gap-3 lg:grid-cols-2 lg:grid-rows-2">
+//             {/* OIL TEMPERATURE */}
+//             <div className="relative min-h-0 overflow-hidden rounded-xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4">
+//               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300 to-transparent" />
+
+//               <div className="flex items-start justify-between gap-3">
+//                 <h3 className="text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em] text-white">
+//                   Oil Temperature
+//                 </h3>
+
+//                 <div className="text-right">
+//                   <p className="text-[22px] font-semibold leading-none text-white">
+//                     {oilTemp}°C
+//                   </p>
+
+//                   <span
+//                     className={`mt-1 inline-block text-[9px] font-bold uppercase ${
+//                       oilStatus === "Critical"
+//                         ? "text-red-300"
+//                         : oilStatus === "Warning"
+//                           ? "text-amber-300"
+//                           : "text-emerald-300"
+//                     }`}
+//                   >
+//                     {oilStatus}
+//                   </span>
+//                 </div>
+//               </div>
+
+//               <div className="mt-2 h-[calc(100%-40px)] min-h-[165px]">
+//                 <ResponsiveContainer width="100%" height="100%">
+//                   <AreaChart
+//                     data={graphValues}
+//                     margin={{
+//                       top: 12,
+//                       right: 12,
+//                       left: -20,
+//                       bottom: 0,
+//                     }}
+//                   >
+//                     <defs>
+//                       <linearGradient
+//                         id={`transformerOil-${data.id}`}
+//                         x1="0"
+//                         y1="0"
+//                         x2="0"
+//                         y2="1"
+//                       >
+//                         <stop
+//                           offset="0%"
+//                           stopColor="#22D3EE"
+//                           stopOpacity={0.75}
+//                         />
+
+//                         <stop
+//                           offset="100%"
+//                           stopColor="#22D3EE"
+//                           stopOpacity={0.03}
+//                         />
+//                       </linearGradient>
+//                     </defs>
+
+//                     <CartesianGrid
+//                       vertical={false}
+//                       stroke="rgba(148,163,184,0.14)"
+//                       strokeDasharray="3 3"
+//                     />
+
+//                     <XAxis
+//                       dataKey="time"
+//                       axisLine={false}
+//                       tickLine={false}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <YAxis
+//                       domain={[30, 95]}
+//                       axisLine={false}
+//                       tickLine={false}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <ReferenceLine
+//                       y={75}
+//                       stroke="#FBBF24"
+//                       strokeDasharray="4 4"
+//                       label={{
+//                         value: "Warning",
+//                         position: "insideTopRight",
+//                         fill: "#FBBF24",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <ReferenceLine
+//                       y={85}
+//                       stroke="#F87171"
+//                       strokeDasharray="4 4"
+//                       label={{
+//                         value: "Critical",
+//                         position: "insideTopRight",
+//                         fill: "#F87171",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <Tooltip
+//                       contentStyle={analyticsTooltipStyle}
+//                       formatter={(value) => [
+//                         `${Number(value).toFixed(1)}°C`,
+//                         "Oil Temperature",
+//                       ]}
+//                     />
+
+//                     <Area
+//                       type="monotone"
+//                       dataKey="oilTemp"
+//                       stroke="#22D3EE"
+//                       strokeWidth={2.2}
+//                       fill={`url(#transformerOil-${data.id})`}
+//                     />
+//                   </AreaChart>
+//                 </ResponsiveContainer>
+//               </div>
+//             </div>
+
+//             {/* WINDING TEMPERATURE */}
+//             <div className="relative min-h-0 overflow-hidden rounded-xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4">
+//               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-purple-300 to-transparent" />
+
+//               <div className="flex items-start justify-between gap-3">
+//                 <h3 className="text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em] text-white">
+//                   Winding Temperature
+//                 </h3>
+
+//                 <div className="text-right">
+//                   <p className="text-[22px] font-semibold leading-none text-white">
+//                     {windingTemp}°C
+//                   </p>
+
+//                   <span
+//                     className={`mt-1 inline-block text-[9px] font-bold uppercase ${
+//                       windingStatus === "Critical"
+//                         ? "text-red-300"
+//                         : windingStatus === "Warning"
+//                           ? "text-amber-300"
+//                           : "text-emerald-300"
+//                     }`}
+//                   >
+//                     {windingStatus}
+//                   </span>
+//                 </div>
+//               </div>
+
+//               <div className="mt-2 h-[calc(100%-40px)] min-h-[165px]">
+//                 <ResponsiveContainer width="100%" height="100%">
+//                   <LineChart
+//                     data={graphValues}
+//                     margin={{
+//                       top: 12,
+//                       right: 12,
+//                       left: -20,
+//                       bottom: 0,
+//                     }}
+//                   >
+//                     <CartesianGrid
+//                       vertical={false}
+//                       stroke="rgba(148,163,184,0.14)"
+//                       strokeDasharray="3 3"
+//                     />
+
+//                     <XAxis
+//                       dataKey="time"
+//                       axisLine={false}
+//                       tickLine={false}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <YAxis
+//                       domain={[35, 120]}
+//                       axisLine={false}
+//                       tickLine={false}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <ReferenceLine
+//                       y={90}
+//                       stroke="#FBBF24"
+//                       strokeDasharray="4 4"
+//                       label={{
+//                         value: "Warning",
+//                         position: "insideTopRight",
+//                         fill: "#FBBF24",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <ReferenceLine
+//                       y={105}
+//                       stroke="#F87171"
+//                       strokeDasharray="4 4"
+//                       label={{
+//                         value: "Critical",
+//                         position: "insideTopRight",
+//                         fill: "#F87171",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <Tooltip
+//                       contentStyle={analyticsTooltipStyle}
+//                       formatter={(value) => [
+//                         `${Number(value).toFixed(1)}°C`,
+//                         "Winding Temperature",
+//                       ]}
+//                     />
+
+//                     <Line
+//                       type="monotone"
+//                       dataKey="windingTemp"
+//                       stroke="#C084FC"
+//                       strokeWidth={2.3}
+//                       dot={{
+//                         r: 3,
+//                         fill: "#C084FC",
+//                         stroke: "#F3E8FF",
+//                         strokeWidth: 1,
+//                       }}
+//                       activeDot={{ r: 5 }}
+//                     />
+//                   </LineChart>
+//                 </ResponsiveContainer>
+//               </div>
+//             </div>
+
+//             {/* TRANSFORMER LOAD */}
+//             <div className="relative min-h-0 overflow-hidden rounded-xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4">
+//               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-300 to-transparent" />
+
+//               <div className="flex items-start justify-between gap-3">
+//                 <h3 className="text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em] text-white">
+//                   Transformer Load
+//                 </h3>
+
+//                 <div className="text-right">
+//                   <p className="text-[22px] font-semibold leading-none text-white">
+//                     {loadNumber}%
+//                   </p>
+
+//                   <span
+//                     className={`mt-1 inline-block text-[9px] font-bold uppercase ${
+//                       loadStatus === "Critical"
+//                         ? "text-red-300"
+//                         : loadStatus === "High"
+//                           ? "text-amber-300"
+//                           : "text-cyan-300"
+//                     }`}
+//                   >
+//                     {loadStatus}
+//                   </span>
+//                 </div>
+//               </div>
+
+//               <div className="mt-2 h-[calc(100%-40px)] min-h-[165px]">
+//                 <ResponsiveContainer width="100%" height="100%">
+//                   <BarChart
+//                     data={graphValues}
+//                     margin={{
+//                       top: 12,
+//                       right: 12,
+//                       left: -20,
+//                       bottom: 0,
+//                     }}
+//                   >
+//                     <CartesianGrid
+//                       vertical={false}
+//                       stroke="rgba(148,163,184,0.14)"
+//                       strokeDasharray="3 3"
+//                     />
+
+//                     <XAxis
+//                       dataKey="time"
+//                       axisLine={false}
+//                       tickLine={false}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <YAxis
+//                       domain={[0, 100]}
+//                       axisLine={false}
+//                       tickLine={false}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <ReferenceLine
+//                       y={80}
+//                       stroke="#FBBF24"
+//                       strokeDasharray="4 4"
+//                       label={{
+//                         value: "High",
+//                         position: "insideTopRight",
+//                         fill: "#FBBF24",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <ReferenceLine
+//                       y={95}
+//                       stroke="#F87171"
+//                       strokeDasharray="4 4"
+//                       label={{
+//                         value: "Critical",
+//                         position: "insideTopRight",
+//                         fill: "#F87171",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <Tooltip
+//                       contentStyle={analyticsTooltipStyle}
+//                       formatter={(value) => [
+//                         `${Math.round(value)}%`,
+//                         "Load",
+//                       ]}
+//                     />
+
+//                     <Bar
+//                       dataKey="load"
+//                       radius={[5, 5, 0, 0]}
+//                     >
+//                       {graphValues.map((item, index) => (
+//                         <Cell
+//                           key={`${item.time}-${index}`}
+//                           fill={
+//                             item.load >= 95
+//                               ? "#F87171"
+//                               : item.load >= 80
+//                                 ? "#FBBF24"
+//                                 : "#22D3EE"
+//                           }
+//                         />
+//                       ))}
+//                     </Bar>
+//                   </BarChart>
+//                 </ResponsiveContainer>
+//               </div>
+
+//               <div className="pointer-events-none absolute bottom-3 right-4 rounded border border-cyan-400/20 bg-[#061737]/90 px-3 py-2">
+//                 <p className="text-[8px] uppercase tracking-[0.1em] text-slate-500">
+//                   Average
+//                 </p>
+
+//                 <p className="mt-1 text-[clamp(11px,1.5vh,14px)] font-semibold text-cyan-300">
+//                   {avg}%
+//                 </p>
+//               </div>
+//             </div>
+
+//             {/* BUCHHOLZ RELAY ANALYTICS */}
+//           {/* BUCHHOLZ RELAY ANALYTICS */}
+// <div className="relative min-h-0 overflow-hidden rounded-xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4">
+//   <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-300 to-transparent" />
+
+//   <div className="flex items-start justify-between gap-3">
+//     <h3 className="text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em] text-white">
+//       Buchholz Relay Analytics
+//     </h3>
+
+//     <div className="text-right">
+//       <p
+//         className={`text-[clamp(10px,1.4vh,13px)] font-semibold ${
+//           relayHealthy ? "text-emerald-300" : "text-red-300"
+//         }`}
+//       >
+//         {data.buchholz}
+//       </p>
+
+//       <p className="mt-1 text-[8px] uppercase tracking-[0.1em] text-slate-500">
+//         Relay Health
+//       </p>
+//     </div>
+//   </div>
+
+//   <div className="relative mt-3 h-[calc(100%-42px)] min-h-[170px] rounded-lg border border-[#153B69] bg-[#061737]/55 p-3">
+//     <div className="absolute left-4 top-3 z-10">
+//       <p className="text-[9px] font-semibold uppercase tracking-[0.08em] text-slate-300">
+//         Relay Health Trend
+//       </p>
+//     </div>
+
+//     <div className="absolute right-4 top-3 z-10 text-right">
+//       <p className="text-[8px] uppercase tracking-[0.08em] text-slate-500">
+//         Current Health
+//       </p>
+
+//       <p
+//         className={`mt-1 text-[18px] font-semibold ${
+//           relayHealthy ? "text-emerald-300" : "text-red-300"
+//         }`}
+//       >
+//         {relayHealthy ? "99%" : "42%"}
+//       </p>
+//     </div>
+
+//     <div className="h-full pt-7">
+//       <ResponsiveContainer width="100%" height="100%">
+//         <AreaChart
+//           data={[
+//             {
+//               time: "08:00",
+//               health: 97,
+//             },
+//             {
+//               time: "09:00",
+//               health: 98,
+//             },
+//             {
+//               time: "10:00",
+//               health: 97,
+//             },
+//             {
+//               time: "11:00",
+//               health: 99,
+//             },
+//             {
+//               time: "12:00",
+//               health: 98,
+//             },
+//             {
+//               time: "13:00",
+//               health: 97,
+//             },
+//             {
+//               time: "14:00",
+//               health: 98,
+//             },
+//             {
+//               time: "15:00",
+//               health: relayHealthy ? 99 : 76,
+//             },
+//             {
+//               time: "16:00",
+//               health: relayHealthy ? 98 : 58,
+//             },
+//             {
+//               time: "Now",
+//               health: relayHealthy ? 99 : 42,
+//             },
+//           ]}
+//           margin={{
+//             top: 10,
+//             right: 14,
+//             left: -16,
+//             bottom: 0,
+//           }}
+//         >
+//           <defs>
+//             <linearGradient
+//               id={`relayHealthFill-${data.id}`}
+//               x1="0"
+//               y1="0"
+//               x2="0"
+//               y2="1"
+//             >
+//               <stop
+//                 offset="0%"
+//                 stopColor={relayHealthy ? "#34D399" : "#F87171"}
+//                 stopOpacity={0.72}
+//               />
+
+//               <stop
+//                 offset="100%"
+//                 stopColor={relayHealthy ? "#34D399" : "#F87171"}
+//                 stopOpacity={0.03}
+//               />
+//             </linearGradient>
+//           </defs>
+
+//           <CartesianGrid
+//             vertical={false}
+//             stroke="rgba(148,163,184,0.14)"
+//             strokeDasharray="3 3"
+//           />
+
+//           <XAxis
+//             dataKey="time"
+//             axisLine={false}
+//             tickLine={false}
+//             tick={{
+//               fill: "#8EA6C4",
+//               fontSize: 8,
+//             }}
+//           />
+
+//           <YAxis
+//             domain={[0, 100]}
+//             ticks={[0, 25, 50, 75, 100]}
+//             axisLine={false}
+//             tickLine={false}
+//             tick={{
+//               fill: "#8EA6C4",
+//               fontSize: 8,
+//             }}
+//             tickFormatter={(value) => `${value}%`}
+//           />
+
+//           <ReferenceLine
+//             y={80}
+//             stroke="#FBBF24"
+//             strokeDasharray="4 4"
+//             label={{
+//               value: "Warning",
+//               position: "insideTopRight",
+//               fill: "#FBBF24",
+//               fontSize: 8,
+//             }}
+//           />
+
+//           <ReferenceLine
+//             y={60}
+//             stroke="#F87171"
+//             strokeDasharray="4 4"
+//             label={{
+//               value: "Critical",
+//               position: "insideTopRight",
+//               fill: "#F87171",
+//               fontSize: 8,
+//             }}
+//           />
+
+//           <Tooltip
+//             contentStyle={analyticsTooltipStyle}
+//             formatter={(value) => [
+//               `${Math.round(value)}%`,
+//               "Relay Health",
+//             ]}
+//           />
+
+//           <Area
+//             type="monotone"
+//             dataKey="health"
+//             stroke={relayHealthy ? "#34D399" : "#F87171"}
+//             strokeWidth={2.3}
+//             fill={`url(#relayHealthFill-${data.id})`}
+//             dot={{
+//               r: 3,
+//               fill: relayHealthy ? "#34D399" : "#F87171",
+//               stroke: "#FFFFFF",
+//               strokeWidth: 1,
+//             }}
+//             activeDot={{
+//               r: 5,
+//             }}
+//             isAnimationActive={false}
+//           />
+//         </AreaChart>
+//       </ResponsiveContainer>
+//     </div>
+//   </div>
+// </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// const TransformersPopup = () => {
+//   const [activeTransformerAnalytics, setActiveTransformerAnalytics] =
+//     React.useState(null);
+
+//   return (
+//     <>
+//       <PopupShell title="33 / 0.433kV Transformers">
+//         <div className="flex justify-center w-full my-3">
+//           <div
+//             onClick={() => setTransformersExpanded(!transformersExpanded)}
+//             className="w-[90%] md:w-[70%] lg:w-[45%] h-32 max-w-xl bg-[#081F5C] border-2 border-[#004AAD] text-white shadow-lg rounded-md cursor-pointer hover:bg-[#0A276E] transition-colors"
+//           >
+//             <div className="h-full flex flex-col items-center justify-center text-center">
+//               <svg className="w-16 h-10 text-blue-300" viewBox="0 0 80 40" fill="none">
+//                 <circle cx="30" cy="20" r="12" stroke="currentColor" strokeWidth="2.5" />
+//                 <circle cx="46" cy="20" r="8" stroke="currentColor" strokeWidth="2.5" />
+//               </svg>
+
+//               <span className="text-[10px] font-black text-blue-300 tracking-[0.2em] uppercase">
+//                 STEP-DOWN SUBSTATION
+//               </span>
+
+//               <h3 className="text-lg font-black text-white tracking-wider mt-1">
+//                 33 / 0.433kV TRANSFORMERS
+//               </h3>
+//             </div>
+//           </div>
+//         </div>
+
+//         {transformersExpanded && (
+//           <>
+//             <div className="flex justify-center h-10">
+//               <div className="flow-line-vertical h-full">
+//                 <div className="flow-pulse-vertical" />
+//               </div>
+//             </div>
+
+//             <div className="max-w-7xl mx-auto px-4">
+//               <div className="mx-auto w-[84%] h-[2px] bg-cyan-400 relative overflow-hidden">
+//                 <div className="flow-pulse-horizontal" />
+//               </div>
+
+//               <div className="grid grid-cols-6 gap-4">
+//                 {transformers.map((tf) => (
+//                   <div key={tf.id} className="flex flex-col items-center">
+//                     <div className="flow-line-vertical h-8">
+//                       <div className="flow-pulse-vertical" />
+//                     </div>
+
+//                     <div
+//                       onClick={() => setActiveTransformerAnalytics(tf)}
+//                       className="w-full bg-[#081F5C] border-2 border-[#004AAD] p-4 text-white shadow-md flex flex-col justify-between rounded relative panel-active-glow min-h-[200px] cursor-pointer hover:bg-[#0A276E] transition-colors"
+//                     >
+//                       <div>
+//                         <div className="mb-3 flex justify-center items-center">
+//                           <svg className="w-16 h-10 text-blue-300" viewBox="0 0 80 40" fill="none">
+//                             <circle cx="30" cy="20" r="12" stroke="currentColor" strokeWidth="2.5" />
+//                             <circle cx="46" cy="20" r="8" stroke="currentColor" strokeWidth="2.5" />
+//                           </svg>
+//                         </div>
+
+//                         <strong className="text-base font-black block text-center tracking-widest">
+//                           {tf.id}
+//                         </strong>
+
+//                         <span className="text-[9px] font-bold text-blue-300 text-center block uppercase">
+//                           33kV / 433V TX
+//                         </span>
+//                       </div>
+
+//                       <div className="mt-4 space-y-2 border-t border-blue-900 pt-3">
+//                         <div className="flex justify-between items-center text-[10px]">
+//                           <span className="text-blue-200">Oil Temp:</span>
+//                           <span className="font-extrabold text-white">
+//                             {tf.oilTemp}
+//                           </span>
+//                         </div>
+
+//                         <div className="flex justify-between items-center text-[10px]">
+//                           <span className="text-blue-200">Wind Temp:</span>
+//                           <span className="font-extrabold text-white">
+//                             {tf.windingTemp}
+//                           </span>
+//                         </div>
+
+//                         <div className="flex justify-between items-center text-[10px]">
+//                           <span className="text-blue-200">Relay:</span>
+//                           <span className="font-extrabold text-emerald-400">
+//                             {tf.buchholz}
+//                           </span>
+//                         </div>
+
+//                         <div className="flex justify-between items-center text-[10px]">
+//                           <span className="text-blue-200">Load:</span>
+//                           <span className="font-extrabold text-white">
+//                             {tf.load}
+//                           </span>
+//                         </div>
+//                       </div>
+//                     </div>
+//                   </div>
+//                 ))}
+//               </div>
+//             </div>
+//           </>
+//         )}
+//       </PopupShell>
+
+//       {activeTransformerAnalytics && (
+//         <TransformerAnalyticsView
+//           data={activeTransformerAnalytics}
+//           onBack={() => setActiveTransformerAnalytics(null)}
+//         />
+//       )}
+//     </>
+//   );
+// };
+ 
+
+// const KioskAnalyticsView = ({ data, onBack, backLabel = "Back to LT Kiosk" }) => {
+//   if (!data) return null;
+
+//   const loadNumber =
+//     Number(String(data.load).replace("%", "")) || 0;
+
+//   const kwhNumber =
+//     Number(String(data.kwh).replace(/[^\d.-]/g, "")) || 0;
+
+//   const kvahNumber =
+//     Number(String(data.kvah).replace(/[^\d.-]/g, "")) || 0;
+
+//   const currentNumber =
+//     Number(String(data.current).replace(/[^\d.-]/g, "")) || 0;
+
+//   const voltageNumber =
+//     Number(String(data.voltage).replace(/[^\d.-]/g, "")) || 0;
+
+//   const pfNumber =
+//     Number(String(data.pf).replace(/[^\d.-]/g, "")) || 0;
+
+//   const graphValues = [
+//     {
+//       time: "08:00",
+//       kwh: Math.max(kwhNumber - 420, 0),
+//       kvah: Math.max(kvahNumber - 390, 0),
+//       amps: Math.max(currentNumber - 22, 0),
+//       voltage: voltageNumber - 5,
+//       pf: Math.max(pfNumber - 0.04, 0),
+//     },
+//     {
+//       time: "09:00",
+//       kwh: Math.max(kwhNumber - 375, 0),
+//       kvah: Math.max(kvahNumber - 345, 0),
+//       amps: Math.max(currentNumber - 17, 0),
+//       voltage: voltageNumber - 3,
+//       pf: Math.max(pfNumber - 0.03, 0),
+//     },
+//     {
+//       time: "10:00",
+//       kwh: Math.max(kwhNumber - 325, 0),
+//       kvah: Math.max(kvahNumber - 300, 0),
+//       amps: Math.max(currentNumber - 12, 0),
+//       voltage: voltageNumber - 1,
+//       pf: Math.max(pfNumber - 0.02, 0),
+//     },
+//     {
+//       time: "11:00",
+//       kwh: Math.max(kwhNumber - 275, 0),
+//       kvah: Math.max(kvahNumber - 250, 0),
+//       amps: Math.max(currentNumber - 7, 0),
+//       voltage: voltageNumber + 1,
+//       pf: Math.max(pfNumber - 0.01, 0),
+//     },
+//     {
+//       time: "12:00",
+//       kwh: Math.max(kwhNumber - 225, 0),
+//       kvah: Math.max(kvahNumber - 205, 0),
+//       amps: currentNumber + 3,
+//       voltage: voltageNumber + 2,
+//       pf: Math.min(pfNumber + 0.005, 1),
+//     },
+//     {
+//       time: "13:00",
+//       kwh: Math.max(kwhNumber - 175, 0),
+//       kvah: Math.max(kvahNumber - 160, 0),
+//       amps: currentNumber + 9,
+//       voltage: voltageNumber + 3,
+//       pf: Math.min(pfNumber + 0.01, 1),
+//     },
+//     {
+//       time: "14:00",
+//       kwh: Math.max(kwhNumber - 125, 0),
+//       kvah: Math.max(kvahNumber - 115, 0),
+//       amps: currentNumber + 15,
+//       voltage: voltageNumber + 2,
+//       pf: Math.min(pfNumber + 0.015, 1),
+//     },
+//     {
+//       time: "15:00",
+//       kwh: Math.max(kwhNumber - 80, 0),
+//       kvah: Math.max(kvahNumber - 70, 0),
+//       amps: currentNumber + 8,
+//       voltage: voltageNumber,
+//       pf: Math.min(pfNumber + 0.01, 1),
+//     },
+//     {
+//       time: "16:00",
+//       kwh: Math.max(kwhNumber - 35, 0),
+//       kvah: Math.max(kvahNumber - 30, 0),
+//       amps: currentNumber + 4,
+//       voltage: voltageNumber - 1,
+//       pf: pfNumber,
+//     },
+//     {
+//       time: "Now",
+//       kwh: kwhNumber,
+//       kvah: kvahNumber,
+//       amps: currentNumber,
+//       voltage: voltageNumber,
+//       pf: pfNumber,
+//     },
+//   ];
+
+//   const avg = Math.round(
+//     graphValues.reduce(
+//       (total, item) => total + item.amps,
+//       0
+//     ) / graphValues.length
+//   );
+
+//   const pfStatus =
+//     pfNumber < 0.85
+//       ? "Critical"
+//       : pfNumber < 0.95
+//         ? "Low"
+//         : "Good";
+
+//   const voltageStatus =
+//     voltageNumber < 400
+//       ? "Low"
+//       : voltageNumber > 450
+//         ? "High"
+//         : "Stable";
+
+//   const currentStatus =
+//     currentNumber >= 350
+//       ? "Critical"
+//       : currentNumber >= 280
+//         ? "High"
+//         : "Normal";
+
+//   const pfGaugeData = [
+//     {
+//       name: "Power Factor",
+//       value: Math.min(Math.max(pfNumber * 100, 0), 100),
+//       fill:
+//         pfNumber < 0.85
+//           ? "#F87171"
+//           : pfNumber < 0.95
+//             ? "#FBBF24"
+//             : "#34D399",
+//     },
+//   ];
+
+//   return (
+//     <div className="fixed inset-x-0 bottom-0 top-[72px] z-[1100] overflow-hidden bg-[#020B24] text-white">
+//       <div className="flex h-full min-h-0 flex-col bg-[radial-gradient(circle_at_top_left,rgba(0,74,173,0.24),transparent_28%),radial-gradient(circle_at_top_right,rgba(34,211,238,0.08),transparent_26%),linear-gradient(180deg,#020B24_0%,#020817_100%)] px-4 pb-4">
+//         <div className="mx-auto flex h-full min-h-0 w-full max-w-[1600px] flex-col">
+//           <div className="shrink-0 border-b border-[#174575] bg-[#020B24]/95 py-3 backdrop-blur-xl">
+//             <div className="flex items-stretch gap-4">
+//               <button
+//                 type="button"
+//                 onClick={onBack}
+//                 className="flex h-[64px] shrink-0 items-center justify-center rounded-lg border border-[#1B4D83] bg-[#061737] px-5 text-[12px] font-semibold text-slate-100 transition hover:border-cyan-400/60 hover:bg-[#092452]"
+//               >
+//                 <ArrowLeft className="mr-2 h-4 w-4 text-cyan-300" />
+//                 {backLabel}
+//               </button>
+
+//               <div className="relative flex-1 overflow-hidden rounded-lg border border-[#1B4D83] bg-[#071633] px-4 py-3">
+//                 <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400" />
+
+//                 <div className="flex h-full items-center justify-between">
+//                   <h2 className="text-[23px] font-semibold tracking-tight text-white">
+//                     {data.title} Analytics
+//                   </h2>
+
+//                   <div className="rounded-md border border-emerald-400/30 bg-emerald-400/[0.08] px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.1em] text-emerald-300">
+//                     <span className="flex items-center gap-2">
+//                       <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
+//                       {data.status}
+//                     </span>
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+
+//           <div className="mt-3 grid min-h-0 flex-1 grid-cols-1 gap-3 lg:grid-cols-6 lg:grid-rows-2">
+//             {/* kWh ANALYTICS */}
+//             <div className="relative min-h-0 overflow-hidden rounded-xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4 lg:col-span-2">
+//               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300 to-transparent" />
+
+//               <div className="flex items-start justify-between gap-3">
+//                 <h3 className="text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em] text-white">
+//                   kWh Analytics
+//                 </h3>
+
+//                 <p className="text-[19px] font-semibold text-cyan-300">
+//                   {kwhNumber.toLocaleString()} kWh
+//                 </p>
+//               </div>
+
+//               <div className="mt-2 h-[calc(100%-34px)] min-h-[160px]">
+//                 <ResponsiveContainer width="100%" height="100%">
+//                   <AreaChart
+//                     data={graphValues}
+//                     margin={{
+//                       top: 12,
+//                       right: 12,
+//                       left: -16,
+//                       bottom: 0,
+//                     }}
+//                   >
+//                     <defs>
+//                       <linearGradient
+//                         id={`kioskKwh-${data.title}`}
+//                         x1="0"
+//                         y1="0"
+//                         x2="0"
+//                         y2="1"
+//                       >
+//                         <stop
+//                           offset="0%"
+//                           stopColor="#22D3EE"
+//                           stopOpacity={0.72}
+//                         />
+
+//                         <stop
+//                           offset="100%"
+//                           stopColor="#22D3EE"
+//                           stopOpacity={0.03}
+//                         />
+//                       </linearGradient>
+//                     </defs>
+
+//                     <CartesianGrid
+//                       vertical={false}
+//                       stroke="rgba(148,163,184,0.14)"
+//                       strokeDasharray="3 3"
+//                     />
+
+//                     <XAxis
+//                       dataKey="time"
+//                       axisLine={false}
+//                       tickLine={false}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <YAxis
+//                       axisLine={false}
+//                       tickLine={false}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <Tooltip
+//                       contentStyle={analyticsTooltipStyle}
+//                       formatter={(value) => [
+//                         `${Number(value).toLocaleString()} kWh`,
+//                         "Energy",
+//                       ]}
+//                     />
+
+//                     <Area
+//                       type="monotone"
+//                       dataKey="kwh"
+//                       stroke="#22D3EE"
+//                       strokeWidth={2.3}
+//                       fill={`url(#kioskKwh-${data.title})`}
+//                       dot={false}
+//                     />
+//                   </AreaChart>
+//                 </ResponsiveContainer>
+//               </div>
+//             </div>
+
+//             {/* kvah ANALYTICS */}
+//             <div className="relative min-h-0 overflow-hidden rounded-xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4 lg:col-span-2">
+//               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-purple-300 to-transparent" />
+
+//               <div className="flex items-start justify-between gap-3">
+//                 <h3 className="text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em] text-white">
+//                   kvah Analytics
+//                 </h3>
+
+//                 <p className="text-[19px] font-semibold text-purple-300">
+//                   {kvahNumber.toLocaleString()} kvah
+//                 </p>
+//               </div>
+
+//               <div className="mt-2 h-[calc(100%-34px)] min-h-[160px]">
+//                 <ResponsiveContainer width="100%" height="100%">
+//                   <BarChart
+//                     data={graphValues}
+//                     margin={{
+//                       top: 12,
+//                       right: 12,
+//                       left: -16,
+//                       bottom: 0,
+//                     }}
+//                   >
+//                     <CartesianGrid
+//                       vertical={false}
+//                       stroke="rgba(148,163,184,0.14)"
+//                       strokeDasharray="3 3"
+//                     />
+
+//                     <XAxis
+//                       dataKey="time"
+//                       axisLine={false}
+//                       tickLine={false}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <YAxis
+//                       axisLine={false}
+//                       tickLine={false}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <Tooltip
+//                       contentStyle={analyticsTooltipStyle}
+//                       formatter={(value) => [
+//                         `${Number(value).toLocaleString()} kvah`,
+//                         "Apparent Energy",
+//                       ]}
+//                     />
+
+//                     <Bar
+//                       dataKey="kvah"
+//                       fill="#A78BFA"
+//                       radius={[5, 5, 0, 0]}
+//                       maxBarSize={26}
+//                     />
+//                   </BarChart>
+//                 </ResponsiveContainer>
+//               </div>
+//             </div>
+
+//             {/* POWER FACTOR ANALYTICS */}
+//             <div className="relative min-h-0 overflow-hidden rounded-xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4 lg:col-span-2">
+//               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-300 to-transparent" />
+
+//               <div className="flex items-start justify-between gap-3">
+//                 <h3 className="text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em] text-white">
+//                   Power Factor Analytics
+//                 </h3>
+
+//                 <span
+//                   className={`text-[11px] font-bold uppercase ${
+//                     pfStatus === "Critical"
+//                       ? "text-red-300"
+//                       : pfStatus === "Low"
+//                         ? "text-amber-300"
+//                         : "text-emerald-300"
+//                   }`}
+//                 >
+//                   {pfStatus}
+//                 </span>
+//               </div>
+
+//               <div className="relative mt-2 h-[calc(100%-34px)] min-h-[160px]">
+//                 <ResponsiveContainer width="100%" height="100%">
+//                   <RadialBarChart
+//                     innerRadius="62%"
+//                     outerRadius="92%"
+//                     data={pfGaugeData}
+//                     startAngle={210}
+//                     endAngle={-30}
+//                   >
+//                     <PolarAngleAxis
+//                       type="number"
+//                       domain={[0, 100]}
+//                       angleAxisId={0}
+//                       tick={false}
+//                     />
+
+//                     <RadialBar
+//                       background={{
+//                         fill: "rgba(255,255,255,0.08)",
+//                       }}
+//                       dataKey="value"
+//                       cornerRadius={12}
+//                     />
+//                   </RadialBarChart>
+//                 </ResponsiveContainer>
+
+//                 <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center pt-5">
+//                   <span className="text-[32px] font-semibold text-white">
+//                     {pfNumber.toFixed(2)}
+//                   </span>
+
+//                   <span
+//                     className={`mt-1 text-[9px] font-bold uppercase ${
+//                       pfStatus === "Critical"
+//                         ? "text-red-300"
+//                         : pfStatus === "Low"
+//                           ? "text-amber-300"
+//                           : "text-emerald-300"
+//                     }`}
+//                   >
+//                     {pfStatus}
+//                   </span>
+//                 </div>
+//               </div>
+//             </div>
+
+//             {/* AMPS ANALYTICS */}
+//             <div className="relative min-h-0 overflow-hidden rounded-xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4 lg:col-span-3">
+//               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-300 to-transparent" />
+
+//               <div className="flex items-start justify-between gap-3">
+//                 <h3 className="text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em] text-white">
+//                   Amps Analytics
+//                 </h3>
+
+//                 <div className="text-right">
+//                   <p className="text-[20px] font-semibold text-white">
+//                     {currentNumber} A
+//                   </p>
+
+//                   <span
+//                     className={`text-[9px] font-bold uppercase ${
+//                       currentStatus === "Critical"
+//                         ? "text-red-300"
+//                         : currentStatus === "High"
+//                           ? "text-amber-300"
+//                           : "text-emerald-300"
+//                     }`}
+//                   >
+//                     {currentStatus}
+//                   </span>
+//                 </div>
+//               </div>
+
+//               <div className="mt-2 h-[calc(100%-40px)] min-h-[160px]">
+//                 <ResponsiveContainer width="100%" height="100%">
+//                   <BarChart
+//                     data={graphValues}
+//                     margin={{
+//                       top: 12,
+//                       right: 12,
+//                       left: -16,
+//                       bottom: 0,
+//                     }}
+//                   >
+//                     <CartesianGrid
+//                       vertical={false}
+//                       stroke="rgba(148,163,184,0.14)"
+//                       strokeDasharray="3 3"
+//                     />
+
+//                     <XAxis
+//                       dataKey="time"
+//                       axisLine={false}
+//                       tickLine={false}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <YAxis
+//                       axisLine={false}
+//                       tickLine={false}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <Tooltip
+//                       contentStyle={analyticsTooltipStyle}
+//                       formatter={(value) => [
+//                         `${Math.round(value)} A`,
+//                         "Current",
+//                       ]}
+//                     />
+
+//                     <Bar
+//                       dataKey="amps"
+//                       fill="#FBBF24"
+//                       radius={[5, 5, 0, 0]}
+//                       maxBarSize={30}
+//                     />
+//                   </BarChart>
+//                 </ResponsiveContainer>
+//               </div>
+
+//               <div className="pointer-events-none absolute bottom-3 right-4 rounded border border-amber-400/20 bg-[#061737]/90 px-3 py-2">
+//                 <p className="text-[8px] uppercase text-slate-500">
+//                   Average
+//                 </p>
+
+//                 <p className="mt-1 text-[clamp(10px,1.4vh,13px)] font-semibold text-amber-300">
+//                   {avg} A
+//                 </p>
+//               </div>
+//             </div>
+
+//             {/* VOLTAGE ANALYTICS */}
+//             <div className="relative min-h-0 overflow-hidden rounded-xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4 lg:col-span-3">
+//               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-300 to-transparent" />
+
+//               <div className="flex items-start justify-between gap-3">
+//                 <h3 className="text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em] text-white">
+//                   Voltage Analytics
+//                 </h3>
+
+//                 <div className="text-right">
+//                   <p className="text-[20px] font-semibold text-white">
+//                     {voltageNumber} V
+//                   </p>
+
+//                   <span
+//                     className={`text-[9px] font-bold uppercase ${
+//                       voltageStatus === "Stable"
+//                         ? "text-emerald-300"
+//                         : "text-amber-300"
+//                     }`}
+//                   >
+//                     {voltageStatus}
+//                   </span>
+//                 </div>
+//               </div>
+
+//               <div className="mt-2 h-[calc(100%-40px)] min-h-[160px]">
+//                 <ResponsiveContainer width="100%" height="100%">
+//                   <LineChart
+//                     data={graphValues}
+//                     margin={{
+//                       top: 12,
+//                       right: 42,
+//                       left: -16,
+//                       bottom: 0,
+//                     }}
+//                   >
+//                     <CartesianGrid
+//                       vertical={false}
+//                       stroke="rgba(148,163,184,0.14)"
+//                       strokeDasharray="3 3"
+//                     />
+
+//                     <XAxis
+//                       dataKey="time"
+//                       axisLine={false}
+//                       tickLine={false}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <YAxis
+//                       domain={[380, 460]}
+//                       axisLine={false}
+//                       tickLine={false}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <ReferenceLine
+//                       y={440}
+//                       stroke="#F87171"
+//                       strokeDasharray="4 4"
+//                       label={{
+//                         value: "Upper",
+//                         position: "right",
+//                         fill: "#F87171",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <ReferenceLine
+//                       y={400}
+//                       stroke="#FBBF24"
+//                       strokeDasharray="4 4"
+//                       label={{
+//                         value: "Lower",
+//                         position: "right",
+//                         fill: "#FBBF24",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <Tooltip
+//                       contentStyle={analyticsTooltipStyle}
+//                       formatter={(value) => [
+//                         `${Number(value).toFixed(1)} V`,
+//                         "Voltage",
+//                       ]}
+//                     />
+
+//                     <Line
+//                       type="monotone"
+//                       dataKey="voltage"
+//                       stroke="#60A5FA"
+//                       strokeWidth={2.3}
+//                       dot={{
+//                         r: 3,
+//                         fill: "#60A5FA",
+//                         stroke: "#DBEAFE",
+//                         strokeWidth: 1,
+//                       }}
+//                       activeDot={{ r: 5 }}
+//                     />
+//                   </LineChart>
+//                 </ResponsiveContainer>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// const KioskMonitorBox = ({
+//   id,
+//   title,
+//   subtitle,
+//   openedKiosks,
+//   setOpenedKiosks,
+//   onClick,
+// }) => {
+//   const monitorData = [
+//     ["kWh", "1,280"],
+//     ["kvah", "1,195"],
+//     ["PF", "0.98"],
+//     ["AMPS", "420 A"],
+//     ["Voltage", "433 V"],
+//   ];
+
+//   const showMonitor = openedKiosks.includes(id);
+
+//   const handleHover = () => {
+//     setOpenedKiosks((prev) => {
+//       if (prev.includes(id)) return prev;
+//       return [...prev, id];
+//     });
+//   };
+
+//   const handleClick = (event) => {
+//     event.stopPropagation();
+//     if (onClick) onClick();
+//   };
+
+//   return (
+//     <div
+//       onMouseEnter={handleHover}
+//       onClick={handleClick}
+//       className="w-full bg-[#081F5C] border-2 border-[#004AAD] text-white shadow-md rounded relative panel-active-glow h-[175px] overflow-hidden cursor-pointer"
+//     >
+//       {!showMonitor ? (
+//         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-3">
+//           <span className="text-[9px] font-black text-blue-300 uppercase tracking-wider">
+//             LT KIOSK
+//           </span>
+
+//           <strong className="text-[18px] font-black tracking-widest mt-2">
+//             {title}
+//           </strong>
+
+//           <span className="text-[8px] font-bold text-blue-300 uppercase mt-1">
+//             {subtitle}
+//           </span>
+//         </div>
+//       ) : (
+//         <div
+//           onClick={handleClick}
+//           className="absolute inset-0 z-20 bg-[#081F5C] px-4 py-3"
+//         >
+//           <div className="text-center border-b border-[#2B5DA8] pb-2 mb-2">
+//             <h4 className="text-[12px] font-black text-white uppercase tracking-[0.12em] leading-none">
+//               {title}
+//             </h4>
+
+//             <span className="block mt-1 text-[7px] font-black tracking-[0.15em] text-blue-300 uppercase">
+//               Monitoring
+//             </span>
+//           </div>
+
+//           <div className="flex items-center justify-between mb-2">
+//             <span className="text-[7px] font-bold text-blue-300 uppercase">
+//               {subtitle}
+//             </span>
+
+//             <span className="flex items-center gap-1 text-[7px] font-bold text-emerald-400 uppercase">
+//               <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)]" />
+//               Live
+//             </span>
+//           </div>
+
+//           <div className="px-2 space-y-[4px]">
+//             {monitorData.map(([label, value]) => (
+//               <div
+//                 key={label}
+//                 className="flex items-center justify-between px-1"
+//               >
+//                 <span className="text-[10px] font-medium text-slate-300">
+//                   {label}
+//                 </span>
+
+//                 <span className="text-[11px] font-bold text-white tabular-nums">
+//                   {value}
+//                 </span>
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// const KioskPopup = () => {
+//   const [openedKiosks, setOpenedKiosks] = React.useState([]);
+//   const [activeKioskAnalytics, setActiveKioskAnalytics] =
+//     React.useState(null);
+
+//   return (
+//     <>
+//       <PopupShell title="LT Kiosk">
+//         <div className="flex justify-center w-full my-3">
+//           <div
+//             onClick={() => setKiosksExpanded(!kiosksExpanded)}
+//             className="w-[90%] md:w-[70%] lg:w-[45%] h-32 max-w-xl bg-[#081F5C] border-2 border-[#004AAD] text-white shadow-lg rounded-md cursor-pointer hover:bg-[#0A276E] transition-colors"
+//           >
+//             <div className="h-full flex flex-col items-center justify-center text-center">
+//               <span className="text-[10px] font-black text-blue-300 tracking-[0.2em] uppercase">
+//                 STEP-DOWN COMBINER PANEL
+//               </span>
+
+//               <h3 className="text-lg font-black text-white tracking-wider mt-1">
+//                 LT KIOSK
+//               </h3>
+//             </div>
+//           </div>
+//         </div>
+
+//         {kiosksExpanded && (
+//           <>
+//             <div className="flex justify-center h-10">
+//               <div className="flow-line-vertical h-full">
+//                 <div className="flow-pulse-vertical" />
+//               </div>
+//             </div>
+
+//             <div className="max-w-7xl mx-auto px-4">
+//               <div className="mx-auto w-[84%] h-[2px] bg-cyan-400 relative overflow-hidden">
+//                 <div className="flow-pulse-horizontal" />
+//               </div>
+
+//               <div className="grid grid-cols-6 gap-4">
+//                 {Array.from({ length: 6 }).map((_, index) => {
+//                   const kioskData = {
+//                     id: `kiosk-${index + 1}`,
+//                     title: `KIOSK-${index + 1}`,
+//                     subtitle: "433V PANEL",
+//                     kwh: `${1280 + index * 60}`,
+//                     kvah: `${1195 + index * 55}`,
+//                     current: `${420 + index * 8} A`,
+//                     voltage: "433 V",
+//                     pf: index % 2 === 0 ? "0.98" : "0.97",
+//                     load: 70 + index * 3,
+//                     health: 92 + index,
+//                     status: "Stable",
+//                   };
+
+//                   return (
+//                     <div key={kioskData.id} className="flex flex-col items-center">
+//                       <div className="flow-line-vertical h-8">
+//                         <div className="flow-pulse-vertical" />
+//                       </div>
+
+//                       <KioskMonitorBox
+//                         id={kioskData.id}
+//                         title={kioskData.title}
+//                         subtitle={kioskData.subtitle}
+//                         openedKiosks={openedKiosks}
+//                         setOpenedKiosks={setOpenedKiosks}
+//                         onClick={() => setActiveKioskAnalytics(kioskData)}
+//                       />
+//                     </div>
+//                   );
+//                 })}
+//               </div>
+//             </div>
+//           </>
+//         )}
+//       </PopupShell>
+
+//       {activeKioskAnalytics && (
+//         <KioskAnalyticsView
+//           data={activeKioskAnalytics}
+//           onBack={() => setActiveKioskAnalytics(null)}
+//         />
+//       )}
+//     </>
+//   );
+// };
+
+
+// const DgMonitorBox = ({
+//   id,
+//   title,
+//   subtitle,
+//   data,
+//   openedDgs,
+//   setOpenedDgs,
+//   onClick,
+// }) => {
+//   const monitorData = [
+//     ["kWh", `${data.kwh}`],
+//     ["kvah", `${data.kvah}`],
+//     ["PF", `${data.pf}`],
+//     ["AMPS", `${data.current}`],
+//     ["Voltage", `${data.voltage}`],
+//   ];
+
+//   const showMonitor = openedDgs.includes(id);
+
+//   const handleHover = () => {
+//     setOpenedDgs((prev) => {
+//       if (prev.includes(id)) return prev;
+//       return [...prev, id];
+//     });
+//   };
+
+//   const handleClick = (event) => {
+//     event.stopPropagation();
+//     if (onClick) onClick();
+//   };
+
+//   return (
+//     <div
+//       onMouseEnter={handleHover}
+//       onClick={handleClick}
+//       className="w-full bg-[#081F5C] border-2 border-[#004AAD] text-white shadow-md rounded relative panel-active-glow h-[175px] overflow-hidden cursor-pointer"
+//     >
+//       {!showMonitor ? (
+//         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-3">
+//           <span className="text-[9px] font-black text-blue-300 uppercase tracking-wider">
+//             DIESEL GENERATOR
+//           </span>
+
+//           <strong className="text-[18px] font-black tracking-widest mt-2">
+//             {title}
+//           </strong>
+
+//           <span className="text-[8px] font-bold text-blue-300 uppercase mt-1">
+//             {subtitle}
+//           </span>
+//         </div>
+//       ) : (
+//         <div
+//           onClick={handleClick}
+//           className="absolute inset-0 z-20 bg-[#081F5C] px-4 py-3"
+//         >
+//           <div className="text-center border-b border-[#2B5DA8] pb-2 mb-2">
+//             <h4 className="text-[12px] font-black text-white uppercase tracking-[0.12em] leading-none">
+//               {title}
+//             </h4>
+
+//             <span className="block mt-1 text-[7px] font-black tracking-[0.15em] text-blue-300 uppercase">
+//               Monitoring
+//             </span>
+//           </div>
+
+//           <div className="flex items-center justify-between mb-2">
+//             <span className="text-[7px] font-bold text-blue-300 uppercase">
+//               {subtitle}
+//             </span>
+
+//             <span className="flex items-center gap-1 text-[7px] font-bold text-emerald-400 uppercase">
+//               <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)]" />
+//               Live
+//             </span>
+//           </div>
+
+//           <div className="px-2 space-y-[4px]">
+//             {monitorData.map(([label, value]) => (
+//               <div
+//                 key={label}
+//                 className="flex items-center justify-between px-1"
+//               >
+//                 <span className="text-[10px] font-medium text-slate-300">
+//                   {label}
+//                 </span>
+
+//                 <span className="text-[11px] font-bold text-white tabular-nums">
+//                   {value}
+//                 </span>
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// const DgPopup = () => {
+//   const [openedDgs, setOpenedDgs] = React.useState([]);
+//   const [activeDgAnalytics, setActiveDgAnalytics] = React.useState(null);
+
+//   const dgUnits = Array.from({ length: 7 }).map((_, index) => ({
+//     id: `dg-${index + 1}`,
+//     title: `DG-${index + 1}`,
+//     subtitle: index < 4 ? "1500 kVA GENSET" : "1250 kVA GENSET",
+//     kwh: `${1460 + index * 75}`,
+//     kvah: `${1375 + index * 68}`,
+//     current: `${510 + index * 14} A`,
+//     voltage: "433 V",
+//     pf: index % 3 === 0 ? "0.97" : "0.98",
+//     load: 64 + index * 4,
+//     health: 94 + (index % 4),
+//     status: "Running",
+//   }));
+
+//   return (
+//     <>
+//       <PopupShell title="Diesel Generator Plant">
+//         <div className="flex justify-center w-full my-3">
+//           <div
+//             onClick={() => setDgsExpanded(!dgsExpanded)}
+//             className="w-[90%] md:w-[70%] lg:w-[45%] h-32 max-w-xl bg-[#081F5C] border-2 border-[#004AAD] text-white shadow-lg rounded-md cursor-pointer hover:bg-[#0A276E] transition-colors"
+//           >
+//             <div className="h-full flex flex-col items-center justify-center text-center">
+//               <span className="text-[10px] font-black text-blue-300 tracking-[0.2em] uppercase">
+//                 EMERGENCY POWER PANEL
+//               </span>
+
+//               <h3 className="text-lg font-black text-white tracking-wider mt-1">
+//                 DIESEL GENERATOR PLANT
+//               </h3>
+//             </div>
+//           </div>
+//         </div>
+
+//         {dgsExpanded && (
+//           <>
+//             <div className="flex justify-center h-10">
+//               <div className="flow-line-vertical h-full">
+//                 <div className="flow-pulse-vertical" />
+//               </div>
+//             </div>
+
+//             <div className="max-w-[1500px] mx-auto px-4">
+//               <div className="mx-auto w-[88%] h-[2px] bg-cyan-400 relative overflow-hidden">
+//                 <div className="flow-pulse-horizontal" />
+//               </div>
+
+//               <div className="grid grid-cols-7 gap-4">
+//                 {dgUnits.map((dg) => (
+//                   <div key={dg.id} className="flex flex-col items-center min-w-0">
+//                     <div className="flow-line-vertical h-8">
+//                       <div className="flow-pulse-vertical" />
+//                     </div>
+
+//                     <DgMonitorBox
+//                       id={dg.id}
+//                       title={dg.title}
+//                       subtitle={dg.subtitle}
+//                       data={dg}
+//                       openedDgs={openedDgs}
+//                       setOpenedDgs={setOpenedDgs}
+//                       onClick={() => setActiveDgAnalytics(dg)}
+//                     />
+//                   </div>
+//                 ))}
+//               </div>
+//             </div>
+//           </>
+//         )}
+//       </PopupShell>
+
+//       {activeDgAnalytics && (
+//         <KioskAnalyticsView
+//           data={activeDgAnalytics}
+//           onBack={() => setActiveDgAnalytics(null)}
+//           backLabel="Back to DG Plant"
+//         />
+//       )}
+//     </>
+//   );
+// };
+
+
+// const BusbarAnalyticsView = ({ data, onBack }) => {
+//   if (!data) return null;
+
+//   const tempNumber =
+//     Number(String(data.temp).replace("°C", "")) || 0;
+
+//   const loadNumber = Number(data.load) || 0;
+
+//   const vibrationNumber =
+//     Number(
+//       String(data.vibration).replace(/[^\d.-]/g, "")
+//     ) || 0;
+
+//   const healthText = String(data.health ?? "Unknown");
+
+//   const healthNormal = [
+//     "on",
+//     "healthy",
+//     "normal",
+//     "active",
+//     "good",
+//     "ok",
+//   ].some((status) =>
+//     healthText.toLowerCase().includes(status)
+//   );
+
+//   const healthNumber =
+//     Number(
+//       String(data.healthValue ?? "").replace(/[^\d.-]/g, "")
+//     ) || (healthNormal ? 96 : 62);
+
+//   /*
+//    * Realtime-ready data structure.
+//    *
+//    * Backend can later provide:
+//    *
+//    * data.temperatureHistory
+//    * data.vibrationHistory
+//    * data.healthHistory
+//    *
+//    * Format:
+//    * [{ time: "12:30", value: 42 }]
+//    */
+
+//   const graphValues = Array.from({ length: 10 }, (_, index) => {
+//     const labels = [
+//       "08:00",
+//       "09:00",
+//       "10:00",
+//       "11:00",
+//       "12:00",
+//       "13:00",
+//       "14:00",
+//       "15:00",
+//       "16:00",
+//       "Now",
+//     ];
+
+//     const temperatureFallback = [
+//       Math.max(tempNumber - 8, 0),
+//       Math.max(tempNumber - 7, 0),
+//       Math.max(tempNumber - 6, 0),
+//       Math.max(tempNumber - 4, 0),
+//       Math.max(tempNumber - 3, 0),
+//       tempNumber + 1,
+//       tempNumber + 4,
+//       tempNumber + 3,
+//       tempNumber + 2,
+//       tempNumber,
+//     ];
+
+//     const vibrationFallback = [
+//       Math.max(vibrationNumber - 0.24, 0),
+//       Math.max(vibrationNumber - 0.18, 0),
+//       Math.max(vibrationNumber - 0.12, 0),
+//       Math.max(vibrationNumber - 0.08, 0),
+//       Math.max(vibrationNumber - 0.03, 0),
+//       vibrationNumber + 0.05,
+//       vibrationNumber + 0.13,
+//       vibrationNumber + 0.09,
+//       vibrationNumber + 0.04,
+//       vibrationNumber,
+//     ];
+
+//     const healthFallback = healthNormal
+//       ? [95, 96, 96, 97, 96, 97, 95, 96, 96, healthNumber]
+//       : [78, 75, 72, 69, 67, 65, 61, 60, 59, healthNumber];
+
+//     return {
+//       time:
+//         data.temperatureHistory?.[index]?.time ||
+//         data.vibrationHistory?.[index]?.time ||
+//         data.healthHistory?.[index]?.time ||
+//         labels[index],
+
+//       temp:
+//         Number(data.temperatureHistory?.[index]?.value) ||
+//         temperatureFallback[index],
+
+//       vibration:
+//         Number(data.vibrationHistory?.[index]?.value) ||
+//         vibrationFallback[index],
+
+//       health:
+//         Number(data.healthHistory?.[index]?.value) ||
+//         healthFallback[index],
+//     };
+//   });
+
+//   const avg = Math.round(
+//     graphValues.reduce(
+//       (total, item) => total + item.health,
+//       0
+//     ) / graphValues.length
+//   );
+
+//   const tempStatus =
+//     tempNumber >= 90
+//       ? "Critical"
+//       : tempNumber >= 75
+//         ? "Warning"
+//         : "Normal";
+
+//   const vibrationStatus =
+//     vibrationNumber >= 7
+//       ? "Critical"
+//       : vibrationNumber >= 4.5
+//         ? "Warning"
+//         : "Normal";
+
+//   const healthStatus =
+//     healthNumber >= 85
+//       ? "Healthy"
+//       : healthNumber >= 65
+//         ? "Warning"
+//         : "Critical";
+
+//   const healthGaugeData = [
+//     {
+//       name: "Health",
+//       value: Math.min(Math.max(healthNumber, 0), 100),
+//       fill:
+//         healthNumber >= 85
+//           ? "#34D399"
+//           : healthNumber >= 65
+//             ? "#FBBF24"
+//             : "#F87171",
+//     },
+//   ];
+
+//   const chartId = String(data.title || "busbar").replace(
+//     /[^a-zA-Z0-9]/g,
+//     "-"
+//   );
+
+//   return (
+//     <div className="fixed inset-x-0 bottom-0 top-[72px] z-[1100] overflow-hidden bg-[#020817] text-white">
+//       <div className="flex h-full min-h-0 flex-col bg-[radial-gradient(circle_at_top_left,rgba(0,74,173,0.2),transparent_30%),radial-gradient(circle_at_top_right,rgba(34,211,238,0.08),transparent_25%),linear-gradient(180deg,#020B24_0%,#020817_100%)] px-4 pb-4">
+//         <div className="mx-auto flex h-full min-h-0 w-full max-w-[1600px] flex-col">
+//           {/* HEADER */}
+//           <div className="shrink-0 border-b border-[#174575] bg-[#020B24]/95 py-3 backdrop-blur-xl">
+//             <div className="flex items-stretch gap-4">
+//               <button
+//                 type="button"
+//                 onClick={onBack}
+//                 className="flex h-[62px] shrink-0 items-center justify-center rounded-xl border border-[#1B4D83] bg-[#061737] px-5 text-[12px] font-semibold text-slate-100 transition hover:border-cyan-400/70 hover:bg-[#092452]"
+//               >
+//                 <ArrowLeft className="mr-2 h-4 w-4 text-cyan-300" />
+
+//                 Back to Busbar
+//               </button>
+
+//               <div className="relative flex-1 overflow-hidden rounded-xl border border-[#1B4D83] bg-[#071633] px-5 py-3">
+//                 <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-cyan-400 via-blue-400 to-emerald-400" />
+
+//                 <div className="flex h-full items-center justify-between">
+//                   <h2 className="text-[23px] font-semibold tracking-tight text-white">
+//                     {data.title} Analytics
+//                   </h2>
+
+//                   <div
+//                     className={`rounded-lg border px-4 py-2 text-[11px] font-semibold ${
+//                       healthStatus === "Healthy"
+//                         ? "border-emerald-400/30 bg-emerald-400/[0.08] text-emerald-300"
+//                         : healthStatus === "Warning"
+//                           ? "border-amber-400/30 bg-amber-400/[0.08] text-amber-300"
+//                           : "border-red-400/30 bg-red-400/[0.08] text-red-300"
+//                     }`}
+//                   >
+//                     <span className="flex items-center gap-2">
+//                       <span
+//                         className={`h-2.5 w-2.5 rounded-full ${
+//                           healthStatus === "Healthy"
+//                             ? "bg-emerald-400"
+//                             : healthStatus === "Warning"
+//                               ? "bg-amber-400"
+//                               : "bg-red-400"
+//                         }`}
+//                       />
+
+//                       {data.health}
+//                     </span>
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+
+//           {/* THREE ANALYTICS */}
+//           <div className="mt-3 grid min-h-0 flex-1 grid-cols-3 gap-3">
+//             {/* TEMPERATURE */}
+//             <div className="relative flex min-h-0 flex-col overflow-hidden rounded-2xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4">
+//               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300 to-transparent" />
+
+//               <div className="flex shrink-0 items-start justify-between gap-3">
+//                 <h3 className="text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em] text-white">
+//                   Temperature Analytics
+//                 </h3>
+
+//                 <div className="text-right">
+//                   <p className="text-[24px] font-semibold leading-none text-white">
+//                     {tempNumber}°C
+//                   </p>
+
+//                   <span
+//                     className={`mt-1 inline-block text-[9px] font-bold uppercase ${
+//                       tempStatus === "Critical"
+//                         ? "text-red-300"
+//                         : tempStatus === "Warning"
+//                           ? "text-amber-300"
+//                           : "text-emerald-300"
+//                     }`}
+//                   >
+//                     {tempStatus}
+//                   </span>
+//                 </div>
+//               </div>
+
+//               <div className="mt-3 min-h-0 flex-1">
+//                 <ResponsiveContainer width="100%" height="100%">
+//                   <AreaChart
+//                     data={graphValues}
+//                     margin={{
+//                       top: 10,
+//                       right: 10,
+//                       left: -16,
+//                       bottom: 0,
+//                     }}
+//                   >
+//                     <defs>
+//                       <linearGradient
+//                         id={`busbarTemp-${chartId}`}
+//                         x1="0"
+//                         y1="0"
+//                         x2="0"
+//                         y2="1"
+//                       >
+//                         <stop
+//                           offset="0%"
+//                           stopColor="#22D3EE"
+//                           stopOpacity={0.72}
+//                         />
+
+//                         <stop
+//                           offset="100%"
+//                           stopColor="#22D3EE"
+//                           stopOpacity={0.03}
+//                         />
+//                       </linearGradient>
+//                     </defs>
+
+//                     <CartesianGrid
+//                       vertical={false}
+//                       stroke="rgba(148,163,184,0.13)"
+//                       strokeDasharray="4 4"
+//                     />
+
+//                     <XAxis
+//                       dataKey="time"
+//                       axisLine={false}
+//                       tickLine={false}
+//                       interval={1}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <YAxis
+//                       domain={[30, 110]}
+//                       ticks={[30, 50, 70, 90, 110]}
+//                       axisLine={false}
+//                       tickLine={false}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                       tickFormatter={(value) => `${value}°`}
+//                     />
+
+//                     <ReferenceLine
+//                       y={75}
+//                       stroke="#FBBF24"
+//                       strokeDasharray="4 4"
+//                       label={{
+//                         value: "Warning",
+//                         position: "insideTopRight",
+//                         fill: "#FBBF24",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <ReferenceLine
+//                       y={90}
+//                       stroke="#F87171"
+//                       strokeDasharray="4 4"
+//                       label={{
+//                         value: "Critical",
+//                         position: "insideTopRight",
+//                         fill: "#F87171",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <Tooltip
+//                       contentStyle={analyticsTooltipStyle}
+//                       formatter={(value) => [
+//                         `${Number(value).toFixed(1)}°C`,
+//                         "Temperature",
+//                       ]}
+//                     />
+
+//                     <Area
+//                       type="monotone"
+//                       dataKey="temp"
+//                       stroke="#22D3EE"
+//                       strokeWidth={2.4}
+//                       fill={`url(#busbarTemp-${chartId})`}
+//                       dot={{
+//                         r: 3,
+//                         fill: "#22D3EE",
+//                         stroke: "#FFFFFF",
+//                         strokeWidth: 1,
+//                       }}
+//                       activeDot={{ r: 5 }}
+//                       isAnimationActive={false}
+//                     />
+//                   </AreaChart>
+//                 </ResponsiveContainer>
+//               </div>
+//             </div>
+
+//             {/* VIBRATION */}
+//             <div className="relative flex min-h-0 flex-col overflow-hidden rounded-2xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4">
+//               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-purple-300 to-transparent" />
+
+//               <div className="flex shrink-0 items-start justify-between gap-3">
+//                 <h3 className="text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em] text-white">
+//                   Vibration Analytics
+//                 </h3>
+
+//                 <div className="text-right">
+//                   <p className="text-[24px] font-semibold leading-none text-white">
+//                     {vibrationNumber.toFixed(2)}
+//                   </p>
+
+//                   <span
+//                     className={`mt-1 block text-[9px] font-bold uppercase ${
+//                       vibrationStatus === "Critical"
+//                         ? "text-red-300"
+//                         : vibrationStatus === "Warning"
+//                           ? "text-amber-300"
+//                           : "text-emerald-300"
+//                     }`}
+//                   >
+//                     {vibrationStatus}
+//                   </span>
+
+//                   <span className="text-[8px] text-slate-500">
+//                     mm/s
+//                   </span>
+//                 </div>
+//               </div>
+
+//               <div className="mt-3 min-h-0 flex-1">
+//                 <ResponsiveContainer width="100%" height="100%">
+//                   <AreaChart
+//                     data={graphValues}
+//                     margin={{
+//                       top: 10,
+//                       right: 10,
+//                       left: -16,
+//                       bottom: 0,
+//                     }}
+//                   >
+//                     <defs>
+//                       <linearGradient
+//                         id={`busbarVibration-${chartId}`}
+//                         x1="0"
+//                         y1="0"
+//                         x2="0"
+//                         y2="1"
+//                       >
+//                         <stop
+//                           offset="0%"
+//                           stopColor="#C084FC"
+//                           stopOpacity={0.72}
+//                         />
+
+//                         <stop
+//                           offset="100%"
+//                           stopColor="#C084FC"
+//                           stopOpacity={0.03}
+//                         />
+//                       </linearGradient>
+//                     </defs>
+
+//                     <CartesianGrid
+//                       vertical={false}
+//                       stroke="rgba(148,163,184,0.13)"
+//                       strokeDasharray="4 4"
+//                     />
+
+//                     <XAxis
+//                       dataKey="time"
+//                       axisLine={false}
+//                       tickLine={false}
+//                       interval={1}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <YAxis
+//                       domain={[0, 10]}
+//                       ticks={[0, 2.5, 5, 7.5, 10]}
+//                       axisLine={false}
+//                       tickLine={false}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <ReferenceLine
+//                       y={4.5}
+//                       stroke="#FBBF24"
+//                       strokeDasharray="4 4"
+//                       label={{
+//                         value: "Warning",
+//                         position: "insideTopRight",
+//                         fill: "#FBBF24",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <ReferenceLine
+//                       y={7}
+//                       stroke="#F87171"
+//                       strokeDasharray="4 4"
+//                       label={{
+//                         value: "Critical",
+//                         position: "insideTopRight",
+//                         fill: "#F87171",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <Tooltip
+//                       contentStyle={analyticsTooltipStyle}
+//                       formatter={(value) => [
+//                         `${Number(value).toFixed(2)} mm/s`,
+//                         "Vibration",
+//                       ]}
+//                     />
+
+//                     <Area
+//                       type="monotone"
+//                       dataKey="vibration"
+//                       stroke="#C084FC"
+//                       strokeWidth={2.4}
+//                       fill={`url(#busbarVibration-${chartId})`}
+//                       dot={{
+//                         r: 3,
+//                         fill: "#C084FC",
+//                         stroke: "#FFFFFF",
+//                         strokeWidth: 1,
+//                       }}
+//                       activeDot={{ r: 5 }}
+//                       isAnimationActive={false}
+//                     />
+//                   </AreaChart>
+//                 </ResponsiveContainer>
+//               </div>
+//             </div>
+
+//             {/* HEALTH */}
+//             <div className="relative flex min-h-0 flex-col overflow-hidden rounded-2xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4">
+//               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-300 to-transparent" />
+
+//               <div className="flex shrink-0 items-start justify-between gap-3">
+//                 <h3 className="text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em] text-white">
+//                   Health Analytics
+//                 </h3>
+
+//                 <div className="text-right">
+//                   <p
+//                     className={`text-[clamp(11px,1.5vh,14px)] font-semibold ${
+//                       healthStatus === "Healthy"
+//                         ? "text-emerald-300"
+//                         : healthStatus === "Warning"
+//                           ? "text-amber-300"
+//                           : "text-red-300"
+//                     }`}
+//                   >
+//                     {healthStatus}
+//                   </p>
+
+//                   <p className="mt-1 text-[9px] text-slate-500">
+//                     {avg}% average
+//                   </p>
+//                 </div>
+//               </div>
+
+//               <div className="mt-3 grid min-h-0 flex-1 grid-rows-[0.9fr_1.1fr] gap-3">
+//                 <div className="relative min-h-0 rounded-xl border border-[#174575] bg-[#061737]/55">
+//                   <ResponsiveContainer width="100%" height="100%">
+//                     <RadialBarChart
+//                       innerRadius="64%"
+//                       outerRadius="92%"
+//                       data={healthGaugeData}
+//                       startAngle={210}
+//                       endAngle={-30}
+//                     >
+//                       <PolarAngleAxis
+//                         type="number"
+//                         domain={[0, 100]}
+//                         angleAxisId={0}
+//                         tick={false}
+//                       />
+
+//                       <RadialBar
+//                         background={{
+//                           fill: "rgba(255,255,255,0.08)",
+//                         }}
+//                         dataKey="value"
+//                         cornerRadius={12}
+//                         isAnimationActive={false}
+//                       />
+//                     </RadialBarChart>
+//                   </ResponsiveContainer>
+
+//                   <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center pt-5">
+//                     <span className="text-[38px] font-semibold text-white">
+//                       {healthNumber}%
+//                     </span>
+
+//                     <span
+//                       className={`mt-1 text-[9px] font-bold uppercase ${
+//                         healthStatus === "Healthy"
+//                           ? "text-emerald-300"
+//                           : healthStatus === "Warning"
+//                             ? "text-amber-300"
+//                             : "text-red-300"
+//                       }`}
+//                     >
+//                       {healthStatus}
+//                     </span>
+//                   </div>
+//                 </div>
+
+//                 <div className="min-h-0 rounded-xl border border-[#174575] bg-[#061737]/55 p-2">
+//                   <ResponsiveContainer width="100%" height="100%">
+//                     <AreaChart
+//                       data={graphValues}
+//                       margin={{
+//                         top: 10,
+//                         right: 10,
+//                         left: -18,
+//                         bottom: 0,
+//                       }}
+//                     >
+//                       <defs>
+//                         <linearGradient
+//                           id={`busbarHealth-${chartId}`}
+//                           x1="0"
+//                           y1="0"
+//                           x2="0"
+//                           y2="1"
+//                         >
+//                           <stop
+//                             offset="0%"
+//                             stopColor={
+//                               healthNumber >= 85
+//                                 ? "#34D399"
+//                                 : healthNumber >= 65
+//                                   ? "#FBBF24"
+//                                   : "#F87171"
+//                             }
+//                             stopOpacity={0.68}
+//                           />
+
+//                           <stop
+//                             offset="100%"
+//                             stopColor={
+//                               healthNumber >= 85
+//                                 ? "#34D399"
+//                                 : healthNumber >= 65
+//                                   ? "#FBBF24"
+//                                   : "#F87171"
+//                             }
+//                             stopOpacity={0.03}
+//                           />
+//                         </linearGradient>
+//                       </defs>
+
+//                       <CartesianGrid
+//                         vertical={false}
+//                         stroke="rgba(148,163,184,0.13)"
+//                         strokeDasharray="4 4"
+//                       />
+
+//                       <XAxis
+//                         dataKey="time"
+//                         axisLine={false}
+//                         tickLine={false}
+//                         interval={1}
+//                         tick={{
+//                           fill: "#8EA6C4",
+//                           fontSize: 8,
+//                         }}
+//                       />
+
+//                       <YAxis
+//                         domain={[0, 100]}
+//                         ticks={[0, 25, 50, 75, 100]}
+//                         axisLine={false}
+//                         tickLine={false}
+//                         tick={{
+//                           fill: "#8EA6C4",
+//                           fontSize: 8,
+//                         }}
+//                       />
+
+//                       <ReferenceLine
+//                         y={85}
+//                         stroke="#34D399"
+//                         strokeDasharray="4 4"
+//                       />
+
+//                       <ReferenceLine
+//                         y={65}
+//                         stroke="#FBBF24"
+//                         strokeDasharray="4 4"
+//                       />
+
+//                       <Tooltip
+//                         contentStyle={analyticsTooltipStyle}
+//                         formatter={(value) => [
+//                           `${Math.round(value)}%`,
+//                           "Health",
+//                         ]}
+//                       />
+
+//                       <Area
+//                         type="monotone"
+//                         dataKey="health"
+//                         stroke={
+//                           healthNumber >= 85
+//                             ? "#34D399"
+//                             : healthNumber >= 65
+//                               ? "#FBBF24"
+//                               : "#F87171"
+//                         }
+//                         strokeWidth={2.3}
+//                         fill={`url(#busbarHealth-${chartId})`}
+//                         dot={false}
+//                         isAnimationActive={false}
+//                       />
+//                     </AreaChart>
+//                   </ResponsiveContainer>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// const BusbarMonitorBox = ({
+//   id,
+//   title,
+//   openedBusbars,
+//   setOpenedBusbars,
+//   onClick,
+// }) => {
+//   const monitorData = [
+//     ["Temp", "42°C"],
+//     ["Vibration", "Normal"],
+//     ["Health", "ON"],
+//   ];
+
+//   const showMonitor = openedBusbars.includes(id);
+
+//   const handleHover = () => {
+//     setOpenedBusbars((prev) => (prev.includes(id) ? prev : [...prev, id]));
+//   };
+
+//   const handleClick = (event) => {
+//     event.stopPropagation();
+//     if (onClick) onClick();
+//   };
+
+//   return (
+//     <div
+//       onMouseEnter={handleHover}
+//       onClick={handleClick}
+//       className="w-full h-[165px] bg-[#081F5C] border-2 border-[#004AAD] text-white shadow-md rounded relative panel-active-glow overflow-hidden cursor-pointer"
+//     >
+//       {!showMonitor ? (
+//         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-3">
+//           <span className="text-[9px] font-black text-blue-300 uppercase tracking-wider">
+//             LT BUSBAR
+//           </span>
+
+//           <strong className="text-[18px] font-black tracking-widest mt-2">
+//             {title}
+//           </strong>
+
+//           <span className="text-[8px] font-bold text-blue-300 uppercase mt-1">
+//             433V
+//           </span>
+//         </div>
+//       ) : (
+//         <div
+//           onClick={handleClick}
+//           className="absolute inset-0 z-20 bg-[#081F5C] px-4 py-3"
+//         >
+//           <div className="text-center border-b border-[#2B5DA8] pb-2 mb-2">
+//             <h4 className="text-[12px] font-black text-white uppercase tracking-[0.12em] leading-none">
+//               {title}
+//             </h4>
+
+//             <span className="block mt-1 text-[7px] font-black tracking-[0.15em] text-blue-300 uppercase">
+//               Busbar Status
+//             </span>
+//           </div>
+
+//           <div className="flex items-center justify-between mb-2">
+//             <span className="text-[7px] font-bold text-blue-300 uppercase">
+//               Monitoring
+//             </span>
+
+//             <span className="flex items-center gap-1 text-[7px] font-bold text-emerald-400 uppercase">
+//               <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)]" />
+//               Live
+//             </span>
+//           </div>
+
+//           <div className="px-2 space-y-[6px]">
+//             {monitorData.map(([label, value]) => {
+//               const healthyValue = value === "ON" || value === "Normal";
+
+//               return (
+//                 <div
+//                   key={label}
+//                   className="flex items-center justify-between px-1"
+//                 >
+//                   <span className="text-[10px] font-medium text-slate-300">
+//                     {label}
+//                   </span>
+
+//                   <span
+//                     className={`text-[11px] font-bold tabular-nums ${
+//                       healthyValue ? "text-emerald-400" : "text-white"
+//                     }`}
+//                   >
+//                     {value}
+//                   </span>
+//                 </div>
+//               );
+//             })}
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// const BusbarPopup = () => {
+//   const [openedBusbars, setOpenedBusbars] = React.useState([]);
+//   const [activeBusbarAnalytics, setActiveBusbarAnalytics] =
+//     React.useState(null);
+
+//   return (
+//     <>
+//       <PopupShell title="LT Busduct / Busbar">
+//         <div className="flex justify-center w-full my-3">
+//           <div
+//             onClick={() => setBusbarsExpanded(!busbarsExpanded)}
+//             className="w-[90%] md:w-[70%] lg:w-[45%] h-32 max-w-xl bg-[#081F5C] border-2 border-[#004AAD] text-white shadow-lg rounded-md cursor-pointer hover:bg-[#0A276E] transition-colors"
+//           >
+//             <div className="h-full flex flex-col items-center justify-center text-center">
+//               <span className="text-[10px] font-black text-blue-300 tracking-[0.2em] uppercase">
+//                 POWER DISTRIBUTION
+//               </span>
+
+//               <h3 className="text-lg font-black text-white tracking-wider mt-1">
+//                 LT BUSDUCT / BUSBAR
+//               </h3>
+
+//               <span className="text-xs text-blue-300 mt-1">433V</span>
+//             </div>
+//           </div>
+//         </div>
+
+//         {busbarsExpanded && (
+//           <>
+//             <div className="flex justify-center h-10">
+//               <div className="flow-line-vertical h-full">
+//                 <div className="flow-pulse-vertical" />
+//               </div>
+//             </div>
+
+//             <div className="max-w-7xl mx-auto px-4">
+//               <div className="mx-auto w-[84%] h-[2px] bg-cyan-400 relative overflow-hidden">
+//                 <div className="flow-pulse-horizontal" />
+//               </div>
+
+//               <div className="grid grid-cols-6 gap-4">
+//                 {Array.from({ length: 6 }).map((_, index) => {
+//                   const busbarData = {
+//                     id: `bus-${index + 1}`,
+//                     title: `BUS-${index + 1}`,
+//                     temp: `${42 + index}°C`,
+//                     vibration: "Normal",
+//                     health: "ON",
+//                     voltage: "433 V",
+//                     load: 68 + index * 3,
+//                   };
+
+//                   return (
+//                     <div key={busbarData.id} className="flex flex-col items-center">
+//                       <div className="flow-line-vertical h-8">
+//                         <div className="flow-pulse-vertical" />
+//                       </div>
+
+//                       <BusbarMonitorBox
+//                         id={busbarData.id}
+//                         title={busbarData.title}
+//                         openedBusbars={openedBusbars}
+//                         setOpenedBusbars={setOpenedBusbars}
+//                         onClick={() => setActiveBusbarAnalytics(busbarData)}
+//                       />
+//                     </div>
+//                   );
+//                 })}
+//               </div>
+//             </div>
+//           </>
+//         )}
+//       </PopupShell>
+
+//       {activeBusbarAnalytics && (
+//         <BusbarAnalyticsView
+//           data={activeBusbarAnalytics}
+//           onBack={() => setActiveBusbarAnalytics(null)}
+//         />
+//       )}
+//     </>
+//   );
+// };
+
+
+// // const PccPanelAnalyticsView = ({ data, onBack }) => {
+// //   if (!data) return null;
+
+// //   const loadNumber =
+// //     Number(String(data.load).replace(/[^\d.-]/g, "")) || 0;
+
+// //   const kwhNumber =
+// //     Number(String(data.kwh).replace(/[^\d.-]/g, "")) || 0;
+
+// //   const kvahNumber =
+// //     Number(String(data.kvah).replace(/[^\d.-]/g, "")) || 0;
+
+// //   const currentNumber =
+// //     Number(String(data.current).replace(/[^\d.-]/g, "")) || 0;
+
+// //   const voltageNumber =
+// //     Number(String(data.voltage).replace(/[^\d.-]/g, "")) || 0;
+
+// //   const pfNumber =
+// //     Number(String(data.pf).replace(/[^\d.-]/g, "")) || 0;
+
+// //   const graphValues = [
+// //     {
+// //       time: "08:00",
+// //       kwh: Math.max(kwhNumber - 420, 0),
+// //       kvah: Math.max(kvahNumber - 390, 0),
+// //       current: Math.max(currentNumber - 24, 0),
+// //       voltage: voltageNumber - 5,
+// //       pf: Math.max(pfNumber - 0.04, 0),
+// //     },
+// //     {
+// //       time: "09:00",
+// //       kwh: Math.max(kwhNumber - 375, 0),
+// //       kvah: Math.max(kvahNumber - 345, 0),
+// //       current: Math.max(currentNumber - 18, 0),
+// //       voltage: voltageNumber - 3,
+// //       pf: Math.max(pfNumber - 0.03, 0),
+// //     },
+// //     {
+// //       time: "10:00",
+// //       kwh: Math.max(kwhNumber - 325, 0),
+// //       kvah: Math.max(kvahNumber - 300, 0),
+// //       current: Math.max(currentNumber - 12, 0),
+// //       voltage: voltageNumber - 1,
+// //       pf: Math.max(pfNumber - 0.02, 0),
+// //     },
+// //     {
+// //       time: "11:00",
+// //       kwh: Math.max(kwhNumber - 275, 0),
+// //       kvah: Math.max(kvahNumber - 250, 0),
+// //       current: Math.max(currentNumber - 6, 0),
+// //       voltage: voltageNumber + 1,
+// //       pf: Math.max(pfNumber - 0.01, 0),
+// //     },
+// //     {
+// //       time: "12:00",
+// //       kwh: Math.max(kwhNumber - 225, 0),
+// //       kvah: Math.max(kvahNumber - 205, 0),
+// //       current: currentNumber + 4,
+// //       voltage: voltageNumber + 2,
+// //       pf: Math.min(pfNumber + 0.005, 1),
+// //     },
+// //     {
+// //       time: "13:00",
+// //       kwh: Math.max(kwhNumber - 175, 0),
+// //       kvah: Math.max(kvahNumber - 160, 0),
+// //       current: currentNumber + 10,
+// //       voltage: voltageNumber + 3,
+// //       pf: Math.min(pfNumber + 0.01, 1),
+// //     },
+// //     {
+// //       time: "14:00",
+// //       kwh: Math.max(kwhNumber - 125, 0),
+// //       kvah: Math.max(kvahNumber - 115, 0),
+// //       current: currentNumber + 16,
+// //       voltage: voltageNumber + 2,
+// //       pf: Math.min(pfNumber + 0.015, 1),
+// //     },
+// //     {
+// //       time: "15:00",
+// //       kwh: Math.max(kwhNumber - 80, 0),
+// //       kvah: Math.max(kvahNumber - 70, 0),
+// //       current: currentNumber + 9,
+// //       voltage: voltageNumber,
+// //       pf: Math.min(pfNumber + 0.01, 1),
+// //     },
+// //     {
+// //       time: "16:00",
+// //       kwh: Math.max(kwhNumber - 35, 0),
+// //       kvah: Math.max(kvahNumber - 30, 0),
+// //       current: currentNumber + 4,
+// //       voltage: voltageNumber - 1,
+// //       pf: pfNumber,
+// //     },
+// //     {
+// //       time: "Now",
+// //       kwh: kwhNumber,
+// //       kvah: kvahNumber,
+// //       current: currentNumber,
+// //       voltage: voltageNumber,
+// //       pf: pfNumber,
+// //     },
+// //   ];
+
+// //   const avg = Math.round(
+// //     graphValues.reduce(
+// //       (total, item) => total + item.current,
+// //       0
+// //     ) / graphValues.length
+// //   );
+
+// //   const currentStatus =
+// //     currentNumber >= 350
+// //       ? "Critical"
+// //       : currentNumber >= 280
+// //         ? "High"
+// //         : "Normal";
+
+// //   const voltageStatus =
+// //     voltageNumber < 400
+// //       ? "Low"
+// //       : voltageNumber > 450
+// //         ? "High"
+// //         : "Stable";
+
+// //   const pfStatus =
+// //     pfNumber < 0.85
+// //       ? "Critical"
+// //       : pfNumber < 0.95
+// //         ? "Low"
+// //         : "Good";
+
+// //   const pfGaugeData = [
+// //     {
+// //       name: "Power Factor",
+// //       value: Math.min(Math.max(pfNumber * 100, 0), 100),
+// //       fill:
+// //         pfNumber < 0.85
+// //           ? "#F87171"
+// //           : pfNumber < 0.95
+// //             ? "#FBBF24"
+// //             : "#34D399",
+// //     },
+// //   ];
+
+// //   const chartId = String(data.title || "pcc").replace(
+// //     /[^a-zA-Z0-9]/g,
+// //     "-"
+// //   );
+
+// //   return (
+// //     <div className="fixed inset-x-0 bottom-0 top-[72px] z-[1100] overflow-hidden bg-[#020817] text-white">
+// //       <div className="flex h-full min-h-0 flex-col bg-[radial-gradient(circle_at_top_left,rgba(0,74,173,0.2),transparent_30%),radial-gradient(circle_at_top_right,rgba(34,211,238,0.08),transparent_25%),linear-gradient(180deg,#020B24_0%,#020817_100%)] px-4 pb-4">
+// //         <div className="mx-auto flex h-full min-h-0 w-full max-w-[1600px] flex-col">
+// //           <div className="shrink-0 border-b border-[#174575] bg-[#020B24]/95 py-3 backdrop-blur-xl">
+// //             <div className="flex items-stretch gap-4">
+// //               <button
+// //                 type="button"
+// //                 onClick={onBack}
+// //                 className="flex h-[62px] shrink-0 items-center justify-center rounded-xl border border-[#1B4D83] bg-[#061737] px-5 text-[12px] font-semibold text-slate-100 transition hover:border-cyan-400/70 hover:bg-[#092452]"
+// //               >
+// //                 <ArrowLeft className="mr-2 h-4 w-4 text-cyan-300" />
+// //                 Back to PCC Panel
+// //               </button>
+
+// //               <div className="relative flex-1 overflow-hidden rounded-xl border border-[#1B4D83] bg-[#071633] px-5 py-3">
+// //                 <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400" />
+
+// //                 <div className="flex h-full items-center justify-between">
+// //                   <div>
+// //                     <h2 className="text-[23px] font-semibold tracking-tight text-white">
+// //                       {data.title}
+// //                     </h2>
+
+// //                     <p className="mt-1 text-[10px] text-slate-400">
+// //                       {data.subtitle}
+// //                     </p>
+// //                   </div>
+
+// //                   <div className="rounded-lg border border-emerald-400/30 bg-emerald-400/[0.08] px-4 py-2 text-[11px] font-semibold text-emerald-300">
+// //                     <span className="flex items-center gap-2">
+// //                       <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
+// //                       {data.status}
+// //                     </span>
+// //                   </div>
+// //                 </div>
+// //               </div>
+// //             </div>
+// //           </div>
+
+// //           <div className="mt-3 grid min-h-0 flex-1 grid-cols-6 grid-rows-2 gap-3">
+// //             {/* KWH */}
+// //             <div className="relative col-span-2 flex min-h-0 flex-col overflow-hidden rounded-2xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4">
+// //               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300 to-transparent" />
+
+// //               <div className="flex items-start justify-between gap-3">
+// //                 <h3 className="text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em] text-white">
+// //                   kWh Analytics
+// //                 </h3>
+
+// //                 <p className="text-[19px] font-semibold text-cyan-300">
+// //                   {kwhNumber.toLocaleString()} kWh
+// //                 </p>
+// //               </div>
+
+// //               <div className="mt-3 min-h-0 flex-1">
+// //                 <ResponsiveContainer width="100%" height="100%">
+// //                   <AreaChart
+// //                     data={graphValues}
+// //                     margin={{
+// //                       top: 10,
+// //                       right: 10,
+// //                       left: -16,
+// //                       bottom: 0,
+// //                     }}
+// //                   >
+// //                     <defs>
+// //                       <linearGradient
+// //                         id={`pccKwh-${chartId}`}
+// //                         x1="0"
+// //                         y1="0"
+// //                         x2="0"
+// //                         y2="1"
+// //                       >
+// //                         <stop
+// //                           offset="0%"
+// //                           stopColor="#22D3EE"
+// //                           stopOpacity={0.72}
+// //                         />
+
+// //                         <stop
+// //                           offset="100%"
+// //                           stopColor="#22D3EE"
+// //                           stopOpacity={0.03}
+// //                         />
+// //                       </linearGradient>
+// //                     </defs>
+
+// //                     <CartesianGrid
+// //                       vertical={false}
+// //                       stroke="rgba(148,163,184,0.13)"
+// //                       strokeDasharray="4 4"
+// //                     />
+
+// //                     <XAxis
+// //                       dataKey="time"
+// //                       axisLine={false}
+// //                       tickLine={false}
+// //                       interval={1}
+// //                       tick={{
+// //                         fill: "#8EA6C4",
+// //                         fontSize: 8,
+// //                       }}
+// //                     />
+
+// //                     <YAxis
+// //                       axisLine={false}
+// //                       tickLine={false}
+// //                       tick={{
+// //                         fill: "#8EA6C4",
+// //                         fontSize: 8,
+// //                       }}
+// //                     />
+
+// //                     <Tooltip
+// //                       contentStyle={analyticsTooltipStyle}
+// //                       formatter={(value) => [
+// //                         `${Number(value).toLocaleString()} kWh`,
+// //                         "Energy",
+// //                       ]}
+// //                     />
+
+// //                     <Area
+// //                       type="monotone"
+// //                       dataKey="kwh"
+// //                       stroke="#22D3EE"
+// //                       strokeWidth={2.3}
+// //                       fill={`url(#pccKwh-${chartId})`}
+// //                       dot={false}
+// //                       isAnimationActive={false}
+// //                     />
+// //                   </AreaChart>
+// //                 </ResponsiveContainer>
+// //               </div>
+// //             </div>
+
+// //             {/* kvah */}
+// //             <div className="relative col-span-2 flex min-h-0 flex-col overflow-hidden rounded-2xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4">
+// //               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-purple-300 to-transparent" />
+
+// //               <div className="flex items-start justify-between gap-3">
+// //                 <h3 className="text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em] text-white">
+// //                   kvah Analytics
+// //                 </h3>
+
+// //                 <p className="text-[19px] font-semibold text-purple-300">
+// //                   {kvahNumber.toLocaleString()} kvah
+// //                 </p>
+// //               </div>
+
+// //               <div className="mt-3 min-h-0 flex-1">
+// //                 <ResponsiveContainer width="100%" height="100%">
+// //                   <BarChart
+// //                     data={graphValues}
+// //                     margin={{
+// //                       top: 10,
+// //                       right: 10,
+// //                       left: -16,
+// //                       bottom: 0,
+// //                     }}
+// //                   >
+// //                     <CartesianGrid
+// //                       vertical={false}
+// //                       stroke="rgba(148,163,184,0.13)"
+// //                       strokeDasharray="4 4"
+// //                     />
+
+// //                     <XAxis
+// //                       dataKey="time"
+// //                       axisLine={false}
+// //                       tickLine={false}
+// //                       interval={1}
+// //                       tick={{
+// //                         fill: "#8EA6C4",
+// //                         fontSize: 8,
+// //                       }}
+// //                     />
+
+// //                     <YAxis
+// //                       axisLine={false}
+// //                       tickLine={false}
+// //                       tick={{
+// //                         fill: "#8EA6C4",
+// //                         fontSize: 8,
+// //                       }}
+// //                     />
+
+// //                     <Tooltip
+// //                       contentStyle={analyticsTooltipStyle}
+// //                       formatter={(value) => [
+// //                         `${Number(value).toLocaleString()} kvah`,
+// //                         "Apparent Energy",
+// //                       ]}
+// //                     />
+
+// //                     <Bar
+// //                       dataKey="kvah"
+// //                       fill="#A78BFA"
+// //                       radius={[5, 5, 0, 0]}
+// //                       maxBarSize={26}
+// //                       isAnimationActive={false}
+// //                     />
+// //                   </BarChart>
+// //                 </ResponsiveContainer>
+// //               </div>
+// //             </div>
+
+// //             {/* POWER FACTOR */}
+// //             <div className="relative col-span-2 flex min-h-0 flex-col overflow-hidden rounded-2xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4">
+// //               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-300 to-transparent" />
+
+// //               <div className="flex items-start justify-between gap-3">
+// //                 <h3 className="text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em] text-white">
+// //                   Power Factor
+// //                 </h3>
+
+// //                 <span
+// //                   className={`text-[10px] font-bold uppercase ${
+// //                     pfStatus === "Critical"
+// //                       ? "text-red-300"
+// //                       : pfStatus === "Low"
+// //                         ? "text-amber-300"
+// //                         : "text-emerald-300"
+// //                   }`}
+// //                 >
+// //                   {pfStatus}
+// //                 </span>
+// //               </div>
+
+// //               <div className="relative mt-2 min-h-0 flex-1">
+// //                 <ResponsiveContainer width="100%" height="100%">
+// //                   <RadialBarChart
+// //                     innerRadius="62%"
+// //                     outerRadius="92%"
+// //                     data={pfGaugeData}
+// //                     startAngle={210}
+// //                     endAngle={-30}
+// //                   >
+// //                     <PolarAngleAxis
+// //                       type="number"
+// //                       domain={[0, 100]}
+// //                       angleAxisId={0}
+// //                       tick={false}
+// //                     />
+
+// //                     <RadialBar
+// //                       background={{
+// //                         fill: "rgba(255,255,255,0.08)",
+// //                       }}
+// //                       dataKey="value"
+// //                       cornerRadius={12}
+// //                       isAnimationActive={false}
+// //                     />
+// //                   </RadialBarChart>
+// //                 </ResponsiveContainer>
+
+// //                 <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center pt-5">
+// //                   <span className="text-[34px] font-semibold text-white">
+// //                     {pfNumber.toFixed(2)}
+// //                   </span>
+
+// //                   <span
+// //                     className={`mt-1 text-[9px] font-bold uppercase ${
+// //                       pfStatus === "Critical"
+// //                         ? "text-red-300"
+// //                         : pfStatus === "Low"
+// //                           ? "text-amber-300"
+// //                           : "text-emerald-300"
+// //                     }`}
+// //                   >
+// //                     {pfStatus}
+// //                   </span>
+// //                 </div>
+// //               </div>
+// //             </div>
+
+// //             {/* CURRENT */}
+// //             <div className="relative col-span-3 flex min-h-0 flex-col overflow-hidden rounded-2xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4">
+// //               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-300 to-transparent" />
+
+// //               <div className="flex items-start justify-between gap-3">
+// //                 <h3 className="text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em] text-white">
+// //                   Current Analytics
+// //                 </h3>
+
+// //                 <div className="text-right">
+// //                   <p className="text-[20px] font-semibold text-white">
+// //                     {currentNumber} A
+// //                   </p>
+
+// //                   <span
+// //                     className={`text-[9px] font-bold uppercase ${
+// //                       currentStatus === "Critical"
+// //                         ? "text-red-300"
+// //                         : currentStatus === "High"
+// //                           ? "text-amber-300"
+// //                           : "text-emerald-300"
+// //                     }`}
+// //                   >
+// //                     {currentStatus}
+// //                   </span>
+// //                 </div>
+// //               </div>
+
+// //               <div className="mt-3 min-h-0 flex-1">
+// //                 <ResponsiveContainer width="100%" height="100%">
+// //                   <BarChart
+// //                     data={graphValues}
+// //                     margin={{
+// //                       top: 10,
+// //                       right: 10,
+// //                       left: -16,
+// //                       bottom: 0,
+// //                     }}
+// //                   >
+// //                     <CartesianGrid
+// //                       vertical={false}
+// //                       stroke="rgba(148,163,184,0.13)"
+// //                       strokeDasharray="4 4"
+// //                     />
+
+// //                     <XAxis
+// //                       dataKey="time"
+// //                       axisLine={false}
+// //                       tickLine={false}
+// //                       tick={{
+// //                         fill: "#8EA6C4",
+// //                         fontSize: 8,
+// //                       }}
+// //                     />
+
+// //                     <YAxis
+// //                       axisLine={false}
+// //                       tickLine={false}
+// //                       tick={{
+// //                         fill: "#8EA6C4",
+// //                         fontSize: 8,
+// //                       }}
+// //                     />
+
+// //                     <Tooltip
+// //                       contentStyle={analyticsTooltipStyle}
+// //                       formatter={(value) => [
+// //                         `${Math.round(value)} A`,
+// //                         "Current",
+// //                       ]}
+// //                     />
+
+// //                     <Bar
+// //                       dataKey="current"
+// //                       fill="#FBBF24"
+// //                       radius={[5, 5, 0, 0]}
+// //                       maxBarSize={28}
+// //                       isAnimationActive={false}
+// //                     />
+// //                   </BarChart>
+// //                 </ResponsiveContainer>
+// //               </div>
+
+// //               <div className="pointer-events-none absolute bottom-3 right-4 rounded-lg border border-amber-400/20 bg-[#061737]/90 px-3 py-2">
+// //                 <p className="text-[8px] uppercase text-slate-500">
+// //                   Average
+// //                 </p>
+
+// //                 <p className="mt-1 text-[clamp(10px,1.4vh,13px)] font-semibold text-amber-300">
+// //                   {avg} A
+// //                 </p>
+// //               </div>
+// //             </div>
+
+// //             {/* VOLTAGE */}
+// //             <div className="relative col-span-3 flex min-h-0 flex-col overflow-hidden rounded-2xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4">
+// //               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-300 to-transparent" />
+
+// //               <div className="flex items-start justify-between gap-3">
+// //                 <h3 className="text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em] text-white">
+// //                   Voltage Analytics
+// //                 </h3>
+
+// //                 <div className="text-right">
+// //                   <p className="text-[20px] font-semibold text-white">
+// //                     {voltageNumber} V
+// //                   </p>
+
+// //                   <span
+// //                     className={`text-[9px] font-bold uppercase ${
+// //                       voltageStatus === "Stable"
+// //                         ? "text-emerald-300"
+// //                         : "text-amber-300"
+// //                     }`}
+// //                   >
+// //                     {voltageStatus}
+// //                   </span>
+// //                 </div>
+// //               </div>
+
+// //               <div className="mt-3 min-h-0 flex-1">
+// //                 <ResponsiveContainer width="100%" height="100%">
+// //                   <LineChart
+// //                     data={graphValues}
+// //                     margin={{
+// //                       top: 10,
+// //                       right: 42,
+// //                       left: -16,
+// //                       bottom: 0,
+// //                     }}
+// //                   >
+// //                     <CartesianGrid
+// //                       vertical={false}
+// //                       stroke="rgba(148,163,184,0.13)"
+// //                       strokeDasharray="4 4"
+// //                     />
+
+// //                     <XAxis
+// //                       dataKey="time"
+// //                       axisLine={false}
+// //                       tickLine={false}
+// //                       tick={{
+// //                         fill: "#8EA6C4",
+// //                         fontSize: 8,
+// //                       }}
+// //                     />
+
+// //                     <YAxis
+// //                       domain={[380, 460]}
+// //                       axisLine={false}
+// //                       tickLine={false}
+// //                       tick={{
+// //                         fill: "#8EA6C4",
+// //                         fontSize: 8,
+// //                       }}
+// //                     />
+
+// //                     <ReferenceLine
+// //                       y={440}
+// //                       stroke="#F87171"
+// //                       strokeDasharray="4 4"
+// //                       label={{
+// //                         value: "Upper",
+// //                         position: "right",
+// //                         fill: "#F87171",
+// //                         fontSize: 8,
+// //                       }}
+// //                     />
+
+// //                     <ReferenceLine
+// //                       y={400}
+// //                       stroke="#FBBF24"
+// //                       strokeDasharray="4 4"
+// //                       label={{
+// //                         value: "Lower",
+// //                         position: "right",
+// //                         fill: "#FBBF24",
+// //                         fontSize: 8,
+// //                       }}
+// //                     />
+
+// //                     <Tooltip
+// //                       contentStyle={analyticsTooltipStyle}
+// //                       formatter={(value) => [
+// //                         `${Number(value).toFixed(1)} V`,
+// //                         "Voltage",
+// //                       ]}
+// //                     />
+
+// //                     <Line
+// //                       type="monotone"
+// //                       dataKey="voltage"
+// //                       stroke="#60A5FA"
+// //                       strokeWidth={2.3}
+// //                       dot={{
+// //                         r: 3,
+// //                         fill: "#60A5FA",
+// //                         stroke: "#DBEAFE",
+// //                         strokeWidth: 1,
+// //                       }}
+// //                       activeDot={{ r: 5 }}
+// //                       isAnimationActive={false}
+// //                     />
+// //                   </LineChart>
+// //                 </ResponsiveContainer>
+// //               </div>
+// //             </div>
+// //           </div>
+// //         </div>
+// //       </div>
+// //     </div>
+// //   );
+// // };
+// // const createPccAnalyticsData = (title, panel, index) => ({
+// //   title: `${title} - ${panel.name.replace(/\n/g, " ")}`,
+// //   subtitle: "LT Distribution Panel Live Analytics",
+// //   kwh: `${1245 + index * 18}`,
+// //   kvah: `${1180 + index * 15}`,
+// //   voltage: "433 V",
+// //   current: `${210 + index * 4} A`,
+// //   pf: index % 2 === 0 ? "0.98" : "0.97",
+// //   load: 70 + (index % 8),
+// //   health: 92 + (index % 5),
+// //   status: "Stable",
+// // });
+
+// // const Pcc1Popup = () => {
+// //   const [openedPanels, setOpenedPanels] = React.useState([]);
+// //   const [activePccAnalytics, setActivePccAnalytics] = React.useState(null);
+
+// //   const pcc1Panels = [
+// //     { name: "LT6\nIN", arrow: "down" },
+// //     { name: "DG1234\nIN", arrow: "down" },
+// //     { name: "OG 1", arrow: "up" },
+// //     { name: "RM1", arrow: "up" },
+// //     { name: "RM2", arrow: "up" },
+// //     { name: "Utility 1", arrow: "up" },
+// //     { name: "Spare 1", arrow: "up" },
+// //     { name: "Bus\nCoupler\nB/C", arrow: "both" },
+// //     { name: "LT5", arrow: "down" },
+// //     { name: "DG 1234", arrow: "down" },
+// //     { name: "RM1", arrow: "up" },
+// //     { name: "RM2", arrow: "up" },
+// //     { name: "Utility 2", arrow: "up" },
+// //     { name: "Spare 2", arrow: "up" },
+// //   ];
+
+// //   const pcc2Panels = [
+// //     { name: "LT1\nIN", arrow: "down" },
+// //     { name: "DG1234\nIN", arrow: "down" },
+// //     { name: "OG 1", arrow: "up" },
+// //     { name: "RM1", arrow: "up" },
+// //     { name: "RM2", arrow: "up" },
+// //     { name: "Utility 1", arrow: "up" },
+// //     { name: "Spare 1", arrow: "up" },
+// //     { name: "Bus\nCoupler\nB/C", arrow: "both" },
+// //     { name: "LT2", arrow: "down" },
+// //     { name: "DG 1234", arrow: "down" },
+// //     { name: "RM1", arrow: "up" },
+// //     { name: "RM2", arrow: "up" },
+// //     { name: "Utility 2", arrow: "up" },
+// //     { name: "Spare 2", arrow: "up" },
+// //   ];
+
+// //   const FlowArrow = ({ type, id }) => (
+// //     <svg
+// //       className="absolute left-0 -top-[48px] w-full h-12 overflow-visible pointer-events-none"
+// //       viewBox="0 0 100 48"
+// //       fill="none"
+// //       xmlns="http://www.w3.org/2000/svg"
+// //     >
+// //       <defs>
+// //         <marker
+// //           id={`arrow-wing-${id}`}
+// //           viewBox="0 0 10 10"
+// //           refX="4"
+// //           refY="5"
+// //           markerWidth="8"
+// //           markerHeight="8"
+// //           orient="auto-start-reverse"
+// //         >
+// //           <path d="M 0 2 L 6 5 L 0 8 z" fill="#00E5FF" />
+// //         </marker>
+// //       </defs>
+
+// //       {type === "down" && (
+// //         <>
+// //           <path
+// //             d="M 50 0 V 48"
+// //             stroke="#004AAD"
+// //             strokeWidth="2.5"
+// //             strokeLinecap="round"
+// //           />
+// //           <path
+// //             d="M 50 0 V 48"
+// //             stroke="#00E5FF"
+// //             strokeWidth="2.5"
+// //             strokeLinecap="round"
+// //             className="flow-path-right"
+// //             markerEnd={`url(#arrow-wing-${id})`}
+// //           />
+// //         </>
+// //       )}
+
+// //       {type === "up" && (
+// //         <>
+// //           <path
+// //             d="M 50 48 V 0"
+// //             stroke="#004AAD"
+// //             strokeWidth="2.5"
+// //             strokeLinecap="round"
+// //           />
+// //           <path
+// //             d="M 50 48 V 0"
+// //             stroke="#00E5FF"
+// //             strokeWidth="2.5"
+// //             strokeLinecap="round"
+// //             className="flow-path-left"
+// //             markerEnd={`url(#arrow-wing-${id})`}
+// //           />
+// //         </>
+// //       )}
+
+// //       {type === "both" && (
+// //         <>
+// //           <path
+// //             d="M 18 24 H 82"
+// //             stroke="#004AAD"
+// //             strokeWidth="2.5"
+// //             strokeLinecap="round"
+// //           />
+// //           <path
+// //             d="M 18 24 H 82"
+// //             stroke="#00E5FF"
+// //             strokeWidth="2.5"
+// //             strokeLinecap="round"
+// //             className="flow-path-right"
+// //             markerEnd={`url(#arrow-wing-${id})`}
+// //           />
+// //           <path
+// //             d="M 82 24 H 18"
+// //             stroke="#00E5FF"
+// //             strokeWidth="2.5"
+// //             strokeLinecap="round"
+// //             className="flow-path-left"
+// //             markerEnd={`url(#arrow-wing-${id})`}
+// //           />
+// //         </>
+// //       )}
+// //     </svg>
+// //   );
+
+// //   const PanelFeatures = ({ heading }) => (
+// //     <div className="absolute inset-0 z-30 bg-[#081F5C] px-2 py-2">
+// //       <div className="text-center text-[9px] font-black text-blue-300 uppercase tracking-wide leading-tight border-b border-[#2B5DA8] pb-1 mb-1 whitespace-pre-line">
+// //         {heading}
+// //       </div>
+
+// //       {[
+// //         ["kWh", "1245"],
+// //         ["kvah", "1180"],
+// //         ["V", "433V"],
+// //         ["PF", "0.98"],
+// //         ["Amps", "210A"],
+// //       ].map(([label, value]) => (
+// //         <div key={label} className="flex justify-between text-[9px] leading-[15px]">
+// //           <span className="text-blue-200">{label}</span>
+// //           <span className="text-white">{value}</span>
+// //         </div>
+// //       ))}
+// //     </div>
+// //   );
+
+// //   const PCCRow = ({ title, top, rowPanels }) => (
+// //     <div className={`absolute left-0 ${top} w-full h-[210px]`}>
+// //       <div className="absolute left-[10px] top-[-34px] text-[#081F5C] text-base font-semibold">
+// //         {title}
+// //       </div>
+
+// //       <div className="absolute left-0 top-[45px] w-full h-[150px] flex items-stretch z-20">
+// //         {rowPanels.map((panel, index) => {
+// //           const panelId = `${title}-${index}`;
+// //           const isOpened = openedPanels.includes(panelId);
+
+// //           return (
+// //             <div
+// //               key={`${title}-${panel.name}-${index}`}
+// //               onMouseEnter={() =>
+// //                 setOpenedPanels((prev) =>
+// //                   prev.includes(panelId) ? prev : [...prev, panelId]
+// //                 )
+// //               }
+// //               onClick={() =>
+// //                 setActivePccAnalytics(
+// //                   createPccAnalyticsData(title, panel, index)
+// //                 )
+// //               }
+// //               className="relative h-full flex-1 min-w-0 bg-[#081F5C] border-2 border-[#004AAD] border-r-0 last:border-r-2 text-white cursor-pointer"
+// //             >
+// //               <FlowArrow
+// //                 type={panel.arrow}
+// //                 id={`${title.replace(/\s/g, "")}-${index}`}
+// //               />
+
+// //               {isOpened ? (
+// //                 <PanelFeatures heading={panel.name} />
+// //               ) : (
+// //                 <div className="absolute inset-0 z-20 flex items-center justify-center px-1">
+// //                   <span className="text-[clamp(11px,1.5vh,14px)] md:text-[12px] font-semibold leading-tight text-center whitespace-pre-line">
+// //                     {panel.name}
+// //                   </span>
+// //                 </div>
+// //               )}
+// //             </div>
+// //           );
+// //         })}
+// //       </div>
+// //     </div>
+// //   );
+
+// //   return (
+// //     <>
+// //       <PopupShell
+// //         title="Wing 1 LT Distribution Flow"
+// //         onBack={() => setActivePopup("pccMain")}
+// //       >
+// //         <div className="w-full max-w-[1600px] mx-auto px-4 py-6 overflow-visible">
+// //           <div className="relative w-full h-[520px] overflow-visible">
+// //             <PCCRow title="PCC 1" top="top-[25px]" rowPanels={pcc1Panels} />
+// //             <PCCRow title="PCC 2" top="top-[285px]" rowPanels={pcc2Panels} />
+// //           </div>
+// //         </div>
+// //       </PopupShell>
+
+// //       {activePccAnalytics && (
+// //         <PccPanelAnalyticsView
+// //           data={activePccAnalytics}
+// //           onBack={() => setActivePccAnalytics(null)}
+// //         />
+// //       )}
+// //     </>
+// //   );
+// // };
+
+// // const Pcc2Popup = () => {
+// //   const [openedPanels, setOpenedPanels] = React.useState([]);
+// //   const [activePccAnalytics, setActivePccAnalytics] = React.useState(null);
+
+// //   const pcc3Panels = [
+// //     { name: "LT4\nIN", arrow: "down" },
+// //     { name: "DG567\nIN", arrow: "down" },
+// //     { name: "OG 1", arrow: "up" },
+// //     { name: "OG 2", arrow: "up" },
+// //     { name: "OG 3", arrow: "up" },
+// //     { name: "OG 4", arrow: "up" },
+// //     { name: "OG 5", arrow: "up" },
+// //     { name: "OG 6", arrow: "up" },
+// //     { name: "OG 7", arrow: "up" },
+// //     { name: "OG 8", arrow: "up" },
+// //     { name: "OG 9", arrow: "up" },
+// //     { name: "OG 10", arrow: "up" },
+// //   ];
+
+// //   const pcc4Panels = [
+// //     { name: "LT3\nIN", arrow: "down" },
+// //     { name: "DG567\nIN", arrow: "down" },
+// //     { name: "OG 1", arrow: "up" },
+// //     { name: "OG 2", arrow: "up" },
+// //     { name: "OG 3", arrow: "up" },
+// //     { name: "OG 4", arrow: "up" },
+// //     { name: "OG 5", arrow: "up" },
+// //     { name: "OG 6", arrow: "up" },
+// //     { name: "OG 7", arrow: "up" },
+// //     { name: "OG 8", arrow: "up" },
+// //     { name: "OG 9", arrow: "up" },
+// //     { name: "OG 10", arrow: "up" },
+// //   ];
+
+// //   const FlowArrow = ({ type, id }) => (
+// //     <svg
+// //       className="absolute left-0 -top-[48px] w-full h-12 overflow-visible pointer-events-none"
+// //       viewBox="0 0 100 48"
+// //       fill="none"
+// //       xmlns="http://www.w3.org/2000/svg"
+// //     >
+// //       <defs>
+// //         <marker
+// //           id={`arrow-wing2-${id}`}
+// //           viewBox="0 0 10 10"
+// //           refX="4"
+// //           refY="5"
+// //           markerWidth="8"
+// //           markerHeight="8"
+// //           orient="auto-start-reverse"
+// //         >
+// //           <path d="M 0 2 L 6 5 L 0 8 z" fill="#00E5FF" />
+// //         </marker>
+// //       </defs>
+
+// //       {type === "down" && (
+// //         <>
+// //           <path
+// //             d="M 50 0 V 48"
+// //             stroke="#004AAD"
+// //             strokeWidth="2.5"
+// //             strokeLinecap="round"
+// //           />
+// //           <path
+// //             d="M 50 0 V 48"
+// //             stroke="#00E5FF"
+// //             strokeWidth="2.5"
+// //             strokeLinecap="round"
+// //             className="flow-path-right"
+// //             markerEnd={`url(#arrow-wing2-${id})`}
+// //           />
+// //         </>
+// //       )}
+
+// //       {type === "up" && (
+// //         <>
+// //           <path
+// //             d="M 50 48 V 0"
+// //             stroke="#004AAD"
+// //             strokeWidth="2.5"
+// //             strokeLinecap="round"
+// //           />
+// //           <path
+// //             d="M 50 48 V 0"
+// //             stroke="#00E5FF"
+// //             strokeWidth="2.5"
+// //             strokeLinecap="round"
+// //             className="flow-path-left"
+// //             markerEnd={`url(#arrow-wing2-${id})`}
+// //           />
+// //         </>
+// //       )}
+
+// //       {type === "both" && (
+// //         <>
+// //           <path
+// //             d="M 18 24 H 82"
+// //             stroke="#004AAD"
+// //             strokeWidth="2.5"
+// //             strokeLinecap="round"
+// //           />
+// //           <path
+// //             d="M 18 24 H 82"
+// //             stroke="#00E5FF"
+// //             strokeWidth="2.5"
+// //             strokeLinecap="round"
+// //             className="flow-path-right"
+// //             markerEnd={`url(#arrow-wing2-${id})`}
+// //           />
+// //           <path
+// //             d="M 82 24 H 18"
+// //             stroke="#00E5FF"
+// //             strokeWidth="2.5"
+// //             strokeLinecap="round"
+// //             className="flow-path-left"
+// //             markerEnd={`url(#arrow-wing2-${id})`}
+// //           />
+// //         </>
+// //       )}
+// //     </svg>
+// //   );
+
+// //   const PanelFeatures = ({ heading }) => (
+// //     <div className="absolute inset-0 z-30 bg-[#081F5C] px-2 py-2">
+// //       <div className="text-center text-[9px] font-black text-blue-300 uppercase tracking-wide leading-tight border-b border-[#2B5DA8] pb-1 mb-1 whitespace-pre-line">
+// //         {heading}
+// //       </div>
+
+// //       {[
+// //         ["kWh", "1245"],
+// //         ["kvah", "1180"],
+// //         ["V", "433V"],
+// //         ["PF", "0.98"],
+// //         ["Amps", "210A"],
+// //       ].map(([label, value]) => (
+// //         <div key={label} className="flex justify-between text-[9px] leading-[15px]">
+// //           <span className="text-blue-200">{label}</span>
+// //           <span className="text-white">{value}</span>
+// //         </div>
+// //       ))}
+// //     </div>
+// //   );
+
+// //   const PCCRow = ({ title, top, rowPanels }) => (
+// //     <div className={`absolute left-0 ${top} w-full h-[210px]`}>
+// //       <div className="absolute left-[10px] top-[-34px] text-[#081F5C] text-base font-semibold">
+// //         {title}
+// //       </div>
+
+// //       <div className="absolute left-0 top-[45px] w-full h-[150px] flex items-stretch z-20">
+// //         {rowPanels.map((panel, index) => {
+// //           const panelId = `${title}-${index}`;
+// //           const isOpened = openedPanels.includes(panelId);
+
+// //           return (
+// //             <div
+// //               key={`${title}-${panel.name}-${index}`}
+// //               onMouseEnter={() =>
+// //                 setOpenedPanels((prev) =>
+// //                   prev.includes(panelId) ? prev : [...prev, panelId]
+// //                 )
+// //               }
+// //               onClick={() =>
+// //                 setActivePccAnalytics(
+// //                   createPccAnalyticsData(title, panel, index)
+// //                 )
+// //               }
+// //               className="relative h-full flex-1 min-w-0 bg-[#081F5C] border-2 border-[#004AAD] border-r-0 last:border-r-2 text-white cursor-pointer"
+// //             >
+// //               <FlowArrow
+// //                 type={panel.arrow}
+// //                 id={`${title.replace(/\s/g, "")}-${index}`}
+// //               />
+
+// //               {isOpened ? (
+// //                 <PanelFeatures heading={panel.name} />
+// //               ) : (
+// //                 <div className="absolute inset-0 flex items-center justify-center px-1">
+// //                   <span className="text-[clamp(11px,1.5vh,14px)] md:text-[12px] font-semibold leading-tight text-center whitespace-pre-line">
+// //                     {panel.name}
+// //                   </span>
+// //                 </div>
+// //               )}
+// //             </div>
+// //           );
+// //         })}
+// //       </div>
+// //     </div>
+// //   );
+
+// //   return (
+// //     <>
+// //       <PopupShell
+// //         title="Wing 2 LT Distribution Flow"
+// //         onBack={() => setActivePopup("pccMain")}
+// //       >
+// //         <div className="w-full max-w-7xl mx-auto px-4 py-6 overflow-visible">
+// //           <div className="relative w-full h-[520px] overflow-visible">
+// //             <PCCRow title="PCC 3" top="top-[25px]" rowPanels={pcc3Panels} />
+// //             <PCCRow title="PCC 4" top="top-[285px]" rowPanels={pcc4Panels} />
+// //           </div>
+// //         </div>
+// //       </PopupShell>
+
+// //       {activePccAnalytics && (
+// //         <PccPanelAnalyticsView
+// //           data={activePccAnalytics}
+// //           onBack={() => setActivePccAnalytics(null)}
+// //         />
+// //       )}
+// //     </>
+// //   );
+// // };
+
+// // const PCCSimpleBox = ({ title, subtitle, onClick }) => (
+// //   <div
+// //     onClick={onClick}
+// //     className="h-[145px] w-full bg-[#081F5C] border-2 border-[#004AAD] text-white shadow-xl panel-active-glow flex flex-col items-center justify-center text-center cursor-pointer overflow-hidden px-4"
+// //   >
+// //     <h4 className="text-xl font-bold uppercase tracking-[0.05em] text-white">
+// //       {title}
+// //     </h4>
+
+// //     <span className="mt-1 text-[clamp(11px,1.5vh,14px)] text-slate-300 font-medium">
+// //       {subtitle}
+// //     </span>
+// //   </div>
+// // );
+
+// // const PCCMainPopup = () => (
+// //   <PopupShell title="PCC Main Overview">
+// //     <div className="w-full max-w-6xl mx-auto px-6 py-10 overflow-hidden">
+// //       <div className="relative w-full h-[360px]">
+// //         <div className="absolute left-1/2 top-0 -translate-x-1/2 w-[280px]">
+// //           <PCCSimpleBox title="PCC" subtitle="Main LT Distribution" />
+// //         </div>
+
+// //         <svg
+// //           className="absolute left-0 top-[145px] w-full h-[120px] overflow-visible pointer-events-none"
+// //           viewBox="0 0 1000 120"
+// //           fill="none"
+// //         >
+// //           <defs>
+// //             <marker
+// //               id="pcc-wing-arrow"
+// //               viewBox="0 0 12 12"
+// //               refX="5"
+// //               refY="5"
+// //               markerWidth="8"
+// //               markerHeight="8"
+// //               orient="auto"
+// //             >
+// //               <path d="M0 2 L6 5 L0 8 Z" fill="#00E5FF" />
+// //             </marker>
+// //           </defs>
+
+// //           <path
+// //             d="M500 0 V45 H250 V95"
+// //             stroke="#004AAD"
+// //             strokeWidth="3"
+// //             strokeLinecap="round"
+// //             strokeLinejoin="round"
+// //           />
+
+// //           <path
+// //             d="M500 45 H750 V95"
+// //             stroke="#004AAD"
+// //             strokeWidth="3"
+// //             strokeLinecap="round"
+// //             strokeLinejoin="round"
+// //           />
+
+// //           <path
+// //             d="M500 0 V45 H250 V95"
+// //             stroke="#00E5FF"
+// //             strokeWidth="3"
+// //             strokeLinecap="round"
+// //             strokeLinejoin="round"
+// //             className="flow-path-left"
+// //             markerEnd="url(#pcc-wing-arrow)"
+// //           />
+
+// //           <path
+// //             d="M500 45 H750 V95"
+// //             stroke="#00E5FF"
+// //             strokeWidth="3"
+// //             strokeLinecap="round"
+// //             strokeLinejoin="round"
+// //             className="flow-path-right"
+// //             markerEnd="url(#pcc-wing-arrow)"
+// //           />
+// //         </svg>
+
+// //         <div className="absolute left-[8%] top-[240px] w-[36%]">
+// //           <PCCSimpleBox
+// //             title="PCC 1 / PCC 2"
+// //             subtitle="Wing A"
+// //             onClick={() => setActivePopup("wing1")}
+// //           />
+// //         </div>
+
+// //         <div className="absolute right-[8%] top-[240px] w-[36%]">
+// //           <PCCSimpleBox
+// //             title="PCC 3 / PCC 4"
+// //             subtitle="Wing B"
+// //             onClick={() => setActivePopup("wing2")}
+// //           />
+// //         </div>
+// //       </div>
+// //     </div>
+// //   </PopupShell>
+// // );
+
+
+
+// const PccPanelAnalyticsView = ({ data, onBack }) => {
+//   if (!data) return null;
+
+//   const loadNumber =
+//     Number(String(data.load).replace(/[^\d.-]/g, "")) || 0;
+
+//   const kwhNumber =
+//     Number(String(data.kwh).replace(/[^\d.-]/g, "")) || 0;
+
+//   const kvahNumber =
+//     Number(String(data.kvah).replace(/[^\d.-]/g, "")) || 0;
+
+//   const currentNumber =
+//     Number(String(data.current).replace(/[^\d.-]/g, "")) || 0;
+
+//   const voltageNumber =
+//     Number(String(data.voltage).replace(/[^\d.-]/g, "")) || 0;
+
+//   const pfNumber =
+//     Number(String(data.pf).replace(/[^\d.-]/g, "")) || 0;
+
+//   const graphValues = [
+//     {
+//       time: "08:00",
+//       kwh: Math.max(kwhNumber - 420, 0),
+//       kvah: Math.max(kvahNumber - 390, 0),
+//       current: Math.max(currentNumber - 24, 0),
+//       voltage: voltageNumber - 5,
+//       pf: Math.max(pfNumber - 0.04, 0),
+//     },
+//     {
+//       time: "09:00",
+//       kwh: Math.max(kwhNumber - 375, 0),
+//       kvah: Math.max(kvahNumber - 345, 0),
+//       current: Math.max(currentNumber - 18, 0),
+//       voltage: voltageNumber - 3,
+//       pf: Math.max(pfNumber - 0.03, 0),
+//     },
+//     {
+//       time: "10:00",
+//       kwh: Math.max(kwhNumber - 325, 0),
+//       kvah: Math.max(kvahNumber - 300, 0),
+//       current: Math.max(currentNumber - 12, 0),
+//       voltage: voltageNumber - 1,
+//       pf: Math.max(pfNumber - 0.02, 0),
+//     },
+//     {
+//       time: "11:00",
+//       kwh: Math.max(kwhNumber - 275, 0),
+//       kvah: Math.max(kvahNumber - 250, 0),
+//       current: Math.max(currentNumber - 6, 0),
+//       voltage: voltageNumber + 1,
+//       pf: Math.max(pfNumber - 0.01, 0),
+//     },
+//     {
+//       time: "12:00",
+//       kwh: Math.max(kwhNumber - 225, 0),
+//       kvah: Math.max(kvahNumber - 205, 0),
+//       current: currentNumber + 4,
+//       voltage: voltageNumber + 2,
+//       pf: Math.min(pfNumber + 0.005, 1),
+//     },
+//     {
+//       time: "13:00",
+//       kwh: Math.max(kwhNumber - 175, 0),
+//       kvah: Math.max(kvahNumber - 160, 0),
+//       current: currentNumber + 10,
+//       voltage: voltageNumber + 3,
+//       pf: Math.min(pfNumber + 0.01, 1),
+//     },
+//     {
+//       time: "14:00",
+//       kwh: Math.max(kwhNumber - 125, 0),
+//       kvah: Math.max(kvahNumber - 115, 0),
+//       current: currentNumber + 16,
+//       voltage: voltageNumber + 2,
+//       pf: Math.min(pfNumber + 0.015, 1),
+//     },
+//     {
+//       time: "15:00",
+//       kwh: Math.max(kwhNumber - 80, 0),
+//       kvah: Math.max(kvahNumber - 70, 0),
+//       current: currentNumber + 9,
+//       voltage: voltageNumber,
+//       pf: Math.min(pfNumber + 0.01, 1),
+//     },
+//     {
+//       time: "16:00",
+//       kwh: Math.max(kwhNumber - 35, 0),
+//       kvah: Math.max(kvahNumber - 30, 0),
+//       current: currentNumber + 4,
+//       voltage: voltageNumber - 1,
+//       pf: pfNumber,
+//     },
+//     {
+//       time: "Now",
+//       kwh: kwhNumber,
+//       kvah: kvahNumber,
+//       current: currentNumber,
+//       voltage: voltageNumber,
+//       pf: pfNumber,
+//     },
+//   ];
+
+//   const avg = Math.round(
+//     graphValues.reduce(
+//       (total, item) => total + item.current,
+//       0
+//     ) / graphValues.length
+//   );
+
+//   const currentStatus =
+//     currentNumber >= 350
+//       ? "Critical"
+//       : currentNumber >= 280
+//         ? "High"
+//         : "Normal";
+
+//   const voltageStatus =
+//     voltageNumber < 400
+//       ? "Low"
+//       : voltageNumber > 450
+//         ? "High"
+//         : "Stable";
+
+//   const pfStatus =
+//     pfNumber < 0.85
+//       ? "Critical"
+//       : pfNumber < 0.95
+//         ? "Low"
+//         : "Good";
+
+//   const pfGaugeData = [
+//     {
+//       name: "Power Factor",
+//       value: Math.min(Math.max(pfNumber * 100, 0), 100),
+//       fill:
+//         pfNumber < 0.85
+//           ? "#F87171"
+//           : pfNumber < 0.95
+//             ? "#FBBF24"
+//             : "#34D399",
+//     },
+//   ];
+
+//   const chartId = String(data.title || "pcc").replace(
+//     /[^a-zA-Z0-9]/g,
+//     "-"
+//   );
+
+//   return (
+//     <div className="fixed inset-x-0 bottom-0 top-[72px] z-[1100] overflow-hidden bg-[#020817] text-white">
+//       <div className="flex h-full min-h-0 flex-col bg-[radial-gradient(circle_at_top_left,rgba(0,74,173,0.2),transparent_30%),radial-gradient(circle_at_top_right,rgba(34,211,238,0.08),transparent_25%),linear-gradient(180deg,#020B24_0%,#020817_100%)] px-4 pb-4">
+//         <div className="mx-auto flex h-full min-h-0 w-full max-w-[1600px] flex-col">
+//           <div className="shrink-0 border-b border-[#174575] bg-[#020B24]/95 py-3 backdrop-blur-xl">
+//             <div className="flex items-stretch gap-4">
+//               <button
+//                 type="button"
+//                 onClick={onBack}
+//                 className="flex h-[62px] shrink-0 items-center justify-center rounded-xl border border-[#1B4D83] bg-[#061737] px-5 text-[12px] font-semibold text-slate-100 transition hover:border-cyan-400/70 hover:bg-[#092452]"
+//               >
+//                 <ArrowLeft className="mr-2 h-4 w-4 text-cyan-300" />
+//                 Back to PCC Panel
+//               </button>
+
+//               <div className="relative flex-1 overflow-hidden rounded-xl border border-[#1B4D83] bg-[#071633] px-5 py-3">
+//                 <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400" />
+
+//                 <div className="flex h-full items-center justify-between">
+//                   <div>
+//                     <h2 className="text-[23px] font-semibold tracking-tight text-white">
+//                       {data.title}
+//                     </h2>
+
+//                     <p className="mt-1 text-[10px] text-slate-400">
+//                       {data.subtitle}
+//                     </p>
+//                   </div>
+
+//                   <div className="rounded-lg border border-emerald-400/30 bg-emerald-400/[0.08] px-4 py-2 text-[11px] font-semibold text-emerald-300">
+//                     <span className="flex items-center gap-2">
+//                       <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
+//                       {data.status}
+//                     </span>
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+
+//           <div className="mt-3 grid min-h-0 flex-1 grid-cols-6 grid-rows-2 gap-3">
+//             {/* KWH */}
+//             <div className="relative col-span-2 flex min-h-0 flex-col overflow-hidden rounded-2xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4">
+//               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300 to-transparent" />
+
+//               <div className="flex items-start justify-between gap-3">
+//                 <h3 className="text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em] text-white">
+//                   kWh Analytics
+//                 </h3>
+
+//                 <p className="text-[19px] font-semibold text-cyan-300">
+//                   {kwhNumber.toLocaleString()} kWh
+//                 </p>
+//               </div>
+
+//               <div className="mt-3 min-h-0 flex-1">
+//                 <ResponsiveContainer width="100%" height="100%">
+//                   <AreaChart
+//                     data={graphValues}
+//                     margin={{
+//                       top: 10,
+//                       right: 10,
+//                       left: -16,
+//                       bottom: 0,
+//                     }}
+//                   >
+//                     <defs>
+//                       <linearGradient
+//                         id={`pccKwh-${chartId}`}
+//                         x1="0"
+//                         y1="0"
+//                         x2="0"
+//                         y2="1"
+//                       >
+//                         <stop
+//                           offset="0%"
+//                           stopColor="#22D3EE"
+//                           stopOpacity={0.72}
+//                         />
+
+//                         <stop
+//                           offset="100%"
+//                           stopColor="#22D3EE"
+//                           stopOpacity={0.03}
+//                         />
+//                       </linearGradient>
+//                     </defs>
+
+//                     <CartesianGrid
+//                       vertical={false}
+//                       stroke="rgba(148,163,184,0.13)"
+//                       strokeDasharray="4 4"
+//                     />
+
+//                     <XAxis
+//                       dataKey="time"
+//                       axisLine={false}
+//                       tickLine={false}
+//                       interval={1}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <YAxis
+//                       axisLine={false}
+//                       tickLine={false}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <Tooltip
+//                       contentStyle={analyticsTooltipStyle}
+//                       formatter={(value) => [
+//                         `${Number(value).toLocaleString()} kWh`,
+//                         "Energy",
+//                       ]}
+//                     />
+
+//                     <Area
+//                       type="monotone"
+//                       dataKey="kwh"
+//                       stroke="#22D3EE"
+//                       strokeWidth={2.3}
+//                       fill={`url(#pccKwh-${chartId})`}
+//                       dot={false}
+//                       isAnimationActive={false}
+//                     />
+//                   </AreaChart>
+//                 </ResponsiveContainer>
+//               </div>
+//             </div>
+
+//             {/* kvah */}
+//             <div className="relative col-span-2 flex min-h-0 flex-col overflow-hidden rounded-2xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4">
+//               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-purple-300 to-transparent" />
+
+//               <div className="flex items-start justify-between gap-3">
+//                 <h3 className="text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em] text-white">
+//                   kvah Analytics
+//                 </h3>
+
+//                 <p className="text-[19px] font-semibold text-purple-300">
+//                   {kvahNumber.toLocaleString()} kvah
+//                 </p>
+//               </div>
+
+//               <div className="mt-3 min-h-0 flex-1">
+//                 <ResponsiveContainer width="100%" height="100%">
+//                   <BarChart
+//                     data={graphValues}
+//                     margin={{
+//                       top: 10,
+//                       right: 10,
+//                       left: -16,
+//                       bottom: 0,
+//                     }}
+//                   >
+//                     <CartesianGrid
+//                       vertical={false}
+//                       stroke="rgba(148,163,184,0.13)"
+//                       strokeDasharray="4 4"
+//                     />
+
+//                     <XAxis
+//                       dataKey="time"
+//                       axisLine={false}
+//                       tickLine={false}
+//                       interval={1}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <YAxis
+//                       axisLine={false}
+//                       tickLine={false}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <Tooltip
+//                       contentStyle={analyticsTooltipStyle}
+//                       formatter={(value) => [
+//                         `${Number(value).toLocaleString()} kvah`,
+//                         "Apparent Energy",
+//                       ]}
+//                     />
+
+//                     <Bar
+//                       dataKey="kvah"
+//                       fill="#A78BFA"
+//                       radius={[5, 5, 0, 0]}
+//                       maxBarSize={26}
+//                       isAnimationActive={false}
+//                     />
+//                   </BarChart>
+//                 </ResponsiveContainer>
+//               </div>
+//             </div>
+
+//             {/* POWER FACTOR */}
+//             <div className="relative col-span-2 flex min-h-0 flex-col overflow-hidden rounded-2xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4">
+//               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-300 to-transparent" />
+
+//               <div className="flex items-start justify-between gap-3">
+//                 <h3 className="text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em] text-white">
+//                   Power Factor
+//                 </h3>
+
+//                 <span
+//                   className={`text-[10px] font-bold uppercase ${
+//                     pfStatus === "Critical"
+//                       ? "text-red-300"
+//                       : pfStatus === "Low"
+//                         ? "text-amber-300"
+//                         : "text-emerald-300"
+//                   }`}
+//                 >
+//                   {pfStatus}
+//                 </span>
+//               </div>
+
+//               <div className="relative mt-2 min-h-0 flex-1">
+//                 <ResponsiveContainer width="100%" height="100%">
+//                   <RadialBarChart
+//                     innerRadius="62%"
+//                     outerRadius="92%"
+//                     data={pfGaugeData}
+//                     startAngle={210}
+//                     endAngle={-30}
+//                   >
+//                     <PolarAngleAxis
+//                       type="number"
+//                       domain={[0, 100]}
+//                       angleAxisId={0}
+//                       tick={false}
+//                     />
+
+//                     <RadialBar
+//                       background={{
+//                         fill: "rgba(255,255,255,0.08)",
+//                       }}
+//                       dataKey="value"
+//                       cornerRadius={12}
+//                       isAnimationActive={false}
+//                     />
+//                   </RadialBarChart>
+//                 </ResponsiveContainer>
+
+//                 <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center pt-5">
+//                   <span className="text-[34px] font-semibold text-white">
+//                     {pfNumber.toFixed(2)}
+//                   </span>
+
+//                   <span
+//                     className={`mt-1 text-[9px] font-bold uppercase ${
+//                       pfStatus === "Critical"
+//                         ? "text-red-300"
+//                         : pfStatus === "Low"
+//                           ? "text-amber-300"
+//                           : "text-emerald-300"
+//                     }`}
+//                   >
+//                     {pfStatus}
+//                   </span>
+//                 </div>
+//               </div>
+//             </div>
+
+//             {/* CURRENT */}
+//             <div className="relative col-span-3 flex min-h-0 flex-col overflow-hidden rounded-2xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4">
+//               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-300 to-transparent" />
+
+//               <div className="flex items-start justify-between gap-3">
+//                 <h3 className="text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em] text-white">
+//                   Current Analytics
+//                 </h3>
+
+//                 <div className="text-right">
+//                   <p className="text-[20px] font-semibold text-white">
+//                     {currentNumber} A
+//                   </p>
+
+//                   <span
+//                     className={`text-[9px] font-bold uppercase ${
+//                       currentStatus === "Critical"
+//                         ? "text-red-300"
+//                         : currentStatus === "High"
+//                           ? "text-amber-300"
+//                           : "text-emerald-300"
+//                     }`}
+//                   >
+//                     {currentStatus}
+//                   </span>
+//                 </div>
+//               </div>
+
+//               <div className="mt-3 min-h-0 flex-1">
+//                 <ResponsiveContainer width="100%" height="100%">
+//                   <BarChart
+//                     data={graphValues}
+//                     margin={{
+//                       top: 10,
+//                       right: 10,
+//                       left: -16,
+//                       bottom: 0,
+//                     }}
+//                   >
+//                     <CartesianGrid
+//                       vertical={false}
+//                       stroke="rgba(148,163,184,0.13)"
+//                       strokeDasharray="4 4"
+//                     />
+
+//                     <XAxis
+//                       dataKey="time"
+//                       axisLine={false}
+//                       tickLine={false}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <YAxis
+//                       axisLine={false}
+//                       tickLine={false}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <Tooltip
+//                       contentStyle={analyticsTooltipStyle}
+//                       formatter={(value) => [
+//                         `${Math.round(value)} A`,
+//                         "Current",
+//                       ]}
+//                     />
+
+//                     <Bar
+//                       dataKey="current"
+//                       fill="#FBBF24"
+//                       radius={[5, 5, 0, 0]}
+//                       maxBarSize={28}
+//                       isAnimationActive={false}
+//                     />
+//                   </BarChart>
+//                 </ResponsiveContainer>
+//               </div>
+
+//               <div className="pointer-events-none absolute bottom-3 right-4 rounded-lg border border-amber-400/20 bg-[#061737]/90 px-3 py-2">
+//                 <p className="text-[8px] uppercase text-slate-500">
+//                   Average
+//                 </p>
+
+//                 <p className="mt-1 text-[clamp(10px,1.4vh,13px)] font-semibold text-amber-300">
+//                   {avg} A
+//                 </p>
+//               </div>
+//             </div>
+
+//             {/* VOLTAGE */}
+//             <div className="relative col-span-3 flex min-h-0 flex-col overflow-hidden rounded-2xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4">
+//               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-300 to-transparent" />
+
+//               <div className="flex items-start justify-between gap-3">
+//                 <h3 className="text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em] text-white">
+//                   Voltage Analytics
+//                 </h3>
+
+//                 <div className="text-right">
+//                   <p className="text-[20px] font-semibold text-white">
+//                     {voltageNumber} V
+//                   </p>
+
+//                   <span
+//                     className={`text-[9px] font-bold uppercase ${
+//                       voltageStatus === "Stable"
+//                         ? "text-emerald-300"
+//                         : "text-amber-300"
+//                     }`}
+//                   >
+//                     {voltageStatus}
+//                   </span>
+//                 </div>
+//               </div>
+
+//               <div className="mt-3 min-h-0 flex-1">
+//                 <ResponsiveContainer width="100%" height="100%">
+//                   <LineChart
+//                     data={graphValues}
+//                     margin={{
+//                       top: 10,
+//                       right: 42,
+//                       left: -16,
+//                       bottom: 0,
+//                     }}
+//                   >
+//                     <CartesianGrid
+//                       vertical={false}
+//                       stroke="rgba(148,163,184,0.13)"
+//                       strokeDasharray="4 4"
+//                     />
+
+//                     <XAxis
+//                       dataKey="time"
+//                       axisLine={false}
+//                       tickLine={false}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <YAxis
+//                       domain={[380, 460]}
+//                       axisLine={false}
+//                       tickLine={false}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <ReferenceLine
+//                       y={440}
+//                       stroke="#F87171"
+//                       strokeDasharray="4 4"
+//                       label={{
+//                         value: "Upper",
+//                         position: "right",
+//                         fill: "#F87171",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <ReferenceLine
+//                       y={400}
+//                       stroke="#FBBF24"
+//                       strokeDasharray="4 4"
+//                       label={{
+//                         value: "Lower",
+//                         position: "right",
+//                         fill: "#FBBF24",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <Tooltip
+//                       contentStyle={analyticsTooltipStyle}
+//                       formatter={(value) => [
+//                         `${Number(value).toFixed(1)} V`,
+//                         "Voltage",
+//                       ]}
+//                     />
+
+//                     <Line
+//                       type="monotone"
+//                       dataKey="voltage"
+//                       stroke="#60A5FA"
+//                       strokeWidth={2.3}
+//                       dot={{
+//                         r: 3,
+//                         fill: "#60A5FA",
+//                         stroke: "#DBEAFE",
+//                         strokeWidth: 1,
+//                       }}
+//                       activeDot={{ r: 5 }}
+//                       isAnimationActive={false}
+//                     />
+//                   </LineChart>
+//                 </ResponsiveContainer>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+// const createPccAnalyticsData = (title, panel, index) => ({
+//   title: `${title} - ${panel.name.replace(/\n/g, " ")}`,
+//   subtitle: "LT Distribution Panel Live Analytics",
+//   kwh: `${1245 + index * 18}`,
+//   kvah: `${1180 + index * 15}`,
+//   voltage: "433 V",
+//   current: `${210 + index * 4} A`,
+//   pf: index % 2 === 0 ? "0.98" : "0.97",
+//   load: 70 + (index % 8),
+//   health: 92 + (index % 5),
+//   status: "Stable",
+// });
+
+
+// const createUpsMonitoringData = (name, index) => {
+//   const is30kva = name.startsWith("30");
+
+//   return {
+//     id: `ups-${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`,
+//     title: `UPS ${name}`,
+//     capacity: is30kva ? "30 kVA" : "10 kVA",
+//     inputVoltage: is30kva ? `${414 + index} V` : `${412 + index} V`,
+//     outputVoltage: is30kva ? `${415 + (index % 2)} V` : `${414 + (index % 2)} V`,
+//     load: `${is30kva ? 66 + index * 3 : 48 + index * 4}%`,
+//     battery: `${94 - index * 2}%`,
+//     inputFrequency: "50.0 Hz",
+//     outputFrequency: "50.0 Hz",
+//     batteryVoltage: is30kva ? `${216 - index} V DC` : `${192 - index} V DC`,
+//     backupTime: `${is30kva ? 42 - index * 3 : 58 - index * 4} min`,
+//     mode: "Online",
+//     status: "Normal",
+//     isActive: true,
+//   };
+// };
+
+// const UpsMonitoringCard = ({ data, onAnalytics }) => {
+//   const [isOpen, setIsOpen] = React.useState(false);
+//   const boxRef = React.useRef(null);
+
+//   React.useEffect(() => {
+//     const handleOutsideClick = (event) => {
+//       if (
+//         boxRef.current &&
+//         !boxRef.current.contains(event.target)
+//       ) {
+//         setIsOpen(false);
+//       }
+//     };
+
+//     document.addEventListener("mousedown", handleOutsideClick);
+
+//     return () => {
+//       document.removeEventListener("mousedown", handleOutsideClick);
+//     };
+//   }, []);
+
+//   return (
+//     <div
+//       ref={boxRef}
+//       onMouseEnter={() => setIsOpen(true)}
+//       onFocus={() => setIsOpen(true)}
+//       onClick={(event) => {
+//         event.stopPropagation();
+
+//         if (isOpen) {
+//           onAnalytics?.();
+//         } else {
+//           setIsOpen(true);
+//         }
+//       }}
+//       role="button"
+//       tabIndex={0}
+//       onKeyDown={(event) => {
+//         if (event.key === "Enter" || event.key === " ") {
+//           event.preventDefault();
+
+//           if (isOpen) {
+//             onAnalytics?.();
+//           } else {
+//             setIsOpen(true);
+//           }
+//         }
+//       }}
+//       className="
+//         relative
+//         flex
+//         h-[165px]
+//         min-w-0
+//         cursor-pointer
+//         flex-col
+//         items-center
+//         justify-center
+//         overflow-hidden
+//         border-2
+//         border-[#004AAD]
+//         bg-[#081F5C]
+//         px-3
+//         text-center
+//         text-white
+//         shadow-xl
+//         outline-none
+//         panel-active-glow
+//       "
+//     >
+//       {isOpen ? (
+//         <div className="absolute inset-0 z-20 bg-[#081F5C] px-3 py-3">
+//           <div className="mb-2 border-b border-[#2B5DA8] pb-1">
+//             <div className="text-[10px] font-black uppercase tracking-[0.06em] text-blue-300">
+//               {data.title}
+//             </div>
+
+//             <div className="mt-1 flex items-center justify-center gap-1.5">
+//               <span
+//                 className={`h-1.5 w-1.5 rounded-full ${
+//                   data.isActive
+//                     ? "bg-emerald-400 shadow-[0_0_7px_rgba(52,211,153,0.9)]"
+//                     : "bg-red-500 shadow-[0_0_7px_rgba(239,68,68,0.9)]"
+//                 }`}
+//               />
+//               <span
+//                 className={`text-[7px] font-bold uppercase ${
+//                   data.isActive ? "text-emerald-400" : "text-red-400"
+//                 }`}
+//               >
+//                 {data.isActive ? "Live" : "Inactive"}
+//               </span>
+//             </div>
+//           </div>
+
+//           {[
+//             ["Input V", data.inputVoltage],
+//             ["Output V", data.outputVoltage],
+//             ["Load", data.load],
+//             ["Battery", data.battery],
+//             ["Freq.", data.outputFrequency],
+//             ["Mode", data.mode],
+//           ].map(([label, value]) => (
+//             <div
+//               key={label}
+//               className="flex items-center justify-between gap-2 text-[9px] leading-[16px]"
+//             >
+//               <span className="text-blue-200">{label}</span>
+//               <span className="font-medium text-white">{value}</span>
+//             </div>
+//           ))}
+
+//           <div className="mt-2 border-t border-[#2B5DA8] pt-1 text-center text-[7px] font-bold uppercase tracking-[0.08em] text-cyan-300">
+//             Click for analytics
+//           </div>
+//         </div>
+//       ) : (
+//         <>
+//           <span className="text-[8px] font-black uppercase tracking-[0.14em] text-blue-300">
+//             UPS
+//           </span>
+
+//           <strong className="mt-3 text-[15px] font-black uppercase leading-tight tracking-[0.05em] text-white">
+//             {data.title.replace("UPS ", "")}
+//           </strong>
+
+//           <span className="mt-1 text-[9px] font-medium text-slate-300">
+//             {data.capacity}
+//           </span>
+
+//           <div className="mt-3 flex items-center gap-1.5">
+//             <span
+//               className={`h-2 w-2 rounded-full ${
+//                 data.isActive
+//                   ? "bg-emerald-400 shadow-[0_0_7px_rgba(52,211,153,0.9)]"
+//                   : "bg-red-500 shadow-[0_0_7px_rgba(239,68,68,0.9)]"
+//               }`}
+//             />
+//             <span
+//               className={`text-[8px] font-bold uppercase ${
+//                 data.isActive ? "text-emerald-400" : "text-red-400"
+//               }`}
+//             >
+//               {data.isActive ? "Live" : "Inactive"}
+//             </span>
+//           </div>
+//         </>
+//       )}
+//     </div>
+//   );
+// };
+
+// const UpsAnalyticsView = ({ data, onBack }) => {
+//   if (!data) return null;
+
+//   const parseNumber = (value, fallback = 0) => {
+//     const parsed = Number(String(value).replace(/[^\d.-]/g, ""));
+//     return Number.isFinite(parsed) ? parsed : fallback;
+//   };
+
+//   const inputVoltage = parseNumber(data.inputVoltage, 415);
+//   const outputVoltage = parseNumber(data.outputVoltage, 415);
+//   const load = parseNumber(data.load, 60);
+//   const battery = parseNumber(data.battery, 90);
+//   const frequency = parseNumber(data.outputFrequency, 50);
+//   const backup = parseNumber(data.backupTime, 40);
+
+//   const chartId = String(data.id || data.title || "ups").replace(
+//     /[^a-zA-Z0-9]/g,
+//     "-"
+//   );
+
+//   const history = [
+//     { time: "08:00", inputVoltage: inputVoltage - 3, outputVoltage: outputVoltage - 1, load: Math.max(load - 10, 0), battery: Math.min(battery + 5, 100), frequency: frequency - 0.1 },
+//     { time: "09:00", inputVoltage: inputVoltage - 2, outputVoltage, load: Math.max(load - 7, 0), battery: Math.min(battery + 4, 100), frequency },
+//     { time: "10:00", inputVoltage: inputVoltage - 1, outputVoltage: outputVoltage + 1, load: Math.max(load - 4, 0), battery: Math.min(battery + 3, 100), frequency: frequency + 0.1 },
+//     { time: "11:00", inputVoltage: inputVoltage + 1, outputVoltage, load: load - 1, battery: Math.min(battery + 2, 100), frequency },
+//     { time: "12:00", inputVoltage, outputVoltage, load: load + 2, battery: Math.min(battery + 1, 100), frequency },
+//     { time: "13:00", inputVoltage: inputVoltage + 2, outputVoltage: outputVoltage + 1, load: load + 5, battery: Math.max(battery - 1, 0), frequency: frequency + 0.1 },
+//     { time: "14:00", inputVoltage: inputVoltage + 1, outputVoltage, load: load + 3, battery: Math.max(battery - 1, 0), frequency },
+//     { time: "Now", inputVoltage, outputVoltage, load, battery, frequency },
+//   ];
+
+//   const loadStatus =
+//     load >= 90 ? "Critical" : load >= 80 ? "High" : "Normal";
+
+//   const batteryStatus =
+//     battery <= 20 ? "Critical" : battery <= 40 ? "Low" : "Healthy";
+
+//   return (
+//     <div className="fixed inset-x-0 bottom-0 top-[72px] z-[1200] overflow-hidden bg-[#020817] text-white">
+//       <div className="flex h-full min-h-0 flex-col bg-[radial-gradient(circle_at_top_left,rgba(0,74,173,0.2),transparent_30%),radial-gradient(circle_at_top_right,rgba(34,211,238,0.08),transparent_25%),linear-gradient(180deg,#020B24_0%,#020817_100%)] px-4 pb-4">
+//         <div className="mx-auto flex h-full min-h-0 w-full max-w-[1600px] flex-col">
+//           <div className="shrink-0 border-b border-[#174575] bg-[#020B24]/95 py-3 backdrop-blur-xl">
+//             <div className="flex items-stretch gap-4">
+//               <button
+//                 type="button"
+//                 onClick={onBack}
+//                 className="flex h-[62px] shrink-0 items-center justify-center rounded-xl border border-[#1B4D83] bg-[#061737] px-5 text-[12px] font-semibold text-slate-100 transition hover:border-cyan-400/70 hover:bg-[#092452]"
+//               >
+//                 <ArrowLeft className="mr-2 h-4 w-4 text-cyan-300" />
+//                 Back to PCC
+//               </button>
+
+//               <div className="relative flex-1 overflow-hidden rounded-xl border border-[#1B4D83] bg-[#071633] px-5 py-3">
+//                 <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-cyan-400 via-blue-400 to-emerald-400" />
+
+//                 <div className="flex h-full items-center justify-between gap-4">
+//                   <div>
+//                     <h2 className="text-[23px] font-semibold tracking-tight text-white">
+//                       {data.title} Analytics
+//                     </h2>
+//                     <p className="mt-1 text-[10px] text-slate-400">
+//                       {data.capacity} UPS · Live electrical and battery monitoring
+//                     </p>
+//                   </div>
+
+//                   <div
+//                     className={`rounded-lg border px-4 py-2 text-[11px] font-semibold ${
+//                       data.isActive
+//                         ? "border-emerald-400/30 bg-emerald-400/[0.08] text-emerald-300"
+//                         : "border-red-400/30 bg-red-400/[0.08] text-red-300"
+//                     }`}
+//                   >
+//                     <span className="flex items-center gap-2">
+//                       <span
+//                         className={`h-2.5 w-2.5 rounded-full ${
+//                           data.isActive ? "bg-emerald-400" : "bg-red-500"
+//                         }`}
+//                       />
+//                       {data.isActive ? "LIVE" : "INACTIVE"}
+//                     </span>
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+
+//           <div className="mt-3 grid min-h-0 flex-1 grid-cols-6 grid-rows-2 gap-3">
+//             {/* VOLTAGE */}
+//             <div className="relative col-span-3 flex min-h-0 flex-col overflow-hidden rounded-2xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4">
+//               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300 to-transparent" />
+
+//               <div className="flex items-start justify-between gap-3">
+//                 <div>
+//                   <h3 className="text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em]">
+//                     Input / Output Voltage
+//                   </h3>
+//                   <p className="mt-1 text-[9px] text-slate-500">
+//                     UPS supply stability
+//                   </p>
+//                 </div>
+
+//                 <div className="text-right">
+//                   <p className="text-[18px] font-semibold text-cyan-300">
+//                     {data.outputVoltage}
+//                   </p>
+//                   <p className="text-[8px] text-slate-500">
+//                     Output
+//                   </p>
+//                 </div>
+//               </div>
+
+//               <div className="mt-3 min-h-0 flex-1">
+//                 <ResponsiveContainer width="100%" height="100%">
+//                   <LineChart
+//                     data={history}
+//                     margin={{ top: 10, right: 10, left: -16, bottom: 0 }}
+//                   >
+//                     <CartesianGrid
+//                       vertical={false}
+//                       stroke="rgba(148,163,184,0.13)"
+//                       strokeDasharray="4 4"
+//                     />
+//                     <XAxis
+//                       dataKey="time"
+//                       axisLine={false}
+//                       tickLine={false}
+//                       interval={1}
+//                       tick={{ fill: "#8EA6C4", fontSize: 8 }}
+//                     />
+//                     <YAxis
+//                       domain={["auto", "auto"]}
+//                       axisLine={false}
+//                       tickLine={false}
+//                       tick={{ fill: "#8EA6C4", fontSize: 8 }}
+//                     />
+//                     <Tooltip contentStyle={analyticsTooltipStyle} />
+//                     <Line
+//                       type="monotone"
+//                       dataKey="inputVoltage"
+//                       name="Input Voltage"
+//                       stroke="#22D3EE"
+//                       strokeWidth={2.3}
+//                       dot={false}
+//                       isAnimationActive={false}
+//                     />
+//                     <Line
+//                       type="monotone"
+//                       dataKey="outputVoltage"
+//                       name="Output Voltage"
+//                       stroke="#60A5FA"
+//                       strokeWidth={2.3}
+//                       dot={false}
+//                       isAnimationActive={false}
+//                     />
+//                   </LineChart>
+//                 </ResponsiveContainer>
+//               </div>
+//             </div>
+
+//             {/* LOAD */}
+//             <div className="relative col-span-3 flex min-h-0 flex-col overflow-hidden rounded-2xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4">
+//               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-300 to-transparent" />
+
+//               <div className="flex items-start justify-between gap-3">
+//                 <div>
+//                   <h3 className="text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em]">
+//                     Load Analytics
+//                   </h3>
+//                   <p className="mt-1 text-[9px] text-slate-500">
+//                     UPS utilization percentage
+//                   </p>
+//                 </div>
+
+//                 <div className="text-right">
+//                   <p className="text-[20px] font-semibold text-emerald-300">
+//                     {data.load}
+//                   </p>
+//                   <span
+//                     className={`text-[8px] font-bold uppercase ${
+//                       loadStatus === "Critical"
+//                         ? "text-red-300"
+//                         : loadStatus === "High"
+//                           ? "text-amber-300"
+//                           : "text-emerald-300"
+//                     }`}
+//                   >
+//                     {loadStatus}
+//                   </span>
+//                 </div>
+//               </div>
+
+//               <div className="mt-3 min-h-0 flex-1">
+//                 <ResponsiveContainer width="100%" height="100%">
+//                   <AreaChart
+//                     data={history}
+//                     margin={{ top: 10, right: 10, left: -16, bottom: 0 }}
+//                   >
+//                     <defs>
+//                       <linearGradient
+//                         id={`upsLoad-${chartId}`}
+//                         x1="0"
+//                         y1="0"
+//                         x2="0"
+//                         y2="1"
+//                       >
+//                         <stop offset="0%" stopColor="#34D399" stopOpacity={0.7} />
+//                         <stop offset="100%" stopColor="#34D399" stopOpacity={0.03} />
+//                       </linearGradient>
+//                     </defs>
+//                     <CartesianGrid
+//                       vertical={false}
+//                       stroke="rgba(148,163,184,0.13)"
+//                       strokeDasharray="4 4"
+//                     />
+//                     <XAxis
+//                       dataKey="time"
+//                       axisLine={false}
+//                       tickLine={false}
+//                       interval={1}
+//                       tick={{ fill: "#8EA6C4", fontSize: 8 }}
+//                     />
+//                     <YAxis
+//                       domain={[0, 100]}
+//                       axisLine={false}
+//                       tickLine={false}
+//                       tick={{ fill: "#8EA6C4", fontSize: 8 }}
+//                     />
+//                     <Tooltip
+//                       contentStyle={analyticsTooltipStyle}
+//                       formatter={(value) => [`${value}%`, "Load"]}
+//                     />
+//                     <Area
+//                       type="monotone"
+//                       dataKey="load"
+//                       stroke="#34D399"
+//                       strokeWidth={2.3}
+//                       fill={`url(#upsLoad-${chartId})`}
+//                       dot={false}
+//                       isAnimationActive={false}
+//                     />
+//                   </AreaChart>
+//                 </ResponsiveContainer>
+//               </div>
+//             </div>
+
+//             {/* BATTERY */}
+//             <div className="relative col-span-2 flex min-h-0 flex-col overflow-hidden rounded-2xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4">
+//               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-300 to-transparent" />
+
+//               <div className="flex items-start justify-between gap-3">
+//                 <h3 className="text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em]">
+//                   Battery
+//                 </h3>
+//                 <span
+//                   className={`text-[9px] font-bold uppercase ${
+//                     batteryStatus === "Critical"
+//                       ? "text-red-300"
+//                       : batteryStatus === "Low"
+//                         ? "text-amber-300"
+//                         : "text-emerald-300"
+//                   }`}
+//                 >
+//                   {batteryStatus}
+//                 </span>
+//               </div>
+
+//               <div className="relative mt-2 min-h-0 flex-1">
+//                 <ResponsiveContainer width="100%" height="100%">
+//                   <RadialBarChart
+//                     innerRadius="62%"
+//                     outerRadius="92%"
+//                     data={[
+//                       {
+//                         name: "Battery",
+//                         value: Math.min(Math.max(battery, 0), 100),
+//                         fill:
+//                           battery <= 20
+//                             ? "#F87171"
+//                             : battery <= 40
+//                               ? "#FBBF24"
+//                               : "#60A5FA",
+//                       },
+//                     ]}
+//                     startAngle={210}
+//                     endAngle={-30}
+//                   >
+//                     <PolarAngleAxis
+//                       type="number"
+//                       domain={[0, 100]}
+//                       tick={false}
+//                     />
+//                     <RadialBar
+//                       background={{ fill: "rgba(255,255,255,0.08)" }}
+//                       dataKey="value"
+//                       cornerRadius={12}
+//                       isAnimationActive={false}
+//                     />
+//                   </RadialBarChart>
+//                 </ResponsiveContainer>
+
+//                 <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center pt-5">
+//                   <span className="text-[32px] font-semibold">
+//                     {battery}%
+//                   </span>
+//                   <span className="mt-1 text-[8px] font-bold uppercase text-blue-300">
+//                     {backup} min backup
+//                   </span>
+//                 </div>
+//               </div>
+//             </div>
+
+//             {/* FREQUENCY */}
+//             <div className="relative col-span-2 flex min-h-0 flex-col overflow-hidden rounded-2xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4">
+//               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-purple-300 to-transparent" />
+
+//               <div className="flex items-start justify-between gap-3">
+//                 <h3 className="text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em]">
+//                   Frequency
+//                 </h3>
+//                 <p className="text-[19px] font-semibold text-purple-300">
+//                   {data.outputFrequency}
+//                 </p>
+//               </div>
+
+//               <div className="mt-3 min-h-0 flex-1">
+//                 <ResponsiveContainer width="100%" height="100%">
+//                   <LineChart
+//                     data={history}
+//                     margin={{ top: 10, right: 10, left: -16, bottom: 0 }}
+//                   >
+//                     <CartesianGrid
+//                       vertical={false}
+//                       stroke="rgba(148,163,184,0.13)"
+//                       strokeDasharray="4 4"
+//                     />
+//                     <XAxis
+//                       dataKey="time"
+//                       axisLine={false}
+//                       tickLine={false}
+//                       interval={1}
+//                       tick={{ fill: "#8EA6C4", fontSize: 8 }}
+//                     />
+//                     <YAxis
+//                       domain={[49.5, 50.5]}
+//                       axisLine={false}
+//                       tickLine={false}
+//                       tick={{ fill: "#8EA6C4", fontSize: 8 }}
+//                     />
+//                     <Tooltip
+//                       contentStyle={analyticsTooltipStyle}
+//                       formatter={(value) => [`${value} Hz`, "Frequency"]}
+//                     />
+//                     <Line
+//                       type="monotone"
+//                       dataKey="frequency"
+//                       stroke="#A78BFA"
+//                       strokeWidth={2.3}
+//                       dot={{ r: 2.5 }}
+//                       isAnimationActive={false}
+//                     />
+//                   </LineChart>
+//                 </ResponsiveContainer>
+//               </div>
+//             </div>
+
+//             {/* CURRENT STATUS / VALUES */}
+//             <div className="relative col-span-2 flex min-h-0 flex-col overflow-hidden rounded-2xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4">
+//               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-300 to-transparent" />
+
+//               <div className="flex items-center justify-between">
+//                 <h3 className="text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em]">
+//                   Current Monitoring
+//                 </h3>
+//                 <span className="text-[8px] font-bold uppercase text-emerald-300">
+//                   {data.status}
+//                 </span>
+//               </div>
+
+//               <div className="mt-3 grid min-h-0 flex-1 grid-cols-2 gap-2">
+//                 {[
+//                   ["Input V", data.inputVoltage],
+//                   ["Output V", data.outputVoltage],
+//                   ["Load", data.load],
+//                   ["Battery", data.battery],
+//                   ["Battery V", data.batteryVoltage],
+//                   ["Backup", data.backupTime],
+//                   ["Input Hz", data.inputFrequency],
+//                   ["Output Hz", data.outputFrequency],
+//                   ["Mode", data.mode],
+//                   ["Capacity", data.capacity],
+//                 ].map(([label, value]) => (
+//                   <div
+//                     key={label}
+//                     className="flex min-h-0 flex-col justify-center rounded-lg border border-[#174575] bg-[#061737]/70 px-3 py-2"
+//                   >
+//                     <p className="text-[7px] font-bold uppercase tracking-[0.08em] text-sky-400">
+//                       {label}
+//                     </p>
+//                     <p className="mt-1 truncate text-[13px] font-semibold text-white">
+//                       {value}
+//                     </p>
+//                   </div>
+//                 ))}
+//               </div>
+
+//               <p className="mt-2 shrink-0 text-[7px] text-slate-600">
+//                 Frontend demo values · API-ready
+//               </p>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+
+// const SinglePccPopup = ({
+//   popupTitle,
+//   pccTitle,
+//   panels,
+//   utilityUpsMap = {},
+// }) => {
+//   const [openedPanels, setOpenedPanels] =
+//     React.useState([]);
+
+//   const [
+//     activePccAnalytics,
+//     setActivePccAnalytics,
+//   ] = React.useState(null);
+
+//   const [
+//     activeUpsAnalytics,
+//     setActiveUpsAnalytics,
+//   ] = React.useState(null);
+
+//   const FlowArrow = ({ type, id }) => (
+//     <svg
+//       className="absolute left-0 -top-[48px] h-12 w-full overflow-visible pointer-events-none"
+//       viewBox="0 0 100 48"
+//       fill="none"
+//       xmlns="http://www.w3.org/2000/svg"
+//     >
+//       <defs>
+//         <marker
+//           id={`arrow-pcc-${id}`}
+//           viewBox="0 0 10 10"
+//           refX="4"
+//           refY="5"
+//           markerWidth="8"
+//           markerHeight="8"
+//           orient="auto-start-reverse"
+//         >
+//           <path
+//             d="M 0 2 L 6 5 L 0 8 z"
+//             fill="#00E5FF"
+//           />
+//         </marker>
+//       </defs>
+
+//       {type === "down" && (
+//         <>
+//           <path
+//             d="M 50 0 V 48"
+//             stroke="#004AAD"
+//             strokeWidth="2.5"
+//             strokeLinecap="round"
+//           />
+
+//           <path
+//             d="M 50 0 V 48"
+//             stroke="#00E5FF"
+//             strokeWidth="2.5"
+//             strokeLinecap="round"
+//             markerEnd={`url(#arrow-pcc-${id})`}
+//           />
+//         </>
+//       )}
+
+//       {type === "up" && (
+//         <>
+//           <path
+//             d="M 50 48 V 0"
+//             stroke="#004AAD"
+//             strokeWidth="2.5"
+//             strokeLinecap="round"
+//           />
+
+//           <path
+//             d="M 50 48 V 0"
+//             stroke="#00E5FF"
+//             strokeWidth="2.5"
+//             strokeLinecap="round"
+//             markerEnd={`url(#arrow-pcc-${id})`}
+//           />
+//         </>
+//       )}
+
+//       {type === "both" && (
+//         <>
+//           <path
+//             d="M 18 24 H 82"
+//             stroke="#004AAD"
+//             strokeWidth="2.5"
+//             strokeLinecap="round"
+//           />
+
+//           <path
+//             d="M 18 24 H 82"
+//             stroke="#00E5FF"
+//             strokeWidth="2.5"
+//             strokeLinecap="round"
+//             markerEnd={`url(#arrow-pcc-${id})`}
+//           />
+
+//           <path
+//             d="M 82 24 H 18"
+//             stroke="#00E5FF"
+//             strokeWidth="2.5"
+//             strokeLinecap="round"
+//             markerEnd={`url(#arrow-pcc-${id})`}
+//           />
+//         </>
+//       )}
+//     </svg>
+//   );
+
+//   const PanelFeatures = ({
+//     heading,
+//     index,
+//     isActive = true,
+//   }) => {
+//     const values = [
+//       ["kWh", `${1245 + index * 18}`],
+//       ["kvah", `${1180 + index * 15}`],
+//       ["V", "433V"],
+//       [
+//         "PF",
+//         index % 2 === 0
+//           ? "0.98"
+//           : "0.97",
+//       ],
+//       [
+//         "Amps",
+//         `${210 + index * 4}A`,
+//       ],
+//     ];
+
+//     return (
+//       <div className="absolute inset-0 z-30 bg-[#081F5C] px-2 py-2">
+//         <div className="mb-1 border-b border-[#2B5DA8] pb-1">
+//           <div className="text-center text-[9px] font-black uppercase leading-tight tracking-wide text-blue-300 whitespace-pre-line">
+//             {heading}
+//           </div>
+//           <div className="mt-1 flex items-center justify-center gap-1">
+//             <span className={`h-1.5 w-1.5 rounded-full ${
+//               isActive
+//                 ? "bg-emerald-400 shadow-[0_0_7px_rgba(52,211,153,0.9)]"
+//                 : "bg-red-500 shadow-[0_0_7px_rgba(239,68,68,0.9)]"
+//             }`} />
+//             <span className={`text-[7px] font-bold uppercase ${
+//               isActive ? "text-emerald-400" : "text-red-400"
+//             }`}>
+//               {isActive ? "Live" : "Inactive"}
+//             </span>
+//           </div>
+//         </div>
+
+//         {values.map(
+//           ([label, value]) => (
+//             <div
+//               key={label}
+//               className="flex justify-between text-[9px] leading-[15px]"
+//             >
+//               <span className="text-blue-200">
+//                 {label}
+//               </span>
+
+//               <span className="text-white">
+//                 {value}
+//               </span>
+//             </div>
+//           )
+//         )}
+//       </div>
+//     );
+//   };
+
+//   const openPanel = (panelId) => {
+//     setOpenedPanels((previous) => {
+//       if (previous.includes(panelId)) {
+//         return previous;
+//       }
+
+//       return [
+//         ...previous,
+//         panelId,
+//       ];
+//     });
+//   };
+
+//   const openPanelAnalytics = (
+//     panelId,
+//     panel,
+//     index
+//   ) => {
+//     openPanel(panelId);
+
+//     setActivePccAnalytics(
+//       createPccAnalyticsData(
+//         pccTitle,
+//         panel,
+//         index
+//       )
+//     );
+//   };
+
+//   return (
+//     <>
+//       <PopupShell
+//         title={popupTitle}
+//         onBack={() =>
+//           setActivePopup("pccMain")
+//         }
+//       >
+//         <div className="mx-auto w-full max-w-[1600px] overflow-visible px-4 py-6">
+//           <div className="relative min-h-[260px] w-full overflow-visible" style={{ height: Object.keys(utilityUpsMap).length ? "640px" : "260px" }}>
+//             <div className="absolute left-0 top-[25px] h-[210px] w-full">
+//               <div className="absolute left-[10px] top-[-34px] text-base font-semibold text-[#081F5C]">
+//                 {pccTitle}
+//               </div>
+
+//               <div className="absolute left-0 top-[45px] z-20 flex h-[150px] w-full items-stretch">
+//                 {panels.map(
+//                   (panel, index) => {
+//                     const panelId =
+//                       `${pccTitle}-${index}`;
+
+//                     const isOpened =
+//                       openedPanels.includes(
+//                         panelId
+//                       );
+
+//                     return (
+//                       <div
+//                         key={`${pccTitle}-${panel.name}-${index}`}
+//                         onMouseEnter={() =>
+//                           openPanel(panelId)
+//                         }
+//                         onFocus={() =>
+//                           openPanel(panelId)
+//                         }
+//                         onClick={() =>
+//                           openPanelAnalytics(
+//                             panelId,
+//                             panel,
+//                             index
+//                           )
+//                         }
+//                         role="button"
+//                         tabIndex={0}
+//                         onKeyDown={(
+//                           event
+//                         ) => {
+//                           if (
+//                             event.key ===
+//                               "Enter" ||
+//                             event.key === " "
+//                           ) {
+//                             event.preventDefault();
+
+//                             openPanelAnalytics(
+//                               panelId,
+//                               panel,
+//                               index
+//                             );
+//                           }
+//                         }}
+//                         className="
+//                           relative
+//                           h-full
+//                           min-w-0
+//                           flex-1
+//                           cursor-pointer
+//                           border-2
+//                           border-r-0
+//                           border-[#004AAD]
+//                           bg-[#081F5C]
+//                           text-white
+//                           outline-none
+//                           last:border-r-2
+//                         "
+//                       >
+//                         <FlowArrow
+//                           type={panel.arrow}
+//                           id={`${pccTitle.replace(
+//                             /\s/g,
+//                             ""
+//                           )}-${index}`}
+//                         />
+
+//                         {isOpened ? (
+//                           <PanelFeatures
+//                             heading={panel.name}
+//                             index={index}
+//                             isActive={panel.isActive !== false}
+//                           />
+//                         ) : (
+//                           <div className="absolute inset-0 z-20 flex flex-col items-center justify-center px-1">
+//                             <span className="text-center text-[clamp(11px,1.5vh,14px)] font-semibold leading-tight whitespace-pre-line md:text-[12px]">
+//                               {panel.name}
+//                             </span>
+//                             <div className="mt-2 flex items-center gap-1">
+//                               <span className={`h-1.5 w-1.5 rounded-full ${
+//                                 panel.isActive !== false
+//                                   ? "bg-emerald-400 shadow-[0_0_7px_rgba(52,211,153,0.9)]"
+//                                   : "bg-red-500 shadow-[0_0_7px_rgba(239,68,68,0.9)]"
+//                               }`} />
+//                               <span className={`text-[7px] font-bold uppercase ${
+//                                 panel.isActive !== false
+//                                   ? "text-emerald-400"
+//                                   : "text-red-400"
+//                               }`}>
+//                                 {panel.isActive !== false ? "Live" : "Inactive"}
+//                               </span>
+//                             </div>
+//                           </div>
+//                         )}
+//                       </div>
+//                     );
+//                   }
+//                 )}
+//               </div>
+
+//               {Object.keys(utilityUpsMap).length > 0 && (() => {
+//                 const utilityIndexes = panels
+//                   .map((panel, index) =>
+//                     utilityUpsMap[panel.name] ? index : null
+//                   )
+//                   .filter((index) => index !== null);
+
+//                 const columnWidth = 100 / panels.length;
+
+//                 const utilityCenters = utilityIndexes.map(
+//                   (index) => columnWidth * index + columnWidth / 2
+//                 );
+
+//                 const utilityLeft = Math.min(...utilityCenters);
+//                 const utilityRight = Math.max(...utilityCenters);
+//                 const utilityJoinCenter = 50;
+
+//                 const upsUnits = [
+//                   "30kVA-1",
+//                   "30kVA-2",
+//                   "10kVA-1",
+//                   "10kVA-2",
+//                 ];
+
+//                 return (
+//                   <div className="absolute left-0 top-[190px] w-full">
+//                     {/* Utility 1 / Utility 2 -> common UPS */}
+//                     <div className="relative h-[110px] w-full">
+//                       {utilityCenters.map((left, index) => (
+//                         <div
+//                           key={`utility-drop-${pccTitle}-${index}`}
+//                           className="absolute top-0 h-[42px] w-[3px] -translate-x-1/2 bg-cyan-400"
+//                           style={{ left: `${left}%` }}
+//                         >
+//                         </div>
+//                       ))}
+
+//                       <div
+//                         className="absolute top-[40px] h-[2px] bg-cyan-400"
+//                         style={{
+//                           left: `${utilityLeft}%`,
+//                           width: `${utilityRight - utilityLeft}%`,
+//                         }}
+//                       >
+//                       </div>
+
+//                       <div
+//                         className="absolute top-[40px] h-[58px] w-[3px] -translate-x-1/2 bg-cyan-400"
+//                         style={{ left: `${utilityJoinCenter}%` }}
+//                       >
+//                       </div>
+
+//                       <div
+//                         className="absolute top-[92px] -translate-x-1/2"
+//                         style={{ left: `${utilityJoinCenter}%` }}
+//                       >
+//                         <div className="h-0 w-0 border-x-[7px] border-t-[10px] border-x-transparent border-t-[#00E5FF]" />
+//                       </div>
+//                     </div>
+
+//                     {/* Central UPS: fixed to the exact popup center */}
+//                     <div className="relative z-10 mx-auto flex h-[82px] w-[200px] items-center justify-center border-2 border-[#004AAD] bg-[#081F5C] text-center text-white shadow-xl panel-active-glow">
+//                       <div>
+//                         <span className="block text-[8px] font-black uppercase tracking-[0.18em] text-blue-300">
+//                           Supply
+//                         </span>
+//                         <strong className="mt-1 block text-[21px] font-black uppercase tracking-[0.08em] text-white">
+//                           UPS
+//                         </strong>
+//                         <div className="mt-2 flex items-center justify-center gap-1">
+//                           <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_7px_rgba(52,211,153,0.9)]" />
+//                           <span className="text-[7px] font-bold uppercase text-emerald-400">
+//                             Live
+//                           </span>
+//                         </div>
+//                       </div>
+//                     </div>
+
+//                     {/* Central UPS -> exact four-column distribution */}
+//                     <div className="relative mx-auto mt-1 h-[102px] w-[92%]">
+//                       <div className="absolute left-1/2 top-0 h-[48px] w-[3px] -translate-x-1/2 bg-cyan-400">
+//                       </div>
+
+//                       <div className="absolute left-[12.5%] right-[12.5%] top-[45px] h-[2px] bg-cyan-400">
+//                       </div>
+
+//                       {[12.5, 37.5, 62.5, 87.5].map(
+//                         (left, index) => (
+//                           <div
+//                             key={`ups-branch-${pccTitle}-${index}`}
+//                             className="absolute top-[46px] h-[56px] w-[3px] -translate-x-1/2 bg-cyan-400"
+//                             style={{ left: `${left}%` }}
+//                           >
+//                             <div className="absolute bottom-0 left-1/2 -translate-x-1/2">
+//                               <div className="h-0 w-0 border-x-[7px] border-t-[10px] border-x-transparent border-t-[#00E5FF]" />
+//                             </div>
+//                           </div>
+//                         )
+//                       )}
+//                     </div>
+
+//                     {/* UPS cards: hover = live readings, click = analytics */}
+//                     <div className="mx-auto grid w-[92%] grid-cols-4 gap-5">
+//                       {upsUnits.map((upsTitle, index) => {
+//                         const upsData = createUpsMonitoringData(
+//                           upsTitle,
+//                           index
+//                         );
+
+//                         return (
+//                           <UpsMonitoringCard
+//                             key={`${pccTitle}-${upsTitle}`}
+//                             data={upsData}
+//                             onAnalytics={() =>
+//                               setActiveUpsAnalytics(upsData)
+//                             }
+//                           />
+//                         );
+//                       })}
+//                     </div>
+//                   </div>
+//                 );
+//               })()}
+//             </div>
+//           </div>
+//         </div>
+//       </PopupShell>
+
+//       {activePccAnalytics && (
+//         <PccPanelAnalyticsView
+//           data={activePccAnalytics}
+//           onBack={() =>
+//             setActivePccAnalytics(null)
+//           }
+//         />
+//       )}
+
+//       {activeUpsAnalytics && (
+//         <UpsAnalyticsView
+//           data={activeUpsAnalytics}
+//           onBack={() =>
+//             setActiveUpsAnalytics(null)
+//           }
+//         />
+//       )}
+//     </>
+//   );
+// };
+// const pcc1Panels = [
+//   {
+//     name: "LT6\nIN",
+//     arrow: "down",
+//   },
+//   {
+//     name: "DG1234\nIN",
+//     arrow: "down",
+//   },
+//   {
+//     name: "OG 1",
+//     arrow: "up",
+//   },
+//   {
+//     name: "RM1",
+//     arrow: "up",
+//   },
+//   {
+//     name: "RM2",
+//     arrow: "up",
+//   },
+//   {
+//     name: "Utility 1",
+//     arrow: "up",
+//   },
+//   {
+//     name: "Spare 1",
+//     arrow: "up",
+//   },
+//   {
+//     name: "Bus\nCoupler\nB/C",
+//     arrow: "both",
+//   },
+//   {
+//     name: "LT5\nIN",
+//     arrow: "down",
+//   },
+//   {
+//     name: "DG 1234\nIN",
+//     arrow: "down",
+//   },
+//   {
+//     name: "RM1",
+//     arrow: "up",
+//   },
+//   {
+//     name: "RM2",
+//     arrow: "up",
+//   },
+//   {
+//     name: "Utility 2",
+//     arrow: "up",
+//   },
+//   {
+//     name: "Spare 2",
+//     arrow: "up",
+//   },
+// ];
+
+// const pcc2Panels = [
+//   {
+//     name: "LT1\nIN",
+//     arrow: "down",
+//   },
+//   {
+//     name: "DG1234\nIN",
+//     arrow: "down",
+//   },
+//   {
+//     name: "OG 1",
+//     arrow: "up",
+//   },
+//   {
+//     name: "RM1",
+//     arrow: "up",
+//   },
+//   {
+//     name: "RM2",
+//     arrow: "up",
+//   },
+//   {
+//     name: "Utility 1",
+//     arrow: "up",
+//   },
+//   {
+//     name: "Spare 1",
+//     arrow: "up",
+//   },
+//   {
+//     name: "Bus\nCoupler\nB/C",
+//     arrow: "both",
+//   },
+//   {
+//     name: "LT2\nIN",
+//     arrow: "down",
+//   },
+//   {
+//     name: "DG 1234\nIN",
+//     arrow: "down",
+//   },
+//   {
+//     name: "RM1",
+//     arrow: "up",
+//   },
+//   {
+//     name: "RM2",
+//     arrow: "up",
+//   },
+//   {
+//     name: "Utility 2",
+//     arrow: "up",
+//   },
+//   {
+//     name: "Spare 2",
+//     arrow: "up",
+//   },
+// ];
+
+// const pcc3Panels = [
+//   {
+//     name: "LT4\nIN",
+//     arrow: "down",
+//   },
+//   {
+//     name: "DG567\nIN",
+//     arrow: "down",
+//   },
+//   {
+//     name: "OG 1",
+//     arrow: "up",
+//   },
+//   {
+//     name: "OG 2",
+//     arrow: "up",
+//   },
+//   {
+//     name: "OG 3",
+//     arrow: "up",
+//   },
+//   {
+//     name: "OG 4",
+//     arrow: "up",
+//   },
+//   {
+//     name: "OG 5",
+//     arrow: "up",
+//   },
+//   {
+//     name: "OG 6",
+//     arrow: "up",
+//   },
+//   {
+//     name: "OG 7",
+//     arrow: "up",
+//   },
+//   {
+//     name: "OG 8",
+//     arrow: "up",
+//   },
+//   {
+//     name: "OG 9",
+//     arrow: "up",
+//   },
+//   {
+//     name: "OG 10",
+//     arrow: "up",
+//   },
+// ];
+
+// const pcc4Panels = [
+//   {
+//     name: "LT3\nIN",
+//     arrow: "down",
+//   },
+//   {
+//     name: "DG567\nIN",
+//     arrow: "down",
+//   },
+//   {
+//     name: "OG 1",
+//     arrow: "up",
+//   },
+//   {
+//     name: "OG 2",
+//     arrow: "up",
+//   },
+//   {
+//     name: "OG 3",
+//     arrow: "up",
+//   },
+//   {
+//     name: "OG 4",
+//     arrow: "up",
+//   },
+//   {
+//     name: "OG 5",
+//     arrow: "up",
+//   },
+//   {
+//     name: "OG 6",
+//     arrow: "up",
+//   },
+//   {
+//     name: "OG 7",
+//     arrow: "up",
+//   },
+//   {
+//     name: "OG 8",
+//     arrow: "up",
+//   },
+//   {
+//     name: "OG 9",
+//     arrow: "up",
+//   },
+//   {
+//     name: "OG 10",
+//     arrow: "up",
+//   },
+// ];
+
+// const Pcc1Popup = () => (
+//   <SinglePccPopup
+//     popupTitle="Wing A LT Distribution Flow"
+//     pccTitle="PCC 1"
+//     panels={pcc1Panels}
+//     utilityUpsMap={{
+//       "Utility 1": true,
+//       "Utility 2": true,
+//     }}
+//   />
+// );
+
+// const Pcc2Popup = () => (
+//   <SinglePccPopup
+//     popupTitle="Wing B LT Distribution Flow"
+//     pccTitle="PCC 2"
+//     panels={pcc2Panels}
+//     utilityUpsMap={{
+//       "Utility 1": true,
+//       "Utility 2": true,
+//     }}
+//   />
+// );
+
+// const Pcc3Popup = () => (
+//   <SinglePccPopup
+//     popupTitle="Chillers LT Distribution Flow"
+//     pccTitle="PCC 3"
+//     panels={pcc3Panels}
+//   />
+// );
+
+// const Pcc4Popup = () => (
+//   <SinglePccPopup
+//     popupTitle="Chillers LT Distribution Flow"
+//     pccTitle="PCC 4"
+//     panels={pcc4Panels}
+//   />
+// );
+
+// const PCCSimpleBox = ({
+//   title,
+//   subtitle,
+//   incomings = [],
+//   onClick,
+//   isActive = true,
+// }) => {
+//   const [isOpen, setIsOpen] =
+//     React.useState(false);
+
+//   const boxRef = React.useRef(null);
+
+//   React.useEffect(() => {
+//     const handleOutsideClick = (event) => {
+//       if (
+//         boxRef.current &&
+//         !boxRef.current.contains(event.target)
+//       ) {
+//         setIsOpen(false);
+//       }
+//     };
+
+//     document.addEventListener(
+//       "mousedown",
+//       handleOutsideClick
+//     );
+
+//     return () => {
+//       document.removeEventListener(
+//         "mousedown",
+//         handleOutsideClick
+//       );
+//     };
+//   }, []);
+
+//   const handleMouseEnter = () => {
+//     if (incomings.length > 0) {
+//       setIsOpen(true);
+//     }
+//   };
+
+//   const handleClick = (event) => {
+//     event.stopPropagation();
+
+//     if (onClick) {
+//       onClick();
+//     }
+//   };
+
+//   return (
+//     <div
+//       ref={boxRef}
+//       onMouseEnter={handleMouseEnter}
+//       onClick={handleClick}
+//       className="
+//         relative
+//         h-[145px]
+//         w-full
+//         cursor-pointer
+//         overflow-hidden
+//         border-2
+//         border-[#004AAD]
+//         bg-[#081F5C]
+//         px-3
+//         text-white
+//         shadow-xl
+//         panel-active-glow
+//       "
+//     >
+//       {isOpen &&
+//       incomings.length > 0 ? (
+//         <div className="absolute inset-0 z-20 bg-[#081F5C] px-4 py-3">
+//           {/* PCC HEADING */}
+
+//           <div className="mb-2 border-b border-[#2B5DA8] pb-1 text-center">
+//             <h4 className="text-[10px] font-black uppercase tracking-wide text-blue-300">
+//               {title}
+//             </h4>
+//           </div>
+
+//           {/* LIVE STATUS — same placement/style as other popups */}
+//           <div className="mb-2 flex items-center justify-between">
+//             <span className="text-[7px] font-bold uppercase text-blue-300">
+//               Monitoring
+//             </span>
+
+//             <span
+//               className={`flex items-center gap-1 text-[7px] font-bold uppercase ${
+//                 isActive ? "text-emerald-400" : "text-red-400"
+//               }`}
+//             >
+//               <span
+//                 className={`h-1.5 w-1.5 rounded-full ${
+//                   isActive
+//                     ? "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)]"
+//                     : "bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.9)]"
+//                 }`}
+//               />
+//               {isActive ? "Live" : "Inactive"}
+//             </span>
+//           </div>
+
+//           {/* LT INCOMING MONITORING */}
+
+//           <div
+//             className={`grid h-[calc(100%-42px)] gap-x-5 ${
+//               incomings.length > 1
+//                 ? "grid-cols-2"
+//                 : "grid-cols-1"
+//             }`}
+//           >
+//             {incomings.map(
+//               (incoming, index) => (
+//                 <div
+//                   key={`${title}-${incoming.name}-${index}`}
+//                   className={`min-w-0 ${
+//                     incomings.length === 1
+//                       ? "mx-auto w-full max-w-[150px]"
+//                       : ""
+//                   }`}
+//                 >
+//                   <div className="mb-1 border-b border-[#2B5DA8] pb-1 text-center text-[9px] font-black uppercase text-cyan-300">
+//                     {incoming.name}
+//                   </div>
+
+//                   {[
+//                     [
+//                       "kWh",
+//                       incoming.kwh,
+//                     ],
+//                     [
+//                       "kvah",
+//                       incoming.kvah,
+//                     ],
+//                     [
+//                       "V",
+//                       incoming.voltage,
+//                     ],
+//                     [
+//                       "PF",
+//                       incoming.pf,
+//                     ],
+//                     [
+//                       "Amps",
+//                       incoming.current,
+//                     ],
+//                   ].map(
+//                     ([label, value]) => (
+//                       <div
+//                         key={label}
+//                         className="flex items-center justify-between gap-2 text-[9px] leading-[16px]"
+//                       >
+//                         <span className="text-blue-200">
+//                           {label}
+//                         </span>
+
+//                         <span className="font-medium text-white">
+//                           {value}
+//                         </span>
+//                       </div>
+//                     )
+//                   )}
+//                 </div>
+//               )
+//             )}
+//           </div>
+//         </div>
+//       ) : (
+//         <div className="flex h-full w-full flex-col items-center justify-center text-center">
+//           <h4 className="text-xl font-bold uppercase tracking-[0.05em] text-white">
+//             {title}
+//           </h4>
+
+//           <span className="mt-1 text-[clamp(11px,1.5vh,14px)] font-medium text-slate-300">
+//             {subtitle}
+//           </span>
+
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// const PCCMainPopup = () => (
+//   <PopupShell title="PCC Main Overview">
+//     <div className="mx-auto w-full max-w-6xl overflow-hidden px-6 py-10">
+//       <div className="relative h-[520px] w-full">
+//         {/* MAIN PCC BOX */}
+
+//         <div className="absolute left-1/2 top-0 w-[280px] -translate-x-1/2">
+//           <PCCSimpleBox
+//             title="PCC"
+//             subtitle="Main LT Distribution"
+//           />
+//         </div>
+
+//         {/* PCC FLOW LINES */}
+
+//         <svg
+//           className="pointer-events-none absolute left-0 top-[145px] h-[120px] w-full overflow-visible"
+//           viewBox="0 0 1000 120"
+//           fill="none"
+//         >
+//           <defs>
+//             <marker
+//               id="pcc-main-arrow"
+//               viewBox="0 0 12 12"
+//               refX="5"
+//               refY="5"
+//               markerWidth="8"
+//               markerHeight="8"
+//               orient="auto"
+//             >
+//               <path
+//                 d="M0 2 L6 5 L0 8 Z"
+//                 fill="#00E5FF"
+//               />
+//             </marker>
+//           </defs>
+
+//           {/* PCC 1 PATH */}
+
+//           <path
+//             d="M500 0 V45 H125 V95"
+//             stroke="#004AAD"
+//             strokeWidth="3"
+//             strokeLinecap="round"
+//             strokeLinejoin="round"
+//           />
+
+//           {/* PCC 2 PATH */}
+
+//           <path
+//             d="M500 45 H375 V95"
+//             stroke="#004AAD"
+//             strokeWidth="3"
+//             strokeLinecap="round"
+//             strokeLinejoin="round"
+//           />
+
+//           {/* PCC 3 PATH */}
+
+//           <path
+//             d="M500 45 H625 V95"
+//             stroke="#004AAD"
+//             strokeWidth="3"
+//             strokeLinecap="round"
+//             strokeLinejoin="round"
+//           />
+
+//           {/* PCC 4 PATH */}
+
+//           <path
+//             d="M500 45 H875 V95"
+//             stroke="#004AAD"
+//             strokeWidth="3"
+//             strokeLinecap="round"
+//             strokeLinejoin="round"
+//           />
+
+//           {/* PCC 1 ACTIVE FLOW */}
+
+//           <path
+//             d="M500 0 V45 H125 V95"
+//             stroke="#00E5FF"
+//             strokeWidth="3"
+//             strokeLinecap="round"
+//             strokeLinejoin="round"
+//             markerEnd="url(#pcc-main-arrow)"
+//           />
+
+//           {/* PCC 2 ACTIVE FLOW */}
+
+//           <path
+//             d="M500 45 H375 V95"
+//             stroke="#00E5FF"
+//             strokeWidth="3"
+//             strokeLinecap="round"
+//             strokeLinejoin="round"
+//             markerEnd="url(#pcc-main-arrow)"
+//           />
+
+//           {/* PCC 3 ACTIVE FLOW */}
+
+//           <path
+//             d="M500 45 H625 V95"
+//             stroke="#00E5FF"
+//             strokeWidth="3"
+//             strokeLinecap="round"
+//             strokeLinejoin="round"
+//             markerEnd="url(#pcc-main-arrow)"
+//           />
+
+//           {/* PCC 4 ACTIVE FLOW */}
+
+//           <path
+//             d="M500 45 H875 V95"
+//             stroke="#00E5FF"
+//             strokeWidth="3"
+//             strokeLinecap="round"
+//             strokeLinejoin="round"
+//             markerEnd="url(#pcc-main-arrow)"
+//           />
+//         </svg>
+
+//         {/* PCC CARDS */}
+
+//         <div className="absolute left-0 top-[240px] grid w-full grid-cols-4 gap-4">
+//           {/* PCC 1 */}
+
+//           <PCCSimpleBox
+//             title="PCC 1"
+//             subtitle="Wing A"
+//             isActive={true}
+//             incomings={[
+//               {
+//                 name: "LT6 IN",
+//                 kwh: "1245",
+//                 kvah: "1180",
+//                 voltage: "433V",
+//                 pf: "0.98",
+//                 current: "210A",
+//               },
+//               {
+//                 name: "LT5 IN",
+//                 kwh: "1328",
+//                 kvah: "1254",
+//                 voltage: "432V",
+//                 pf: "0.97",
+//                 current: "224A",
+//               },
+//             ]}
+//             onClick={() =>
+//               setActivePopup("pcc1")
+//             }
+//           />
+
+//           {/* PCC 2 */}
+
+//           <PCCSimpleBox
+//             title="PCC 2"
+//             subtitle="Wing B"
+//             isActive={true}
+//             incomings={[
+//               {
+//                 name: "LT1 IN",
+//                 kwh: "1375",
+//                 kvah: "1298",
+//                 voltage: "433V",
+//                 pf: "0.98",
+//                 current: "218A",
+//               },
+//               {
+//                 name: "LT2 IN",
+//                 kwh: "1410",
+//                 kvah: "1332",
+//                 voltage: "431V",
+//                 pf: "0.97",
+//                 current: "229A",
+//               },
+//             ]}
+//             onClick={() =>
+//               setActivePopup("pcc2")
+//             }
+//           />
+
+//           {/* PCC 3 */}
+
+//           <PCCSimpleBox
+//             title="PCC 3"
+//             subtitle="Chillers"
+//             isActive={true}
+//             incomings={[
+//               {
+//                 name: "LT4 IN",
+//                 kwh: "1518",
+//                 kvah: "1435",
+//                 voltage: "434V",
+//                 pf: "0.98",
+//                 current: "236A",
+//               },
+//             ]}
+//             onClick={() =>
+//               setActivePopup("pcc3")
+//             }
+//           />
+
+//           {/* PCC 4 */}
+
+//           <PCCSimpleBox
+//             title="PCC 4"
+//             subtitle="Chillers"
+//             isActive={true}
+//             incomings={[
+//               {
+//                 name: "LT3 IN",
+//                 kwh: "1580",
+//                 kvah: "1492",
+//                 voltage: "433V",
+//                 pf: "0.98",
+//                 current: "242A",
+//               },
+//             ]}
+//             onClick={() =>
+//               setActivePopup("pcc4")
+//             }
+//           />
+//         </div>
+//       </div>
+//     </div>
+//   </PopupShell>
+// );
+
+
+
+
+// const RaisingMainAnalyticsView = ({ data, onBack }) => {
+//   if (!data) return null;
+
+//   const kwhNumber =
+//     Number(String(data.kwh).replace(/[^\d.-]/g, "")) || 0;
+
+//   const kvahNumber =
+//     Number(String(data.kvah).replace(/[^\d.-]/g, "")) || 0;
+
+//   const voltageNumber =
+//     Number(String(data.voltage).replace(/[^\d.-]/g, "")) || 0;
+
+//   const pfNumber =
+//     Number(String(data.pf).replace(/[^\d.-]/g, "")) || 0;
+
+//   const currentNumber =
+//     Number(String(data.current).replace(/[^\d.-]/g, "")) || 0;
+
+//   const graphValues = [
+//     {
+//       time: "08:00",
+//       kwh: Math.max(kwhNumber - 420, 0),
+//       kvah: Math.max(kvahNumber - 390, 0),
+//       voltage: voltageNumber - 6,
+//       pf: Math.max(pfNumber - 0.04, 0),
+//       amps: Math.max(currentNumber - 24, 0),
+//     },
+//     {
+//       time: "09:00",
+//       kwh: Math.max(kwhNumber - 375, 0),
+//       kvah: Math.max(kvahNumber - 345, 0),
+//       voltage: voltageNumber - 4,
+//       pf: Math.max(pfNumber - 0.03, 0),
+//       amps: Math.max(currentNumber - 18, 0),
+//     },
+//     {
+//       time: "10:00",
+//       kwh: Math.max(kwhNumber - 325, 0),
+//       kvah: Math.max(kvahNumber - 300, 0),
+//       voltage: voltageNumber - 2,
+//       pf: Math.max(pfNumber - 0.02, 0),
+//       amps: Math.max(currentNumber - 12, 0),
+//     },
+//     {
+//       time: "11:00",
+//       kwh: Math.max(kwhNumber - 275, 0),
+//       kvah: Math.max(kvahNumber - 250, 0),
+//       voltage: voltageNumber,
+//       pf: Math.max(pfNumber - 0.01, 0),
+//       amps: Math.max(currentNumber - 6, 0),
+//     },
+//     {
+//       time: "12:00",
+//       kwh: Math.max(kwhNumber - 225, 0),
+//       kvah: Math.max(kvahNumber - 205, 0),
+//       voltage: voltageNumber + 2,
+//       pf: Math.min(pfNumber + 0.005, 1),
+//       amps: currentNumber + 4,
+//     },
+//     {
+//       time: "13:00",
+//       kwh: Math.max(kwhNumber - 175, 0),
+//       kvah: Math.max(kvahNumber - 160, 0),
+//       voltage: voltageNumber + 3,
+//       pf: Math.min(pfNumber + 0.01, 1),
+//       amps: currentNumber + 10,
+//     },
+//     {
+//       time: "14:00",
+//       kwh: Math.max(kwhNumber - 125, 0),
+//       kvah: Math.max(kvahNumber - 115, 0),
+//       voltage: voltageNumber + 2,
+//       pf: Math.min(pfNumber + 0.015, 1),
+//       amps: currentNumber + 16,
+//     },
+//     {
+//       time: "15:00",
+//       kwh: Math.max(kwhNumber - 80, 0),
+//       kvah: Math.max(kvahNumber - 70, 0),
+//       voltage: voltageNumber + 1,
+//       pf: Math.min(pfNumber + 0.01, 1),
+//       amps: currentNumber + 9,
+//     },
+//     {
+//       time: "16:00",
+//       kwh: Math.max(kwhNumber - 35, 0),
+//       kvah: Math.max(kvahNumber - 30, 0),
+//       voltage: voltageNumber - 1,
+//       pf: pfNumber,
+//       amps: currentNumber + 4,
+//     },
+//     {
+//       time: "Now",
+//       kwh: kwhNumber,
+//       kvah: kvahNumber,
+//       voltage: voltageNumber,
+//       pf: pfNumber,
+//       amps: currentNumber,
+//     },
+//   ];
+
+//   const avg = Math.round(
+//     graphValues.reduce(
+//       (total, item) => total + item.amps,
+//       0
+//     ) / graphValues.length
+//   );
+
+//   const currentStatus =
+//     currentNumber >= 350
+//       ? "Critical"
+//       : currentNumber >= 280
+//         ? "High"
+//         : "Normal";
+
+//   const voltageStatus =
+//     voltageNumber < 400
+//       ? "Low"
+//       : voltageNumber > 450
+//         ? "High"
+//         : "Stable";
+
+//   const pfStatus =
+//     pfNumber < 0.85
+//       ? "Critical"
+//       : pfNumber < 0.95
+//         ? "Low"
+//         : "Good";
+
+//   const pfGaugeData = [
+//     {
+//       name: "Power Factor",
+//       value: Math.min(
+//         Math.max(pfNumber * 100, 0),
+//         100
+//       ),
+//       fill:
+//         pfNumber < 0.85
+//           ? "#F87171"
+//           : pfNumber < 0.95
+//             ? "#FBBF24"
+//             : "#34D399",
+//     },
+//   ];
+
+//   const voltageLowLimit = 400;
+//   const voltageHighLimit = 440;
+
+//   const chartId = String(
+//     data.title || "raising-main"
+//   ).replace(/[^a-zA-Z0-9]/g, "-");
+
+//   const tooltipStyle = {
+//     backgroundColor: "#020B24",
+//     border: "1px solid #1B4D83",
+//     borderRadius: "10px",
+//     color: "#FFFFFF",
+//     fontSize: "11px",
+//     boxShadow: "0 14px 35px rgba(0,0,0,0.35)",
+//   };
+
+//   return (
+//     <div className="fixed inset-x-0 bottom-0 top-[72px] z-[1100] overflow-hidden bg-[#020817] text-white">
+//       <div className="flex h-full min-h-0 flex-col bg-[radial-gradient(circle_at_top_left,rgba(0,74,173,0.22),transparent_30%),radial-gradient(circle_at_top_right,rgba(34,211,238,0.08),transparent_26%),linear-gradient(180deg,#020B24_0%,#020817_100%)] px-4 pb-4">
+//         <div className="mx-auto flex h-full min-h-0 w-full max-w-[1600px] flex-col">
+//           {/* HEADER */}
+//           <div className="shrink-0 border-b border-[#174575] bg-[#020B24]/95 py-3 backdrop-blur-xl">
+//             <div className="flex items-stretch gap-4">
+//               <button
+//                 type="button"
+//                 onClick={onBack}
+//                 className="flex h-[62px] shrink-0 items-center justify-center rounded-xl border border-[#1B4D83] bg-[#061737] px-5 text-[12px] font-semibold text-slate-100 transition hover:border-cyan-400/70 hover:bg-[#092452]"
+//               >
+//                 <span className="mr-2 text-[17px] text-cyan-300">
+//                   ←
+//                 </span>
+
+//                 Back to Raising Main
+//               </button>
+
+//               <div className="relative flex-1 overflow-hidden rounded-xl border border-[#1B4D83] bg-[#071633] px-5 py-3 shadow-[0_16px_40px_rgba(0,0,0,0.2)]">
+//                 <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400" />
+
+//                 <div className="flex h-full items-center justify-between">
+//                   <div>
+//                     <h2 className="text-[23px] font-semibold tracking-tight text-white">
+//                       {data.title} Analytics
+//                     </h2>
+
+//                     {data.subtitle && (
+//                       <p className="mt-1 text-[10px] font-medium text-slate-400">
+//                         {data.subtitle}
+//                       </p>
+//                     )}
+//                   </div>
+
+//                   <div className="rounded-lg border border-emerald-400/30 bg-emerald-400/[0.08] px-4 py-2 text-[11px] font-semibold text-emerald-300">
+//                     <span className="flex items-center gap-2">
+//                       <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.75)]" />
+
+//                       {data.status}
+//                     </span>
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+
+//           {/* ANALYTICS GRID */}
+//           <div className="mt-3 grid min-h-0 flex-1 grid-cols-6 grid-rows-2 gap-3">
+//             {/* KWH ANALYTICS */}
+//             <div className="relative col-span-2 flex min-h-0 flex-col overflow-hidden rounded-2xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4 shadow-[0_18px_45px_rgba(0,0,0,0.22)]">
+//               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300 to-transparent" />
+
+//               <div className="flex shrink-0 items-start justify-between gap-3">
+//                 <h3 className="text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em] text-white">
+//                   kWh Analytics
+//                 </h3>
+
+//                 <div className="text-right">
+//                   <p className="text-[19px] font-semibold leading-none text-cyan-300">
+//                     {kwhNumber.toLocaleString()}
+//                   </p>
+
+//                   <span className="mt-1 block text-[9px] font-semibold uppercase tracking-[0.08em] text-slate-500">
+//                     kWh
+//                   </span>
+//                 </div>
+//               </div>
+
+//               <div className="mt-3 min-h-0 flex-1">
+//                 <ResponsiveContainer
+//                   width="100%"
+//                   height="100%"
+//                 >
+//                   <AreaChart
+//                     data={graphValues}
+//                     margin={{
+//                       top: 10,
+//                       right: 10,
+//                       left: -16,
+//                       bottom: 0,
+//                     }}
+//                   >
+//                     <defs>
+//                       <linearGradient
+//                         id={`raisingMainKwh-${chartId}`}
+//                         x1="0"
+//                         y1="0"
+//                         x2="0"
+//                         y2="1"
+//                       >
+//                         <stop
+//                           offset="0%"
+//                           stopColor="#22D3EE"
+//                           stopOpacity={0.75}
+//                         />
+
+//                         <stop
+//                           offset="100%"
+//                           stopColor="#22D3EE"
+//                           stopOpacity={0.03}
+//                         />
+//                       </linearGradient>
+//                     </defs>
+
+//                     <CartesianGrid
+//                       vertical={false}
+//                       stroke="rgba(148,163,184,0.13)"
+//                       strokeDasharray="4 4"
+//                     />
+
+//                     <XAxis
+//                       dataKey="time"
+//                       axisLine={false}
+//                       tickLine={false}
+//                       interval={1}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <YAxis
+//                       axisLine={false}
+//                       tickLine={false}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <Tooltip
+//                       contentStyle={tooltipStyle}
+//                       formatter={(value) => [
+//                         `${Number(value).toLocaleString()} kWh`,
+//                         "Energy",
+//                       ]}
+//                     />
+
+//                     <Area
+//                       type="monotone"
+//                       dataKey="kwh"
+//                       stroke="#22D3EE"
+//                       strokeWidth={2.4}
+//                       fill={`url(#raisingMainKwh-${chartId})`}
+//                       dot={false}
+//                       activeDot={{
+//                         r: 4,
+//                         fill: "#22D3EE",
+//                         stroke: "#FFFFFF",
+//                         strokeWidth: 1,
+//                       }}
+//                       isAnimationActive={false}
+//                     />
+//                   </AreaChart>
+//                 </ResponsiveContainer>
+//               </div>
+//             </div>
+
+//             {/* kvah ANALYTICS */}
+//             <div className="relative col-span-2 flex min-h-0 flex-col overflow-hidden rounded-2xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4 shadow-[0_18px_45px_rgba(0,0,0,0.22)]">
+//               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-purple-300 to-transparent" />
+
+//               <div className="flex shrink-0 items-start justify-between gap-3">
+//                 <h3 className="text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em] text-white">
+//                   kvah Analytics
+//                 </h3>
+
+//                 <div className="text-right">
+//                   <p className="text-[19px] font-semibold leading-none text-purple-300">
+//                     {kvahNumber.toLocaleString()}
+//                   </p>
+
+//                   <span className="mt-1 block text-[9px] font-semibold uppercase tracking-[0.08em] text-slate-500">
+//                     kvah
+//                   </span>
+//                 </div>
+//               </div>
+
+//               <div className="mt-3 min-h-0 flex-1">
+//                 <ResponsiveContainer
+//                   width="100%"
+//                   height="100%"
+//                 >
+//                   <BarChart
+//                     data={graphValues}
+//                     margin={{
+//                       top: 10,
+//                       right: 10,
+//                       left: -16,
+//                       bottom: 0,
+//                     }}
+//                   >
+//                     <CartesianGrid
+//                       vertical={false}
+//                       stroke="rgba(148,163,184,0.13)"
+//                       strokeDasharray="4 4"
+//                     />
+
+//                     <XAxis
+//                       dataKey="time"
+//                       axisLine={false}
+//                       tickLine={false}
+//                       interval={1}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <YAxis
+//                       axisLine={false}
+//                       tickLine={false}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <Tooltip
+//                       contentStyle={tooltipStyle}
+//                       formatter={(value) => [
+//                         `${Number(value).toLocaleString()} kvah`,
+//                         "Apparent Energy",
+//                       ]}
+//                     />
+
+//                     <Bar
+//                       dataKey="kvah"
+//                       fill="#A78BFA"
+//                       radius={[5, 5, 0, 0]}
+//                       maxBarSize={26}
+//                       isAnimationActive={false}
+//                     />
+//                   </BarChart>
+//                 </ResponsiveContainer>
+//               </div>
+//             </div>
+
+//             {/* POWER FACTOR ANALYTICS */}
+//             <div className="relative col-span-2 flex min-h-0 flex-col overflow-hidden rounded-2xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4 shadow-[0_18px_45px_rgba(0,0,0,0.22)]">
+//               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-300 to-transparent" />
+
+//               <div className="flex shrink-0 items-start justify-between gap-3">
+//                 <h3 className="text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em] text-white">
+//                   Power Factor Analytics
+//                 </h3>
+
+//                 <span
+//                   className={`rounded-md border px-2.5 py-1 text-[9px] font-bold uppercase tracking-[0.08em] ${
+//                     pfStatus === "Critical"
+//                       ? "border-red-400/30 bg-red-400/[0.08] text-red-300"
+//                       : pfStatus === "Low"
+//                         ? "border-amber-400/30 bg-amber-400/[0.08] text-amber-300"
+//                         : "border-emerald-400/30 bg-emerald-400/[0.08] text-emerald-300"
+//                   }`}
+//                 >
+//                   {pfStatus}
+//                 </span>
+//               </div>
+
+//               <div className="relative mt-2 min-h-0 flex-1">
+//                 <ResponsiveContainer
+//                   width="100%"
+//                   height="100%"
+//                 >
+//                   <RadialBarChart
+//                     innerRadius="64%"
+//                     outerRadius="92%"
+//                     data={pfGaugeData}
+//                     startAngle={210}
+//                     endAngle={-30}
+//                   >
+//                     <PolarAngleAxis
+//                       type="number"
+//                       domain={[0, 100]}
+//                       angleAxisId={0}
+//                       tick={false}
+//                     />
+
+//                     <RadialBar
+//                       background={{
+//                         fill: "rgba(255,255,255,0.08)",
+//                       }}
+//                       dataKey="value"
+//                       cornerRadius={12}
+//                       isAnimationActive={false}
+//                     />
+//                   </RadialBarChart>
+//                 </ResponsiveContainer>
+
+//                 <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center pt-5">
+//                   <span className="text-[38px] font-semibold tracking-tight text-white">
+//                     {pfNumber.toFixed(2)}
+//                   </span>
+
+//                   <span
+//                     className={`mt-1 text-[9px] font-bold uppercase tracking-[0.1em] ${
+//                       pfStatus === "Critical"
+//                         ? "text-red-300"
+//                         : pfStatus === "Low"
+//                           ? "text-amber-300"
+//                           : "text-emerald-300"
+//                     }`}
+//                   >
+//                     {pfStatus}
+//                   </span>
+//                 </div>
+//               </div>
+
+//               <div className="mt-2 grid shrink-0 grid-cols-3 overflow-hidden rounded-lg border border-[#174575] bg-[#061737]/70">
+//                 <div className="border-r border-[#174575] px-2 py-2 text-center">
+//                   <p className="text-[8px] uppercase text-slate-500">
+//                     Poor
+//                   </p>
+
+//                   <p className="mt-1 text-[10px] font-semibold text-red-300">
+//                     &lt; 0.85
+//                   </p>
+//                 </div>
+
+//                 <div className="border-r border-[#174575] px-2 py-2 text-center">
+//                   <p className="text-[8px] uppercase text-slate-500">
+//                     Low
+//                   </p>
+
+//                   <p className="mt-1 text-[10px] font-semibold text-amber-300">
+//                     0.85–0.94
+//                   </p>
+//                 </div>
+
+//                 <div className="px-2 py-2 text-center">
+//                   <p className="text-[8px] uppercase text-slate-500">
+//                     Good
+//                   </p>
+
+//                   <p className="mt-1 text-[10px] font-semibold text-emerald-300">
+//                     ≥ 0.95
+//                   </p>
+//                 </div>
+//               </div>
+//             </div>
+
+//             {/* AMPS ANALYTICS */}
+//             <div className="relative col-span-3 flex min-h-0 flex-col overflow-hidden rounded-2xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4 shadow-[0_18px_45px_rgba(0,0,0,0.22)]">
+//               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-300 to-transparent" />
+
+//               <div className="flex shrink-0 items-start justify-between gap-3">
+//                 <h3 className="text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em] text-white">
+//                   Amps Analytics
+//                 </h3>
+
+//                 <div className="text-right">
+//                   <p className="text-[clamp(17px,2.2vh,21px)] font-semibold leading-none text-white">
+//                     {currentNumber} A
+//                   </p>
+
+//                   <span
+//                     className={`mt-1 inline-block text-[9px] font-bold uppercase ${
+//                       currentStatus === "Critical"
+//                         ? "text-red-300"
+//                         : currentStatus === "High"
+//                           ? "text-amber-300"
+//                           : "text-emerald-300"
+//                     }`}
+//                   >
+//                     {currentStatus}
+//                   </span>
+//                 </div>
+//               </div>
+
+//               <div className="mt-3 min-h-0 flex-1">
+//                 <ResponsiveContainer
+//                   width="100%"
+//                   height="100%"
+//                 >
+//                   <BarChart
+//                     data={graphValues}
+//                     margin={{
+//                       top: 10,
+//                       right: 10,
+//                       left: -16,
+//                       bottom: 0,
+//                     }}
+//                   >
+//                     <CartesianGrid
+//                       vertical={false}
+//                       stroke="rgba(148,163,184,0.13)"
+//                       strokeDasharray="4 4"
+//                     />
+
+//                     <XAxis
+//                       dataKey="time"
+//                       axisLine={false}
+//                       tickLine={false}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <YAxis
+//                       axisLine={false}
+//                       tickLine={false}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <ReferenceLine
+//                       y={280}
+//                       stroke="#FBBF24"
+//                       strokeDasharray="4 4"
+//                       label={{
+//                         value: "High",
+//                         position: "insideTopRight",
+//                         fill: "#FBBF24",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <ReferenceLine
+//                       y={350}
+//                       stroke="#F87171"
+//                       strokeDasharray="4 4"
+//                       label={{
+//                         value: "Critical",
+//                         position: "insideTopRight",
+//                         fill: "#F87171",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <Tooltip
+//                       contentStyle={tooltipStyle}
+//                       formatter={(value) => [
+//                         `${Math.round(value)} A`,
+//                         "Current",
+//                       ]}
+//                     />
+
+//                     <Bar
+//                       dataKey="amps"
+//                       radius={[5, 5, 0, 0]}
+//                       maxBarSize={30}
+//                       isAnimationActive={false}
+//                     >
+//                       {graphValues.map((item, index) => (
+//                         <Cell
+//                           key={`${item.time}-${index}`}
+//                           fill={
+//                             item.amps >= 350
+//                               ? "#F87171"
+//                               : item.amps >= 280
+//                                 ? "#FBBF24"
+//                                 : "#22D3EE"
+//                           }
+//                         />
+//                       ))}
+//                     </Bar>
+//                   </BarChart>
+//                 </ResponsiveContainer>
+//               </div>
+
+//               <div className="pointer-events-none absolute bottom-3 right-4 rounded-lg border border-amber-400/20 bg-[#061737]/90 px-3 py-2">
+//                 <p className="text-[8px] uppercase tracking-[0.08em] text-slate-500">
+//                   Average
+//                 </p>
+
+//                 <p className="mt-1 text-[clamp(11px,1.5vh,14px)] font-semibold text-amber-300">
+//                   {avg} A
+//                 </p>
+//               </div>
+//             </div>
+
+//             {/* VOLTAGE ANALYTICS */}
+//             <div className="relative col-span-3 flex min-h-0 flex-col overflow-hidden rounded-2xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4 shadow-[0_18px_45px_rgba(0,0,0,0.22)]">
+//               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-300 to-transparent" />
+
+//               <div className="flex shrink-0 items-start justify-between gap-3">
+//                 <h3 className="text-[clamp(11px,1.5vh,14px)] font-black uppercase tracking-[0.06em] text-white">
+//                   Voltage Analytics
+//                 </h3>
+
+//                 <div className="text-right">
+//                   <p className="text-[clamp(17px,2.2vh,21px)] font-semibold leading-none text-white">
+//                     {voltageNumber} V
+//                   </p>
+
+//                   <span
+//                     className={`mt-1 inline-block text-[9px] font-bold uppercase ${
+//                       voltageStatus === "Stable"
+//                         ? "text-emerald-300"
+//                         : voltageStatus === "Low"
+//                           ? "text-amber-300"
+//                           : "text-red-300"
+//                     }`}
+//                   >
+//                     {voltageStatus}
+//                   </span>
+//                 </div>
+//               </div>
+
+//               <div className="mt-3 min-h-0 flex-1">
+//                 <ResponsiveContainer
+//                   width="100%"
+//                   height="100%"
+//                 >
+//                   <LineChart
+//                     data={graphValues}
+//                     margin={{
+//                       top: 10,
+//                       right: 44,
+//                       left: -16,
+//                       bottom: 0,
+//                     }}
+//                   >
+//                     <CartesianGrid
+//                       vertical={false}
+//                       stroke="rgba(148,163,184,0.13)"
+//                       strokeDasharray="4 4"
+//                     />
+
+//                     <XAxis
+//                       dataKey="time"
+//                       axisLine={false}
+//                       tickLine={false}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <YAxis
+//                       domain={[380, 460]}
+//                       ticks={[380, 400, 420, 440, 460]}
+//                       axisLine={false}
+//                       tickLine={false}
+//                       tick={{
+//                         fill: "#8EA6C4",
+//                         fontSize: 8,
+//                       }}
+//                       tickFormatter={(value) => `${value}V`}
+//                     />
+
+//                     <ReferenceLine
+//                       y={voltageHighLimit}
+//                       stroke="#F87171"
+//                       strokeDasharray="4 4"
+//                       label={{
+//                         value: "Upper",
+//                         position: "right",
+//                         fill: "#F87171",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <ReferenceLine
+//                       y={voltageLowLimit}
+//                       stroke="#FBBF24"
+//                       strokeDasharray="4 4"
+//                       label={{
+//                         value: "Lower",
+//                         position: "right",
+//                         fill: "#FBBF24",
+//                         fontSize: 8,
+//                       }}
+//                     />
+
+//                     <Tooltip
+//                       contentStyle={tooltipStyle}
+//                       formatter={(value) => [
+//                         `${Number(value).toFixed(1)} V`,
+//                         "Voltage",
+//                       ]}
+//                     />
+
+//                     <Line
+//                       type="monotone"
+//                       dataKey="voltage"
+//                       stroke="#60A5FA"
+//                       strokeWidth={2.4}
+//                       dot={{
+//                         r: 3,
+//                         fill: "#60A5FA",
+//                         stroke: "#DBEAFE",
+//                         strokeWidth: 1,
+//                       }}
+//                       activeDot={{
+//                         r: 5,
+//                       }}
+//                       isAnimationActive={false}
+//                     />
+//                   </LineChart>
+//                 </ResponsiveContainer>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// const RaisingMainPopup = () => {
+//   const [openedBoxes, setOpenedBoxes] = React.useState([]);
+//   const [activeRmAnalytics, setActiveRmAnalytics] = React.useState(null);
+
+//   const createRmData = (id, title, subtitle, index = 0) => ({
+//     id,
+//     title,
+//     subtitle: subtitle || "433V Raising Main Distribution",
+//     kwh: `${1245 + index * 65}`,
+//     kvah: `${1180 + index * 58}`,
+//     voltage: "433 V",
+//     current: `${210 + index * 12} A`,
+//     pf: index % 2 === 0 ? "0.98" : "0.97",
+//     load: 72 + index * 4,
+//     health: 94 + index,
+//     status: "Stable",
+//   });
+
+//  const RMBox = ({
+//   id,
+//   title,
+//   subtitle,
+//   hover = false,
+//   tall = false,
+//   onClick,
+//   isActive = true,
+// }) => {
+//   const isOpened = openedBoxes.includes(id);
+
+//   const monitorData = [
+//     ["kWh", "1245"],
+//     ["kvah", "1180"],
+//     ["V", "433V"],
+//     ["PF", "0.98"],
+//     ["Amps", "210A"],
+//   ];
+
+//   const handleHover = () => {
+//     if (!hover) return;
+
+//     setOpenedBoxes((prev) =>
+//       prev.includes(id) ? prev : [...prev, id]
+//     );
+//   };
+
+//   const handleClick = (event) => {
+//     event.stopPropagation();
+
+//     if (onClick) {
+//       onClick();
+//     }
+//   };
+
+//   return (
+//     <div
+//       onMouseEnter={handleHover}
+//       onClick={handleClick}
+//       className={`relative ${
+//         tall ? "h-[150px]" : "h-[95px]"
+//       } w-full bg-[#081F5C] border-2 border-[#004AAD] text-white shadow-xl panel-active-glow flex flex-col items-center justify-center text-center cursor-pointer overflow-hidden px-3`}
+//     >
+//       {hover && isOpened ? (
+//         <div
+//           onClick={handleClick}
+//           className="absolute inset-0 z-20 bg-[#081F5C] px-4 py-3"
+//         >
+//           <div className="mb-2 border-b border-[#2B5DA8] pb-1">
+//             <div className="text-center text-[9px] font-black text-blue-300 uppercase tracking-wide">
+//               {title}
+//             </div>
+
+//             {/* LIVE / INACTIVE STATUS */}
+//             <div className="mt-1 flex items-center justify-center gap-1.5">
+//               <span
+//                 className={`h-1.5 w-1.5 rounded-full ${
+//                   isActive
+//                     ? "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)]"
+//                     : "bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.9)]"
+//                 }`}
+//               />
+
+//               <span
+//                 className={`text-[7px] font-bold uppercase tracking-[0.08em] ${
+//                   isActive
+//                     ? "text-emerald-400"
+//                     : "text-red-400"
+//                 }`}
+//               >
+//                 {isActive ? "Live" : "Inactive"}
+//               </span>
+//             </div>
+//           </div>
+
+//           {monitorData.map(([label, value]) => (
+//             <div
+//               key={label}
+//               className="flex justify-between text-[11px] leading-[20px]"
+//             >
+//               <span className="text-blue-200">
+//                 {label}
+//               </span>
+
+//               <span className="text-white">
+//                 {value}
+//               </span>
+//             </div>
+//           ))}
+//         </div>
+//       ) : (
+//         <>
+//           <h4 className="text-base font-bold uppercase tracking-[0.05em]">
+//             {title}
+//           </h4>
+
+//           <span className="mt-1 text-[10px] text-slate-300 font-medium">
+//             {subtitle}
+//           </span>
+
+//           {/* NORMAL BOX STATUS */}
+//           <div className="mt-2 flex items-center gap-1.5">
+//             <span
+//               className={`h-2 w-2 rounded-full ${
+//                 isActive
+//                   ? "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)]"
+//                   : "bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.9)]"
+//               }`}
+//             />
+
+//             <span
+//               className={`text-[8px] font-bold uppercase tracking-[0.08em] ${
+//                 isActive
+//                   ? "text-emerald-400"
+//                   : "text-red-400"
+//               }`}
+//             >
+//               {isActive ? "Live" : "Inactive"}
+//             </span>
+//           </div>
+//         </>
+//       )}
+//     </div>
+//   );
+// };
+
+//   return (
+//     <>
+//       <PopupShell
+//         title="Raising Main Distribution"
+//         onBack={() => setActivePopup(null)}
+//       >
+//         <div className="w-full max-w-6xl mx-auto px-6 py-6 overflow-visible">
+//           <div className="relative w-full h-[520px] overflow-visible">
+//             <div className="absolute left-1/2 top-[-15px] -translate-x-1/2 w-[280px]">
+//               <RMBox
+//                 id="main-rm"
+//                 title="Raising Main"
+//                 subtitle="Main Vertical Distribution"
+//                 onClick={() =>
+//                   setActiveRmAnalytics(
+//                     createRmData(
+//                       "main-rm",
+//                       "Raising Main",
+//                       "Main Vertical Distribution",
+//                       0
+//                     )
+//                   )
+//                 }
+//               />
+//             </div>
+
+//             <svg
+//               className="absolute left-0 top-[80px] w-full h-[110px] overflow-visible pointer-events-none"
+//               viewBox="0 0 1000 110"
+//               fill="none"
+//             >
+//               <defs>
+//                 <marker
+//                   id="rm-arrow-1"
+//                   viewBox="0 0 10 10"
+//                   refX="4"
+//                   refY="5"
+//                   markerWidth="8"
+//                   markerHeight="8"
+//                   orient="auto"
+//                 >
+//                   <path d="M0 2 L6 5 L0 8 Z" fill="#00E5FF" />
+//                 </marker>
+//               </defs>
+
+//               {["M500 0 V32 H250 V82", "M500 32 H750 V82"].map(
+//                 (d, i) => (
+//                   <React.Fragment key={i}>
+//                     <path
+//                       d={d}
+//                       stroke="#004AAD"
+//                       strokeWidth="4"
+//                       strokeLinecap="round"
+//                       strokeLinejoin="round"
+//                     />
+//                     <path
+//                       d={d}
+//                       stroke="#00E5FF"
+//                       strokeWidth="4"
+//                       strokeLinecap="round"
+//                       strokeLinejoin="round"
+//                       className={i === 0 ? "flow-path-left" : "flow-path-right"}
+//                       markerEnd="url(#rm-arrow-1)"
+//                     />
+//                   </React.Fragment>
+//                 )
+//               )}
+//             </svg>
+
+//             <div className="absolute left-[9%] top-[175px] w-[34%]">
+//               <RMBox
+//                 id="wing-a"
+//                 title="Wing A"
+//                 subtitle="RM Feed A"
+//                 onClick={() =>
+//                   setActiveRmAnalytics(
+//                     createRmData("wing-a", "Wing A", "Raising Main Feed A", 1)
+//                   )
+//                 }
+//               />
+//             </div>
+
+//             <div className="absolute right-[9%] top-[175px] w-[34%]">
+//               <RMBox
+//                 id="wing-b"
+//                 title="Wing B"
+//                 subtitle="RM Feed B"
+//                 onClick={() =>
+//                   setActiveRmAnalytics(
+//                     createRmData("wing-b", "Wing B", "Raising Main Feed B", 2)
+//                   )
+//                 }
+//               />
+//             </div>
+
+//             <svg
+//               className="absolute left-0 top-[270px] w-full h-[95px] overflow-visible pointer-events-none"
+//               viewBox="0 0 1000 95"
+//               fill="none"
+//             >
+//               <defs>
+//                 <marker
+//                   id="rm-arrow-2"
+//                   viewBox="0 0 10 10"
+//                   refX="4"
+//                   refY="5"
+//                   markerWidth="8"
+//                   markerHeight="8"
+//                   orient="auto"
+//                 >
+//                   <path d="M0 2 L6 5 L0 8 Z" fill="#00E5FF" />
+//                 </marker>
+//               </defs>
+
+//               {[
+//                 "M250 0 V32 H140 V76",
+//                 "M250 0 V32 H360 V76",
+//                 "M750 0 V32 H640 V76",
+//                 "M750 0 V32 H860 V76",
+//               ].map((d, i) => (
+//                 <React.Fragment key={i}>
+//                   <path
+//                     d={d}
+//                     stroke="#004AAD"
+//                     strokeWidth="4"
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                   />
+//                   <path
+//                     d={d}
+//                     stroke="#00E5FF"
+//                     strokeWidth="4"
+//                     strokeLinecap="round"
+//                     strokeLinejoin="round"
+//                     className="flow-path-right"
+//                     markerEnd="url(#rm-arrow-2)"
+//                   />
+//                 </React.Fragment>
+//               ))}
+//             </svg>
+
+//             <div className="absolute left-[6%] top-[350px] w-[18%]">
+//               <RMBox
+//                 id="rm-a1"
+//                 title="Raising Main 1"
+//                 subtitle="Wing A Vertical Bus"
+//                 hover
+//                 tall
+//                 onClick={() =>
+//                   setActiveRmAnalytics(
+//                     createRmData(
+//                       "rm-a1",
+//                       "Raising Main 1",
+//                       "Wing A Vertical Bus",
+//                       3
+//                     )
+//                   )
+//                 }
+//               />
+//             </div>
+
+//             <div className="absolute left-[30%] top-[350px] w-[18%]">
+//               <RMBox
+//                 id="rm-a2"
+//                 title="Raising Main 2"
+//                 subtitle="Wing A Vertical Bus"
+//                 hover
+//                 tall
+//                 onClick={() =>
+//                   setActiveRmAnalytics(
+//                     createRmData(
+//                       "rm-a2",
+//                       "Raising Main 2",
+//                       "Wing A Vertical Bus",
+//                       4
+//                     )
+//                   )
+//                 }
+//               />
+//             </div>
+
+//             <div className="absolute right-[30%] top-[350px] w-[18%]">
+//               <RMBox
+//                 id="rm-b1"
+//                 title="Raising Main 3"
+//                 subtitle="Wing B Vertical Bus"
+//                 hover
+//                 tall
+//                 onClick={() =>
+//                   setActiveRmAnalytics(
+//                     createRmData(
+//                       "rm-b1",
+//                       "Raising Main 3",
+//                       "Wing B Vertical Bus",
+//                       5
+//                     )
+//                   )
+//                 }
+//               />
+//             </div>
+
+//             <div className="absolute right-[6%] top-[350px] w-[18%]">
+//               <RMBox
+//                 id="rm-b2"
+//                 title="Raising Main 4"
+//                 subtitle="Wing B Vertical Bus"
+//                 hover
+//                 tall
+//                 onClick={() =>
+//                   setActiveRmAnalytics(
+//                     createRmData(
+//                       "rm-b2",
+//                       "Raising Main 4",
+//                       "Wing B Vertical Bus",
+//                       6
+//                     )
+//                   )
+//                 }
+//               />
+//             </div>
+//           </div>
+//         </div>
+//       </PopupShell>
+
+//       {activeRmAnalytics && (
+//         <RaisingMainAnalyticsView
+//           data={activeRmAnalytics}
+//           onBack={() => setActiveRmAnalytics(null)}
+//         />
+//       )}
+//     </>
+//   );
+// };
+
+
+
+
+// const WaterManagementMonitorBox = ({
+//   id,
+//   title,
+//   subtitle,
+//   data,
+//   openedItems,
+//   setOpenedItems,
+//   onClick,
+// }) => {
+//   const showMonitor = openedItems.includes(id);
+
+//   const monitorData =
+//     id === "water-management"
+//       ? [
+//           ["Flow Rate", data.flowRate],
+//           ["Total Water", data.totalWater],
+//           ["Pressure", data.pressure],
+//           ["Status", data.status],
+//         ]
+//       : id === "stp" || id === "wtp"
+//         ? [
+//             ["Inlet Flow", data.inletFlow],
+//             ["Outlet Flow", data.outletFlow],
+//             ["pH", data.ph],
+//             ["Turbidity", data.turbidity],
+//             ["Status", data.status],
+//           ]
+//         : [
+//             ["Level", data.level],
+//             ["Volume", data.volume],
+//             ["Inlet Flow", data.inletFlow],
+//             ["Outlet Flow", data.outletFlow],
+//             ["Status", data.status],
+//           ];
+
+//   const handleHover = () => {
+//     setOpenedItems((prev) =>
+//       prev.includes(id) ? prev : [...prev, id]
+//     );
+//   };
+
+//   const handleClick = (event) => {
+//     event.stopPropagation();
+//     onClick?.();
+//   };
+
+//   return (
+//     <div
+//       onMouseEnter={handleHover}
+//       onClick={handleClick}
+//       className="relative h-[175px] w-full cursor-pointer overflow-hidden rounded border-2 border-[#004AAD] bg-[#081F5C] text-white shadow-md panel-active-glow transition-colors hover:bg-[#0A276E]"
+//     >
+//       {!showMonitor ? (
+//         <div className="absolute inset-0 flex flex-col items-center justify-center px-4 text-center">
+//           <span className="text-[9px] font-black uppercase tracking-[0.16em] text-blue-300">
+//             {subtitle}
+//           </span>
+
+//           <strong className="mt-3 text-[18px] font-black uppercase tracking-[0.08em] text-white">
+//             {title}
+//           </strong>
+
+//           <div className="mt-4 flex items-center gap-1.5 text-[8px] font-bold uppercase tracking-[0.1em] text-emerald-400">
+//             <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)]" />
+//             Live
+//           </div>
+//         </div>
+//       ) : (
+//         <div className="absolute inset-0 z-20 bg-[#081F5C] px-4 py-3">
+//           <div className="mb-2 border-b border-[#2B5DA8] pb-2 text-center">
+//             <h4 className="text-[12px] font-black uppercase leading-none tracking-[0.12em] text-white">
+//               {title}
+//             </h4>
+
+//             <span className="mt-1 block text-[7px] font-black uppercase tracking-[0.15em] text-blue-300">
+//               Monitoring
+//             </span>
+//           </div>
+
+//           <div className="mb-2 flex items-center justify-between">
+//             <span className="text-[7px] font-bold uppercase text-blue-300">
+//               {subtitle}
+//             </span>
+
+//             <span className="flex items-center gap-1 text-[7px] font-bold uppercase text-emerald-400">
+//               <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)]" />
+//               Live
+//             </span>
+//           </div>
+
+//           <div className="space-y-[4px] px-1">
+//             {monitorData.map(([label, value]) => (
+//               <div
+//                 key={label}
+//                 className="flex items-center justify-between gap-3"
+//               >
+//                 <span className="truncate text-[9px] font-medium text-slate-300">
+//                   {label}
+//                 </span>
+
+//                 <span
+//                   className={`shrink-0 text-[10px] font-bold tabular-nums ${
+//                     String(value).toLowerCase().includes("normal") ||
+//                     String(value).toLowerCase().includes("running") ||
+//                     String(value).toLowerCase().includes("healthy")
+//                       ? "text-emerald-400"
+//                       : "text-white"
+//                   }`}
+//                 >
+//                   {value}
+//                 </span>
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// };
+
+// const WaterManagementAnalyticsView = ({
+//   data,
+//   onBack,
+// }) => {
+//   if (!data) return null;
+
+//   const levelNumber =
+//     Number(String(data.level ?? "72").replace(/[^\d.-]/g, "")) || 72;
+
+//   const flowNumber =
+//     Number(
+//       String(
+//         data.flowRate ??
+//           data.outletFlow ??
+//           data.inletFlow ??
+//           "42"
+//       ).replace(/[^\d.-]/g, "")
+//     ) || 42;
+
+//   const volumeNumber =
+//     Number(
+//       String(
+//         data.volume ??
+//           data.totalWater ??
+//           "68"
+//       ).replace(/[^\d.-]/g, "")
+//     ) || 68;
+
+//   const pressureNumber =
+//     Number(
+//       String(data.pressure ?? "3.2").replace(/[^\d.-]/g, "")
+//     ) || 3.2;
+
+//   const phNumber =
+//     Number(String(data.ph ?? "7.2").replace(/[^\d.-]/g, "")) || 7.2;
+
+//   const turbidityNumber =
+//     Number(
+//       String(data.turbidity ?? "2.4").replace(/[^\d.-]/g, "")
+//     ) || 2.4;
+
+//   const graphValues = [
+//     { time: "08:00", level: Math.max(levelNumber - 12, 0), flow: Math.max(flowNumber - 8, 0), volume: Math.max(volumeNumber - 14, 0), pressure: Math.max(pressureNumber - 0.4, 0), ph: Math.max(phNumber - 0.2, 0), turbidity: Math.max(turbidityNumber - 0.3, 0) },
+//     { time: "09:00", level: Math.max(levelNumber - 9, 0), flow: Math.max(flowNumber - 5, 0), volume: Math.max(volumeNumber - 11, 0), pressure: Math.max(pressureNumber - 0.3, 0), ph: phNumber - 0.1, turbidity: turbidityNumber - 0.2 },
+//     { time: "10:00", level: Math.max(levelNumber - 7, 0), flow: Math.max(flowNumber - 3, 0), volume: Math.max(volumeNumber - 8, 0), pressure: Math.max(pressureNumber - 0.2, 0), ph: phNumber, turbidity: turbidityNumber - 0.1 },
+//     { time: "11:00", level: Math.max(levelNumber - 5, 0), flow: flowNumber + 2, volume: Math.max(volumeNumber - 5, 0), pressure: pressureNumber + 0.1, ph: phNumber + 0.1, turbidity: turbidityNumber },
+//     { time: "12:00", level: Math.max(levelNumber - 3, 0), flow: flowNumber + 4, volume: Math.max(volumeNumber - 3, 0), pressure: pressureNumber + 0.2, ph: phNumber, turbidity: turbidityNumber + 0.1 },
+//     { time: "13:00", level: levelNumber + 2, flow: flowNumber + 6, volume: volumeNumber + 2, pressure: pressureNumber + 0.1, ph: phNumber + 0.1, turbidity: turbidityNumber },
+//     { time: "14:00", level: levelNumber + 4, flow: flowNumber + 3, volume: volumeNumber + 4, pressure: pressureNumber + 0.2, ph: phNumber, turbidity: turbidityNumber + 0.2 },
+//     { time: "15:00", level: levelNumber + 2, flow: flowNumber + 1, volume: volumeNumber + 2, pressure: pressureNumber, ph: phNumber - 0.1, turbidity: turbidityNumber + 0.1 },
+//     { time: "16:00", level: levelNumber + 1, flow: flowNumber, volume: volumeNumber + 1, pressure: pressureNumber, ph: phNumber, turbidity: turbidityNumber },
+//     { time: "Now", level: levelNumber, flow: flowNumber, volume: volumeNumber, pressure: pressureNumber, ph: phNumber, turbidity: turbidityNumber },
+//   ];
+
+//   const isTank = data.type === "tank";
+//   const isStp = data.type === "stp";
+
+//   return (
+//     <div className="fixed inset-x-0 bottom-0 top-[72px] z-[1100] overflow-hidden bg-[#020B24] text-white">
+//       <div className="flex h-full min-h-0 flex-col bg-[radial-gradient(circle_at_top_left,rgba(0,74,173,0.24),transparent_28%),radial-gradient(circle_at_top_right,rgba(34,211,238,0.08),transparent_26%),linear-gradient(180deg,#020B24_0%,#020817_100%)] px-4 pb-4">
+//         <div className="mx-auto flex h-full min-h-0 w-full max-w-[1600px] flex-col">
+//           <div className="shrink-0 border-b border-[#174575] bg-[#020B24]/95 py-3 backdrop-blur-xl">
+//             <div className="flex items-stretch gap-4">
+//               <button
+//                 type="button"
+//                 onClick={onBack}
+//                 className="flex h-[62px] shrink-0 items-center justify-center rounded-lg border border-[#1B4D83] bg-[#061737] px-5 text-[12px] font-semibold text-slate-100 transition hover:border-cyan-400/60 hover:bg-[#092452]"
+//               >
+//                 <ArrowLeft className="mr-2 h-4 w-4 text-cyan-300" />
+//                 Back to Water Management
+//               </button>
+
+//               <div className="relative flex-1 overflow-hidden rounded-lg border border-[#1B4D83] bg-[#071633] px-5 py-3">
+//                 <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-cyan-400 via-blue-400 to-emerald-400" />
+
+//                 <div className="flex h-full items-center justify-between gap-4">
+//                   <div className="min-w-0">
+//                     <h2 className="truncate text-[23px] font-semibold tracking-tight text-white">
+//                       {data.title} Analytics
+//                     </h2>
+
+//                     <p className="mt-1 text-[10px] font-medium text-cyan-300">
+//                       Water monitoring and operational trend
+//                     </p>
+//                   </div>
+
+//                   <div className="shrink-0 rounded-md border border-emerald-400/30 bg-emerald-400/[0.08] px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.1em] text-emerald-300">
+//                     <span className="flex items-center gap-2">
+//                       <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
+//                       {data.status}
+//                     </span>
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+
+//           <div className="mt-3 grid min-h-0 flex-1 grid-cols-1 gap-3 lg:grid-cols-2 lg:grid-rows-2">
+//             <div className="relative min-h-0 overflow-hidden rounded-xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4">
+//               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300 to-transparent" />
+
+//               <div className="flex items-start justify-between gap-3">
+//                 <h3 className="text-[13px] font-black uppercase tracking-[0.06em] text-white">
+//                   {isTank ? "Tank Level Trend" : "Flow Rate Trend"}
+//                 </h3>
+//                 <p className="text-[20px] font-semibold text-cyan-300">
+//                   {isTank ? `${levelNumber}%` : `${flowNumber} m³/h`}
+//                 </p>
+//               </div>
+
+//               <div className="mt-3 h-[calc(100%-36px)] min-h-[170px]">
+//                 <ResponsiveContainer width="100%" height="100%">
+//                   <AreaChart data={graphValues} margin={{ top: 10, right: 10, left: -18, bottom: 0 }}>
+//                     <defs>
+//                       <linearGradient id={`waterMain-${data.id}`} x1="0" y1="0" x2="0" y2="1">
+//                         <stop offset="0%" stopColor="#22D3EE" stopOpacity={0.72} />
+//                         <stop offset="100%" stopColor="#22D3EE" stopOpacity={0.03} />
+//                       </linearGradient>
+//                     </defs>
+//                     <CartesianGrid vertical={false} stroke="rgba(148,163,184,0.14)" strokeDasharray="3 3" />
+//                     <XAxis dataKey="time" axisLine={false} tickLine={false} tick={{ fill: "#8EA6C4", fontSize: 8 }} />
+//                     <YAxis domain={isTank ? [0, 100] : ["auto", "auto"]} axisLine={false} tickLine={false} tick={{ fill: "#8EA6C4", fontSize: 8 }} />
+//                     {isTank && <ReferenceLine y={20} stroke="#F87171" strokeDasharray="4 4" />}
+//                     {isTank && <ReferenceLine y={90} stroke="#FBBF24" strokeDasharray="4 4" />}
+//                     <Tooltip contentStyle={analyticsTooltipStyle} />
+//                     <Area type="monotone" dataKey={isTank ? "level" : "flow"} stroke="#22D3EE" strokeWidth={2.3} fill={`url(#waterMain-${data.id})`} isAnimationActive={false} />
+//                   </AreaChart>
+//                 </ResponsiveContainer>
+//               </div>
+//             </div>
+
+//             <div className="relative min-h-0 overflow-hidden rounded-xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4">
+//               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-blue-300 to-transparent" />
+
+//               <div className="flex items-start justify-between gap-3">
+//                 <h3 className="text-[13px] font-black uppercase tracking-[0.06em] text-white">
+//                   {isStp ? "Water Quality" : "Stored Water / Volume"}
+//                 </h3>
+//                 <p className="text-[20px] font-semibold text-blue-300">
+//                   {isStp ? `pH ${phNumber.toFixed(1)}` : `${volumeNumber}%`}
+//                 </p>
+//               </div>
+
+//               <div className="mt-3 h-[calc(100%-36px)] min-h-[170px]">
+//                 <ResponsiveContainer width="100%" height="100%">
+//                   <LineChart data={graphValues} margin={{ top: 10, right: 10, left: -18, bottom: 0 }}>
+//                     <CartesianGrid vertical={false} stroke="rgba(148,163,184,0.14)" strokeDasharray="3 3" />
+//                     <XAxis dataKey="time" axisLine={false} tickLine={false} tick={{ fill: "#8EA6C4", fontSize: 8 }} />
+//                     <YAxis axisLine={false} tickLine={false} tick={{ fill: "#8EA6C4", fontSize: 8 }} />
+//                     <Tooltip contentStyle={analyticsTooltipStyle} />
+//                     <Line type="monotone" dataKey={isStp ? "ph" : "volume"} stroke="#60A5FA" strokeWidth={2.3} dot={{ r: 3, fill: "#60A5FA" }} isAnimationActive={false} />
+//                   </LineChart>
+//                 </ResponsiveContainer>
+//               </div>
+//             </div>
+
+//             <div className="relative min-h-0 overflow-hidden rounded-xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4">
+//               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-300 to-transparent" />
+
+//               <div className="flex items-start justify-between gap-3">
+//                 <h3 className="text-[13px] font-black uppercase tracking-[0.06em] text-white">
+//                   {isStp ? "Turbidity Trend" : "Pressure / Outlet Flow"}
+//                 </h3>
+//                 <p className="text-[20px] font-semibold text-emerald-300">
+//                   {isStp ? `${turbidityNumber.toFixed(1)} NTU` : `${flowNumber} m³/h`}
+//                 </p>
+//               </div>
+
+//               <div className="mt-3 h-[calc(100%-36px)] min-h-[170px]">
+//                 <ResponsiveContainer width="100%" height="100%">
+//                   <BarChart data={graphValues} margin={{ top: 10, right: 10, left: -18, bottom: 0 }}>
+//                     <CartesianGrid vertical={false} stroke="rgba(148,163,184,0.14)" strokeDasharray="3 3" />
+//                     <XAxis dataKey="time" axisLine={false} tickLine={false} tick={{ fill: "#8EA6C4", fontSize: 8 }} />
+//                     <YAxis axisLine={false} tickLine={false} tick={{ fill: "#8EA6C4", fontSize: 8 }} />
+//                     <Tooltip contentStyle={analyticsTooltipStyle} />
+//                     <Bar dataKey={isStp ? "turbidity" : "flow"} fill="#34D399" radius={[5, 5, 0, 0]} maxBarSize={28} isAnimationActive={false} />
+//                   </BarChart>
+//                 </ResponsiveContainer>
+//               </div>
+//             </div>
+
+//             <div className="relative min-h-0 overflow-hidden rounded-xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4">
+//               <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-purple-300 to-transparent" />
+
+//               <h3 className="text-[13px] font-black uppercase tracking-[0.06em] text-white">
+//                 Current Monitoring
+//               </h3>
+
+//               <div className="mt-4 grid grid-cols-2 gap-3">
+//                 {(
+//                   isStp
+//                     ? [
+//                         ["Inlet Flow", data.inletFlow],
+//                         ["Outlet Flow", data.outletFlow],
+//                         ["pH", data.ph],
+//                         ["Turbidity", data.turbidity],
+//                       ]
+//                     : isTank
+//                       ? [
+//                           ["Tank Level", data.level],
+//                           ["Volume", data.volume],
+//                           ["Inlet Flow", data.inletFlow],
+//                           ["Outlet Flow", data.outletFlow],
+//                         ]
+//                       : [
+//                           ["Flow Rate", data.flowRate],
+//                           ["Total Water", data.totalWater],
+//                           ["Pressure", data.pressure],
+//                           ["Status", data.status],
+//                         ]
+//                 ).map(([label, value]) => (
+//                   <div key={label} className="rounded-lg border border-[#174575] bg-[#061737]/70 px-4 py-4">
+//                     <p className="text-[8px] font-bold uppercase tracking-[0.1em] text-sky-400">
+//                       {label}
+//                     </p>
+//                     <p className="mt-2 text-[20px] font-semibold text-white">
+//                       {value}
+//                     </p>
+//                   </div>
+//                 ))}
+//               </div>
+
+//               <p className="mt-4 text-[9px] leading-5 text-slate-500">
+//                 Frontend demo readings. Replace these values with backend / IoT API response fields later.
+//               </p>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+
+// const WaterManagementMainBox = ({ title, subtitle }) => (
+//   <div className="relative h-[145px] w-full overflow-hidden rounded border-2 border-[#004AAD] bg-[#081F5C] text-white shadow-xl panel-active-glow">
+//     <div className="absolute inset-0 flex flex-col items-center justify-center px-4 text-center">
+//       <span className="text-[9px] font-black uppercase tracking-[0.18em] text-blue-300">
+//         Central Water System
+//       </span>
+
+//       <h4 className="mt-2 text-[18px] font-black uppercase tracking-[0.08em] text-white">
+//         {title}
+//       </h4>
+
+//       <span className="mt-2 text-[8px] font-bold uppercase tracking-[0.12em] text-blue-300">
+//         {subtitle}
+//       </span>
+
+//       <div className="mt-3 flex items-center gap-1.5 text-[8px] font-bold uppercase text-emerald-400">
+//         <span className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)]" />
+//         Live
+//       </div>
+//     </div>
+//   </div>
+// );
+
+// const WaterBranchConnector = ({ columns = 3 }) => {
+//   const childPositions =
+//     columns === 4
+//       ? ["12.5%", "37.5%", "62.5%", "87.5%"]
+//       : ["16.6667%", "50%", "83.3333%"];
+
+//   const horizontalLeft = childPositions[0];
+//   const horizontalRight = childPositions[childPositions.length - 1];
+
+//   return (
+//     <div className="relative mx-auto hidden h-[48px] w-full sm:block">
+//       {/* Parent vertical stops exactly at the horizontal bus. */}
+//       <div className="absolute left-1/2 top-0 h-[18px] w-[3px] -translate-x-1/2 overflow-hidden bg-cyan-400">
+//         <div className="flow-pulse-vertical" />
+//       </div>
+
+//       {/* One horizontal bus only — no duplicate/overlapping line. */}
+//       <div
+//         className="absolute top-[18px] h-[2px] overflow-hidden bg-cyan-400"
+//         style={{
+//           left: horizontalLeft,
+//           right: `calc(100% - ${horizontalRight})`,
+//         }}
+//       >
+//         <div className="flow-pulse-horizontal" />
+//       </div>
+
+//       {/* Child drops start below the bus, so they never overlap it. */}
+//       {childPositions.map((position) => (
+//         <div
+//           key={position}
+//           className="absolute top-[20px] h-[28px] w-[3px] -translate-x-1/2 overflow-hidden bg-cyan-400"
+//           style={{ left: position }}
+//         >
+//           <div className="flow-pulse-vertical" />
+//         </div>
+//       ))}
+//     </div>
+//   );
+// };
+
+// const WaterTankGroupBox = ({ onClick }) => (
+//   <button
+//     type="button"
+//     onClick={onClick}
+//     className="relative h-[175px] w-full overflow-hidden rounded border-2 border-[#004AAD] bg-[#081F5C] text-white shadow-md panel-active-glow transition-colors hover:bg-[#0A276E] focus:outline-none focus:ring-2 focus:ring-cyan-400/40"
+//   >
+//     <div className="absolute inset-0 flex flex-col items-center justify-center px-4 text-center">
+//       <span className="text-[9px] font-black uppercase tracking-[0.18em] text-blue-300">
+//         Storage Distribution
+//       </span>
+
+//       <h4 className="mt-2 text-[18px] font-black uppercase tracking-[0.08em] text-white">
+//         Water Tanks
+//       </h4>
+
+//       <span className="mt-2 text-[8px] font-bold uppercase tracking-[0.12em] text-blue-300">
+//         Tank Level Monitoring
+//       </span>
+
+//       <div className="mt-3 flex items-center gap-2 text-[8px] font-bold uppercase text-cyan-300">
+//         <span>View 4 Tanks</span>
+//         <span aria-hidden="true">→</span>
+//       </div>
+//     </div>
+//   </button>
+// );
+
+// const WaterTanksDetailPopup = ({
+//   tanks,
+//   openedItems,
+//   setOpenedItems,
+//   onClose,
+//   onTankClick,
+// }) => (
+//   <div className="fixed bottom-0 left-0 right-0 top-[72px] z-[1050] flex items-center justify-center bg-black/65 p-5 backdrop-blur-sm">
+//     <div className="relative h-[calc(100vh-110px)] w-full max-w-7xl overflow-y-auto rounded-xl border-2 border-[#004AAD] bg-slate-50 p-6 shadow-2xl">
+//       <div className="sticky top-0 z-20 mb-6 flex items-center justify-between border-b border-slate-200 bg-slate-50 pb-4">
+//         <div>
+//           <span className="text-[10px] font-black uppercase tracking-[0.25em] text-[#004AAD]">
+//             BMS Detail View
+//           </span>
+//           <h2 className="mt-1 text-xl font-black uppercase text-[#081F5C]">
+//             Water Tanks
+//           </h2>
+//           <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-500">
+//             Individual Tank Level Monitoring
+//           </p>
+//         </div>
+
+//         <div className="flex items-center gap-2">
+//           <button
+//             type="button"
+//             onClick={onClose}
+//             className="flex h-9 w-9 items-center justify-center rounded border border-[#C9D8E8] bg-white text-[#081F5C] transition-colors hover:border-[#004AAD] hover:bg-blue-50"
+//             aria-label="Back to Water Management"
+//             title="Back"
+//           >
+//             <ArrowLeft className="h-5 w-5" />
+//           </button>
+
+//           <button
+//             type="button"
+//             onClick={onClose}
+//             className="flex h-9 w-9 items-center justify-center rounded bg-[#081F5C] text-white transition-colors hover:bg-[#0A276E]"
+//             aria-label="Close Water Tanks"
+//             title="Close"
+//           >
+//             <X className="h-5 w-5" />
+//           </button>
+//         </div>
+//       </div>
+
+//       <div className="mx-auto w-full max-w-[1180px] py-5">
+//         <div className="mb-2 flex justify-center">
+//           <div className="rounded border border-cyan-300/50 bg-[#081F5C] px-6 py-3 text-center text-white shadow-md">
+//             <p className="text-[9px] font-black uppercase tracking-[0.18em] text-blue-300">
+//               Water Storage Distribution
+//             </p>
+//             <p className="mt-1 text-sm font-black uppercase tracking-[0.08em]">
+//               4 Tank Monitoring
+//             </p>
+//           </div>
+//         </div>
+
+//         <div className="mx-auto w-full max-w-[1180px] px-4">
+//           <WaterBranchConnector columns={4} />
+
+//           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
+//             {tanks.map((tank) => (
+//               <div key={tank.id} className="min-w-0">
+//                 <WaterManagementMonitorBox
+//                   id={tank.id}
+//                   title={tank.title}
+//                   subtitle={tank.subtitle}
+//                   data={tank}
+//                   openedItems={openedItems}
+//                   setOpenedItems={setOpenedItems}
+//                   onClick={() => onTankClick(tank)}
+//                 />
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   </div>
+// );
+
+// const WaterManagementPopup = () => {
+//   const [openedItems, setOpenedItems] = React.useState([]);
+//   const [activeWaterAnalytics, setActiveWaterAnalytics] =
+//     React.useState(null);
+//   const [showWaterTanksPopup, setShowWaterTanksPopup] =
+//     React.useState(false);
+
+//   const waterManagementData = {
+//     id: "water-management",
+//     type: "water",
+//     title: "Water Management",
+//     subtitle: "Central Water Monitoring",
+//     flowRate: "148 m³/h",
+//     totalWater: "72%",
+//     pressure: "3.2 bar",
+//     status: "Healthy",
+//   };
+
+//   const stpData = {
+//     id: "stp",
+//     type: "stp",
+//     title: "STP",
+//     subtitle: "Sewage Treatment Plant",
+//     inletFlow: "82 m³/h",
+//     outletFlow: "76 m³/h",
+//     ph: "7.2",
+//     turbidity: "2.4 NTU",
+//     status: "Running",
+//   };
+
+//   const wtpData = {
+//     id: "wtp",
+//     type: "stp",
+//     title: "WTP",
+//     subtitle: "Water Treatment Plant",
+//     inletFlow: "96 m³/h",
+//     outletFlow: "91 m³/h",
+//     ph: "7.1",
+//     turbidity: "1.8 NTU",
+//     status: "Running",
+//   };
+
+//   const tanks = [
+//     {
+//       id: "tank-level-1",
+//       type: "tank",
+//       title: "Tank Level-1",
+//       subtitle: "Water Storage Tank",
+//       level: "78%",
+//       volume: "78%",
+//       inletFlow: "34 m³/h",
+//       outletFlow: "29 m³/h",
+//       status: "Normal",
+//     },
+//     {
+//       id: "tank-level-2",
+//       type: "tank",
+//       title: "Tank Level-2",
+//       subtitle: "Water Storage Tank",
+//       level: "64%",
+//       volume: "64%",
+//       inletFlow: "28 m³/h",
+//       outletFlow: "25 m³/h",
+//       status: "Normal",
+//     },
+//     {
+//       id: "tank-level-3",
+//       type: "tank",
+//       title: "Tank Level-3",
+//       subtitle: "Water Storage Tank",
+//       level: "86%",
+//       volume: "86%",
+//       inletFlow: "31 m³/h",
+//       outletFlow: "27 m³/h",
+//       status: "Normal",
+//     },
+//     {
+//       id: "tank-level-4",
+//       type: "tank",
+//       title: "Tank Level-4",
+//       subtitle: "Water Storage Tank",
+//       level: "52%",
+//       volume: "52%",
+//       inletFlow: "24 m³/h",
+//       outletFlow: "22 m³/h",
+//       status: "Normal",
+//     },
+//   ];
+
+//   return (
+//     <>
+//       <PopupShell title="Water Management">
+//         <div className="mx-auto w-full max-w-7xl px-3 pb-8 pt-3 sm:px-5">
+//           <div className="mx-auto w-full max-w-[360px]">
+//             <WaterManagementMainBox
+//               title={waterManagementData.title}
+//               subtitle={waterManagementData.subtitle}
+//             />
+//           </div>
+
+//           <div className="mx-auto w-full max-w-[1080px] px-2">
+//             <WaterBranchConnector columns={3} />
+
+//             <div className="grid grid-cols-1 items-stretch gap-4 sm:grid-cols-3 sm:gap-5">
+//               <div className="min-w-0">
+//                 <WaterManagementMonitorBox
+//                   id={stpData.id}
+//                   title={stpData.title}
+//                   subtitle={stpData.subtitle}
+//                   data={stpData}
+//                   openedItems={openedItems}
+//                   setOpenedItems={setOpenedItems}
+//                   onClick={() => setActiveWaterAnalytics(stpData)}
+//                 />
+//               </div>
+
+//               <div className="min-w-0">
+//                 <WaterManagementMonitorBox
+//                   id={wtpData.id}
+//                   title={wtpData.title}
+//                   subtitle={wtpData.subtitle}
+//                   data={wtpData}
+//                   openedItems={openedItems}
+//                   setOpenedItems={setOpenedItems}
+//                   onClick={() => setActiveWaterAnalytics(wtpData)}
+//                 />
+//               </div>
+
+//               <div className="min-w-0">
+//                 <WaterTankGroupBox
+//                   onClick={() => setShowWaterTanksPopup(true)}
+//                 />
+//               </div>
+//             </div>
+//           </div>
+
+//         </div>
+//       </PopupShell>
+
+//       {showWaterTanksPopup && (
+//         <WaterTanksDetailPopup
+//           tanks={tanks}
+//           openedItems={openedItems}
+//           setOpenedItems={setOpenedItems}
+//           onClose={() => setShowWaterTanksPopup(false)}
+//           onTankClick={(tank) => setActiveWaterAnalytics(tank)}
+//         />
+//       )}
+
+//       {activeWaterAnalytics && (
+//         <WaterManagementAnalyticsView
+//           data={activeWaterAnalytics}
+//           onBack={() => setActiveWaterAnalytics(null)}
+//         />
+//       )}
+//     </>
+//   );
+// };
+
+// const BuildingsPopup = () => {
+//  const BuildingBox = ({
+//   title,
+//   subtitle,
+//   onClick,
+//   showIcon = false,
+//   locked = false,
+//  }) => (
+//   <button
+//     type="button"
+//     onClick={onClick}
+//     className={`relative h-[125px] w-full border text-white shadow-[0_12px_30px_rgba(8,31,92,0.25)] flex items-center justify-center text-center px-5 overflow-hidden transition ${
+//       locked
+//         ? "cursor-not-allowed border-slate-500 bg-[#10203F] opacity-70"
+//         : "cursor-pointer border-[#1F6FEB] bg-gradient-to-br from-[#081F5C] to-[#061746] hover:border-cyan-300"
+//     }`}
+//   >
+//     {locked && (
+//       <span className="absolute right-3 top-3 inline-flex items-center gap-1 border border-amber-300/40 bg-amber-300/10 px-2 py-1 text-[8px] font-black uppercase tracking-[0.08em] text-amber-200">
+//         <Lock size={11} />
+//         No Access
+//       </span>
+//     )}
+
+//     {showIcon && (
+//       <div className="w-[62px] h-[92px] border border-[#1F6FEB] bg-[#05143C] p-2 flex flex-col justify-between shrink-0 mr-5">
+//         <div className="h-[3px] w-full bg-[#00E5FF]" />
+
+//         <div className="grid grid-cols-4 gap-[4px]">
+//           {Array.from({ length: 24 }).map((_, i) => (
+//             <span
+//               key={i}
+//               className="w-[6px] h-[6px] rounded-[2px] bg-slate-400/60"
+//             />
+//           ))}
+//         </div>
+
+//         <div className="h-[8px] w-full bg-[#004AAD]" />
+//       </div>
+//     )}
+
+//     <div className="flex flex-col items-center justify-center">
+//       <h4 className="text-lg font-bold uppercase tracking-[0.08em]">
+//         {title}
+//       </h4>
+
+//       <span className={`mt-2 text-[11px] font-semibold ${locked ? "text-slate-300" : "text-blue-200"}`}>
+//         {subtitle}
+//       </span>
+//     </div>
+//   </button>
+// );
+
+//   return (
+//     <PopupShell
+//       title="Buildings Distribution"
+//       onBack={() => setActivePopup(null)}
+//     >
+//       <div className="w-full max-w-5xl mx-auto px-6 py-8 overflow-visible">
+//         <div className="relative h-[420px] overflow-visible">
+//           <div className="absolute left-1/2 top-0 -translate-x-1/2 w-[300px]">
+//             <BuildingBox
+//               title="Buildings"
+//               subtitle="Main Building Distribution"
+//             />
+//           </div>
+
+//           <svg
+//             className="absolute left-0 top-[130px] w-full h-[140px] overflow-visible pointer-events-none"
+//             viewBox="0 0 1000 140"
+//             fill="none"
+//           >
+//             <defs>
+//               <marker
+//                 id="building-arrow"
+//                 viewBox="0 0 10 10"
+//                 refX="4"
+//                 refY="5"
+//                 markerWidth="8"
+//                 markerHeight="8"
+//                 orient="auto"
+//               >
+//                 <path d="M0 2 L6 5 L0 8 Z" fill="#00E5FF" />
+//               </marker>
+//             </defs>
+
+//             <path
+//               d="M500 0 V45 H250 V105"
+//               stroke="#004AAD"
+//               strokeWidth="4"
+//               strokeLinecap="round"
+//               strokeLinejoin="round"
+//             />
+
+//             <path
+//               d="M500 45 H750 V105"
+//               stroke="#004AAD"
+//               strokeWidth="4"
+//               strokeLinecap="round"
+//               strokeLinejoin="round"
+//             />
+
+//             <path
+//               d="M500 0 V45 H250 V105"
+//               stroke="#00E5FF"
+//               strokeWidth="4"
+//               strokeLinecap="round"
+//               strokeLinejoin="round"
+//               className="flow-path-left"
+//               markerEnd="url(#building-arrow)"
+//             />
+
+//             <path
+//               d="M500 45 H750 V105"
+//               stroke="#00E5FF"
+//               strokeWidth="4"
+//               strokeLinecap="round"
+//               strokeLinejoin="round"
+//               className="flow-path-right"
+//               markerEnd="url(#building-arrow)"
+//             />
+//           </svg>
+
+// {buildings.map((building, index) => {
+//   const locked = !canAccessWing(currentUser, building.id);
+
+//   return (
+//   <div
+//     key={building.id}
+//     className={`absolute top-[240px] w-[30%] ${
+//       index === 0 ? "left-[12%]" : "right-[12%]"
+//     }`}
+//   >
+//     <BuildingBox
+//       title={building.name}
+//       subtitle={locked ? `${building.floors} Floors / Structure Only` : `${building.floors} Floors / 40 Zones`}
+//       showIcon
+//       locked={locked}
+//       onClick={() => {
+//         if (locked) {
+//           showLockedMessage(building.name);
+//           return;
+//         }
+
+//         navigate(`/building/${building.id}`);
+//       }}
+//     />
+//   </div>
+//   );
+// })}
+//         </div>
+//       </div>
+//     </PopupShell>
+//   );
+// };
+
+
+
+
+// const FireAnalyticsView = ({ data, onBack }) => {
+//   if (!data) return null;
+
+//   return (
+//     <div className="fixed inset-x-0 bottom-0 top-[72px] z-[1100] overflow-hidden bg-[#020B24] text-white">
+//       <div className="flex h-full min-h-0 flex-col bg-[radial-gradient(circle_at_top_left,rgba(0,74,173,0.22),transparent_30%),linear-gradient(180deg,#020B24_0%,#020817_100%)] px-4 pb-4">
+//         <div className="mx-auto flex h-full min-h-0 w-full max-w-[1600px] flex-col">
+//           <div className="shrink-0 border-b border-[#174575] bg-[#020B24]/95 py-3 backdrop-blur-xl">
+//             <div className="flex items-stretch gap-4">
+//               <button
+//                 type="button"
+//                 onClick={onBack}
+//                 className="flex h-[62px] shrink-0 items-center justify-center rounded-xl border border-[#1B4D83] bg-[#061737] px-5 text-[12px] font-semibold text-slate-100 transition hover:border-cyan-400/70 hover:bg-[#092452]"
+//               >
+//                 <ArrowLeft className="mr-2 h-4 w-4 text-cyan-300" />
+//                 Back to Fire Systems
+//               </button>
+
+//               <div className="relative flex-1 overflow-hidden rounded-xl border border-[#1B4D83] bg-[#071633] px-5 py-3">
+//                 <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-red-400 via-orange-300 to-cyan-300" />
+
+//                 <div className="flex h-full items-center justify-between gap-4">
+//                   <div>
+//                     <h2 className="text-[23px] font-semibold tracking-tight text-white">
+//                       {data.title} Analytics
+//                     </h2>
+//                     <p className="mt-1 text-[10px] font-medium text-slate-400">
+//                       {data.subtitle}
+//                     </p>
+//                   </div>
+
+//                   <div className="rounded-lg border border-emerald-400/30 bg-emerald-400/[0.08] px-4 py-2 text-[11px] font-semibold text-emerald-300">
+//                     <span className="flex items-center gap-2">
+//                       <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
+//                       {data.status}
+//                     </span>
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+
+//           <div className="mt-3 grid min-h-0 flex-1 grid-cols-1 gap-3 lg:grid-cols-2 lg:grid-rows-2">
+//             {data.analytics.map((metric, index) => (
+//               <div
+//                 key={metric.key}
+//                 className="relative flex min-h-[250px] min-w-0 flex-col overflow-hidden rounded-xl border border-[#1B4D83] bg-[linear-gradient(145deg,rgba(7,27,65,0.99),rgba(2,15,42,0.99))] p-4"
+//               >
+//                 <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300 to-transparent" />
+
+//                 <div className="flex shrink-0 items-start justify-between gap-3">
+//                   <div>
+//                     <span className="text-[8px] font-black uppercase tracking-[0.14em] text-sky-400">
+//                       Monitoring {index + 1}
+//                     </span>
+//                     <h3 className="mt-1 text-[13px] font-black uppercase tracking-[0.06em] text-white">
+//                       {metric.label}
+//                     </h3>
+//                   </div>
+
+//                   <div className="text-right">
+//                     <p className="text-[22px] font-semibold leading-none text-white">
+//                       {metric.value}
+//                     </p>
+//                     <p className="mt-1 text-[8px] uppercase tracking-[0.1em] text-emerald-300">
+//                       Normal
+//                     </p>
+//                   </div>
+//                 </div>
+
+//                 <div className="mt-3 min-h-0 flex-1">
+//                   <ResponsiveContainer width="100%" height="100%">
+//                     <AreaChart
+//                       data={data.history}
+//                       margin={{ top: 10, right: 12, left: -18, bottom: 0 }}
+//                     >
+//                       <defs>
+//                         <linearGradient
+//                           id={`fireMetric-${data.id}-${metric.key}`}
+//                           x1="0"
+//                           y1="0"
+//                           x2="0"
+//                           y2="1"
+//                         >
+//                           <stop offset="0%" stopColor="#22D3EE" stopOpacity={0.62} />
+//                           <stop offset="100%" stopColor="#22D3EE" stopOpacity={0.03} />
+//                         </linearGradient>
+//                       </defs>
+
+//                       <CartesianGrid
+//                         vertical={false}
+//                         stroke="rgba(148,163,184,0.14)"
+//                         strokeDasharray="3 3"
+//                       />
+
+//                       <XAxis
+//                         dataKey="time"
+//                         axisLine={false}
+//                         tickLine={false}
+//                         tick={{ fill: "#8EA6C4", fontSize: 8 }}
+//                       />
+
+//                       <YAxis
+//                         axisLine={false}
+//                         tickLine={false}
+//                         tick={{ fill: "#8EA6C4", fontSize: 8 }}
+//                       />
+
+//                       <Tooltip
+//                         contentStyle={analyticsTooltipStyle}
+//                         formatter={(value) => [value, metric.label]}
+//                       />
+
+//                       <Area
+//                         type="monotone"
+//                         dataKey={metric.key}
+//                         stroke="#22D3EE"
+//                         strokeWidth={2.2}
+//                         fill={`url(#fireMetric-${data.id}-${metric.key})`}
+//                         dot={false}
+//                         isAnimationActive={false}
+//                       />
+//                     </AreaChart>
+//                   </ResponsiveContainer>
+//                 </div>
+//               </div>
+//             ))}
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+// const FirePopup = () => {
+//   const [openedFireSystems, setOpenedFireSystems] = React.useState([]);
+//   const [activeFireAnalytics, setActiveFireAnalytics] = React.useState(null);
+
+//   const fireSystems = [
+//     {
+//       id: "fire-alarms",
+//       title: "FIRE ALARMS",
+//       subtitle: "Detection & Alarm System",
+//       status: "Active",
+//       readings: [
+//         ["Smoke Detectors", "128 Online"],
+//         ["Heat Detectors", "64 Online"],
+//         ["Alarm Zones", "12 Normal"],
+//         ["Active Alarms", "0"],
+//       ],
+//       analytics: [
+//         { key: "smoke", label: "Smoke Detector Availability", value: "100%" },
+//         { key: "heat", label: "Heat Detector Availability", value: "100%" },
+//         { key: "zones", label: "Healthy Alarm Zones", value: "12" },
+//         { key: "alarms", label: "Active Alarms", value: "0" },
+//       ],
+//       history: [
+//         { time: "08:00", smoke: 98, heat: 97, zones: 12, alarms: 0 },
+//         { time: "10:00", smoke: 99, heat: 98, zones: 12, alarms: 0 },
+//         { time: "12:00", smoke: 100, heat: 99, zones: 12, alarms: 0 },
+//         { time: "14:00", smoke: 99, heat: 100, zones: 12, alarms: 0 },
+//         { time: "16:00", smoke: 100, heat: 100, zones: 12, alarms: 0 },
+//         { time: "Now", smoke: 100, heat: 100, zones: 12, alarms: 0 },
+//       ],
+//     },
+//     {
+//       id: "fire-fighting",
+//       title: "FIRE FIGHTING",
+//       subtitle: "Fire Protection System",
+//       status: "Active",
+//       readings: [
+//         ["System Pressure", "7.2 bar"],
+//         ["Hydrant Network", "Normal"],
+//         ["Sprinkler Network", "Normal"],
+//         ["Main Valve", "Open"],
+//       ],
+//       analytics: [
+//         { key: "pressure", label: "System Pressure", value: "7.2 bar" },
+//         { key: "hydrant", label: "Hydrant Network Health", value: "100%" },
+//         { key: "sprinkler", label: "Sprinkler Network Health", value: "100%" },
+//         { key: "valve", label: "Main Valve Availability", value: "100%" },
+//       ],
+//       history: [
+//         { time: "08:00", pressure: 7.0, hydrant: 98, sprinkler: 99, valve: 100 },
+//         { time: "10:00", pressure: 7.1, hydrant: 99, sprinkler: 99, valve: 100 },
+//         { time: "12:00", pressure: 7.2, hydrant: 100, sprinkler: 100, valve: 100 },
+//         { time: "14:00", pressure: 7.1, hydrant: 100, sprinkler: 100, valve: 100 },
+//         { time: "16:00", pressure: 7.2, hydrant: 100, sprinkler: 100, valve: 100 },
+//         { time: "Now", pressure: 7.2, hydrant: 100, sprinkler: 100, valve: 100 },
+//       ],
+//     },
+//     {
+//       id: "fire-pump",
+//       title: "FIRE PUMP",
+//       subtitle: "Fire Water Pump System",
+//       status: "Active",
+//       readings: [
+//         ["Discharge Pressure", "7.5 bar"],
+//         ["Pump State", "Standby"],
+//         ["Auto Mode", "Enabled"],
+//         ["Controller", "Healthy"],
+//       ],
+//       analytics: [
+//         { key: "pressure", label: "Discharge Pressure", value: "7.5 bar" },
+//         { key: "readiness", label: "Pump Readiness", value: "100%" },
+//         { key: "auto", label: "Auto Mode Availability", value: "100%" },
+//         { key: "controller", label: "Controller Health", value: "98%" },
+//       ],
+//       history: [
+//         { time: "08:00", pressure: 7.3, readiness: 98, auto: 100, controller: 96 },
+//         { time: "10:00", pressure: 7.4, readiness: 99, auto: 100, controller: 97 },
+//         { time: "12:00", pressure: 7.5, readiness: 100, auto: 100, controller: 98 },
+//         { time: "14:00", pressure: 7.4, readiness: 100, auto: 100, controller: 98 },
+//         { time: "16:00", pressure: 7.5, readiness: 100, auto: 100, controller: 98 },
+//         { time: "Now", pressure: 7.5, readiness: 100, auto: 100, controller: 98 },
+//       ],
+//     },
+//   ];
+
+//   const handleHover = (id) => {
+//     setOpenedFireSystems((previous) =>
+//       previous.includes(id) ? previous : [...previous, id]
+//     );
+//   };
+
+//   return (
+//     <>
+//       <PopupShell title="Fire & Life Safety">
+//         <div className="mx-auto w-full max-w-6xl px-4 py-5">
+//           <div className="flex justify-center">
+//             <div className="flex h-[118px] w-[90%] max-w-[420px] flex-col items-center justify-center rounded-md border-2 border-[#004AAD] bg-[#081F5C] text-center text-white shadow-lg">
+//               <span className="text-[9px] font-black uppercase tracking-[0.18em] text-blue-300">
+//                 Fire & Life Safety
+//               </span>
+
+//               <h3 className="mt-2 text-lg font-black tracking-wider text-white">
+//                 FIRE SYSTEM
+//               </h3>
+
+//               <div className="mt-3 flex items-center gap-1.5 text-[9px] font-bold uppercase text-emerald-400">
+//                 <span className="h-2 w-2 rounded-full bg-emerald-400" />
+//                 Active
+//               </div>
+//             </div>
+//           </div>
+
+//           {/* Static connector only. No pulse animation. */}
+//           <div className="relative mx-auto hidden h-[50px] w-full max-w-5xl sm:block">
+//             <div className="absolute left-1/2 top-0 h-[18px] w-[3px] -translate-x-1/2 bg-cyan-400" />
+
+//             <div
+//               className="absolute top-[18px] h-[3px] bg-cyan-400"
+//               style={{ left: "16.6667%", right: "16.6667%" }}
+//             />
+
+//             {["16.6667%", "50%", "83.3333%"].map((position) => (
+//               <div
+//                 key={position}
+//                 className="absolute top-[21px] h-[29px] w-[3px] -translate-x-1/2 bg-cyan-400"
+//                 style={{ left: position }}
+//               />
+//             ))}
+//           </div>
+
+//           <div className="mx-auto grid w-full max-w-5xl grid-cols-1 gap-5 sm:grid-cols-3">
+//             {fireSystems.map((system) => {
+//               const showReadings = openedFireSystems.includes(system.id);
+
+//               return (
+//                 <div
+//                   key={system.id}
+//                   onMouseEnter={() => handleHover(system.id)}
+//                   onClick={() => setActiveFireAnalytics(system)}
+//                   className="relative h-[175px] min-w-0 cursor-pointer overflow-hidden rounded border-2 border-[#004AAD] bg-[#081F5C] text-white shadow-md panel-active-glow"
+//                 >
+//                   {!showReadings ? (
+//                     <div className="absolute inset-0 flex flex-col items-center justify-center px-4 text-center">
+//                       <span className="text-[9px] font-black uppercase tracking-[0.16em] text-blue-300">
+//                         Fire System
+//                       </span>
+
+//                       <h4 className="mt-2 text-[16px] font-black uppercase tracking-[0.08em] text-white">
+//                         {system.title}
+//                       </h4>
+
+//                       <p className="mt-2 text-[8px] font-bold uppercase tracking-[0.1em] text-blue-300">
+//                         {system.subtitle}
+//                       </p>
+
+//                       <div className="mt-4 flex items-center gap-1.5 text-[9px] font-bold uppercase text-emerald-400">
+//                         <span className="h-2 w-2 rounded-full bg-emerald-400" />
+//                         {system.status}
+//                       </div>
+//                     </div>
+//                   ) : (
+//                     <div className="absolute inset-0 z-20 bg-[#081F5C] px-4 py-3">
+//                       <div className="mb-2 border-b border-[#2B5DA8] pb-2 text-center">
+//                         <h4 className="text-[11px] font-black uppercase tracking-[0.11em] text-white">
+//                           {system.title}
+//                         </h4>
+//                         <span className="mt-1 block text-[7px] font-black uppercase tracking-[0.15em] text-blue-300">
+//                           Live Monitoring
+//                         </span>
+//                       </div>
+
+//                       <div className="mb-1.5 flex items-center justify-between">
+//                         <span className="text-[7px] font-bold uppercase text-blue-300">
+//                           {system.subtitle}
+//                         </span>
+
+//                         <span className="flex items-center gap-1 text-[7px] font-bold uppercase text-emerald-400">
+//                           <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+//                           Live
+//                         </span>
+//                       </div>
+
+//                       <div className="space-y-[4px] px-1">
+//                         {system.readings.map(([label, value]) => (
+//                           <div
+//                             key={label}
+//                             className="flex items-center justify-between gap-3"
+//                           >
+//                             <span className="truncate text-[9px] font-medium text-slate-300">
+//                               {label}
+//                             </span>
+
+//                             <span className="shrink-0 text-[10px] font-bold tabular-nums text-white">
+//                               {value}
+//                             </span>
+//                           </div>
+//                         ))}
+//                       </div>
+
+//                     </div>
+//                   )}
+//                 </div>
+//               );
+//             })}
+//           </div>
+//         </div>
+//       </PopupShell>
+
+//       {activeFireAnalytics && (
+//         <FireAnalyticsView
+//           data={activeFireAnalytics}
+//           onBack={() => setActiveFireAnalytics(null)}
+//         />
+//       )}
+//     </>
+//   );
+// };
+
+
+//   return (
+//     <>
+//       <style>{`
+//         /* Cross-laptop dashboard sizing.
+//            Same layout; only density changes when the effective CSS viewport is smaller. */
+//         html, body, #root {
+//           min-width: 0;
+//           width: 100%;
+//         }
+
+//         @media (max-width: 1380px) {
+//           .bms-main-header-actions {
+//             gap: 6px;
+//           }
+//         }
+
+//         @media (max-height: 760px) {
+//           .bms-dashboard-section {
+//             padding-top: 10px;
+//             padding-bottom: 10px;
+//           }
+//         }
+
+//         @media (max-height: 680px) {
+//           .bms-dashboard-section {
+//             min-height: 520px;
+//             overflow-y: auto;
+//           }
+//         }
+//       `}</style>
+//     <main className="flex min-h-screen flex-col overflow-hidden bg-[#D9E2E8] font-sans text-[#132131]">
+//       {accessMessage && (
+//         <div className="fixed right-5 top-24 z-[1200] max-w-sm rounded-lg border border-amber-300 bg-white/95 px-4 py-3 text-sm font-semibold text-[#17212B] shadow-2xl backdrop-blur-xl">
+//           <div className="flex items-start gap-2">
+//             <Lock className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />
+//             <span>{accessMessage}</span>
+//           </div>
+//         </div>
+//       )}
+
+//       <header className="sticky top-0 z-[1000] h-[72px] shrink-0 border-b-[3px] border-[#C8A96B] bg-[linear-gradient(90deg,#07172B_0%,#0B2440_48%,#0D2E4E_100%)] px-[clamp(10px,1.3vw,20px)] text-white shadow-[0_8px_24px_rgba(2,24,59,0.22)]">
+//         <div className="flex h-full w-full items-center justify-between">
+//           {/* BRAND */}
+//           <div
+//             onClick={() => setActivePopup(null)}
+//             className="flex min-w-0 cursor-pointer items-center"
+//           >
+//             <div className="flex min-w-0 flex-col justify-center">
+//               <h1 className="truncate text-[clamp(17px,1.8vw,28px)] font-semibold uppercase leading-none tracking-[clamp(0.10em,0.8vw,0.17em)] text-white">
+//                 ARCOT
+//                 <span className="ml-2 text-[#D8B56A]">IIoT 1.0</span>
+//               </h1>
+
+//               <span className="mt-1 truncate text-[8px] font-medium uppercase tracking-[0.34em] text-[#AFC4D8] xl:text-[9px]">
+//                 {/* {currentUser.companyName || "Industrial Internet of Things"} 
+//                 {currentUser.buildingName ? ` · ${currentUser.buildingName}` : ""} */} Industrial Internet of Things
+//               </span>
+//             </div>
+
+//             <div className="mx-[clamp(10px,1.3vw,20px)] h-[46px] border-l border-[#385674]" />
+
+//             <img
+//               src={prestigeLogo}
+//               alt="Prestige Group"
+//               className="h-[clamp(42px,4vw,54px)] w-[clamp(68px,6vw,96px)] object-contain"
+//             />
+//           </div>
+
+//           {/* ACTIONS — SAME HEIGHT AND SAME WIDTH */}
+//           <div
+//             className={`bms-main-header-actions grid shrink-0 gap-[clamp(5px,0.65vw,12px)] ${
+//               isAdminAccount ? "grid-cols-5" : "grid-cols-4"
+//             }`}
+//           >
+//             <button
+//               type="button"
+//               onClick={() => navigate("/overview")}
+//               className="flex h-[44px] w-[clamp(105px,10.2vw,168px)] items-center justify-center rounded-[4px] border border-[#7EA7C9] bg-[linear-gradient(180deg,#1C5D8F,#154A73)] px-4 text-[clamp(8px,0.72vw,11px)] font-black uppercase tracking-[0.11em] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_5px_12px_rgba(0,0,0,0.16)] transition hover:brightness-110"
+//             >
+//               Overview
+//             </button>
+
+//             {isAdminAccount && (
+//               <button
+//                 type="button"
+//                 onClick={() => navigate("/admin/dashboard")}
+//                 className="flex h-[44px] w-[clamp(105px,10.2vw,168px)] items-center justify-center rounded-[4px] border border-[#7EA7C9] bg-[linear-gradient(180deg,#1C5D8F,#154A73)] px-4 text-[clamp(8px,0.72vw,11px)] font-black uppercase tracking-[0.11em] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_5px_12px_rgba(0,0,0,0.16)] transition hover:brightness-110"
+//               >
+//               Profile
+//               </button>
+//             )}
+
+//             <div className="flex h-[44px] w-[clamp(105px,10.2vw,168px)] items-center justify-center gap-2 rounded-[4px] border border-[#355B7A] bg-[#0A2037] px-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.07)]">
+//               <Bluetooth className="h-4 w-4 text-emerald-400" strokeWidth={2.2} />
+//               <span className="h-2.5 w-2.5 rounded-full bg-emerald-400 shadow-[0_0_9px_rgba(52,211,153,0.85)]" />
+//               <span className="whitespace-nowrap text-[clamp(8px,0.68vw,10px)] font-black uppercase tracking-[0.08em]">
+//                 BLE Connected
+//               </span>
+//             </div>
+
+//             <div className="flex h-[44px] w-[clamp(105px,10.2vw,168px)] min-w-0 items-center gap-2 rounded-[4px] border border-[#355B7A] bg-[#0A2037] px-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]">
+//               <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#D8B56A]/35 bg-[#D8B56A]/10 text-[10px] font-black text-[#F4D79A]">
+//                 {currentUser.name?.slice(0, 1)?.toUpperCase() || "U"}
+//               </div>
+//               <div className="min-w-0">
+//                 <p className="truncate text-[10px] font-black uppercase tracking-[0.06em] text-white">
+//                   {currentUser.name}
+//                 </p>
+//                 <p className="truncate text-[8px] uppercase tracking-[0.08em] text-blue-300">
+//                   {currentUser.designation || "USER"}
+//                 </p>
+//               </div>
+//             </div>
+
+//             <button
+//               type="button"
+//               onClick={handleLogout}
+//               className="flex h-[44px] w-[clamp(105px,10.2vw,168px)] items-center justify-center rounded-[4px] border border-[#C87772] bg-[linear-gradient(180deg,#B84A46,#923733)] px-4 text-[clamp(8px,0.72vw,11px)] font-black uppercase tracking-[0.11em] text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_5px_12px_rgba(101,0,0,0.20)] transition hover:brightness-110"
+//             >
+//               Logout
+//             </button>
+//           </div>
+//         </div>
+//       </header>
+
+//       <section className="bms-dashboard-section relative h-[calc(100dvh-72px)] min-h-[520px] w-full overflow-x-hidden overflow-y-auto px-[clamp(10px,1.3vw,20px)] py-[clamp(10px,1.8vh,20px)]">
+//         {/* Premium technical background image */}
+//       {/* Background Image */}
+// <div
+//   className="pointer-events-none absolute inset-0 bg-cover bg-center bg-no-repeat"
+//   style={{
+//     backgroundImage: `url(${skyscraperBg})`,
+//     backgroundSize: "cover",
+//     backgroundPosition: "center",
+//     backgroundRepeat: "no-repeat",
+//   }}
+//   aria-hidden="true"
+// />
+
+// {/* Dark Overlay */}
+// <div
+//   className="pointer-events-none absolute inset-0 bg-[rgba(6,18,34,0.55)]"
+//   aria-hidden="true"
+// />
+
+// {/* Soft Blue Light */}
+// <div
+//   className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(0,74,173,0.18),transparent_45%),radial-gradient(circle_at_bottom_left,rgba(0,140,255,0.10),transparent_55%)]"
+//   aria-hidden="true"
+// />
+
+// {/* Very Light Grid */}
+// <div
+//   className="pointer-events-none absolute inset-0 opacity-[0.04]
+//   [background-image:linear-gradient(rgba(255,255,255,.15)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.15)_1px,transparent_1px)]
+//   [background-size:48px_48px]"
+//   aria-hidden="true"
+// />
+//         <div className="relative z-10 grid h-full min-h-[480px] w-full grid-rows-[minmax(0,1fr)_clamp(20px,4vh,32px)_minmax(0,1fr)_clamp(20px,4vh,32px)_minmax(0,1fr)] gap-y-[clamp(5px,0.8vh,10px)]">
+//           <div className="grid min-h-0 w-full grid-cols-[minmax(0,1fr)_clamp(18px,2.2vw,34px)_minmax(0,1fr)_clamp(18px,2.2vw,34px)_minmax(0,1fr)_clamp(18px,2.2vw,34px)_minmax(0,1fr)] items-stretch">
+//             <OverviewBox title="33kV Source" subtitle="2 Incoming / 1 Outgoing" icon={<UtilityPole strokeWidth={1.9} className="drop-shadow-[0_3px_5px_rgba(22,135,201,0.22)]" />} accent="#1687C9" onClick={canInteractWithFlow ? () => openPermittedPopup(USER_PERMISSIONS.LIVE_MONITORING_VIEW, "source") : undefined} />
+//             <FlowLineH />
+//             <OverviewBox title="33kV Feeder" subtitle="1 Incoming / 6 Outgoing" icon={<CircuitBoard strokeWidth={1.9} className="drop-shadow-[0_3px_5px_rgba(110,91,21,0.20)]" />} accent="#6E5B15" onClick={canInteractWithFlow ? () => openPermittedPopup(USER_PERMISSIONS.LIVE_MONITORING_VIEW, "feeders") : undefined} />
+//             <FlowLineH />
+//             <OverviewBox title="Transformer" subtitle="33kV / 433V" icon={<Zap strokeWidth={1.9} className="drop-shadow-[0_3px_5px_rgba(112,69,122,0.22)]" />} accent="#70457A" onClick={canInteractWithFlow ? () => openPermittedPopup(USER_PERMISSIONS.LIVE_MONITORING_VIEW, "transformers") : undefined} />
+//             <FlowLineH />
+//             <OverviewBox title="LT Kiosk" subtitle="433V Panel" icon={<PanelsTopLeft strokeWidth={1.9} className="drop-shadow-[0_3px_5px_rgba(53,105,135,0.22)]" />} accent="#356987" onClick={canInteractWithFlow ? () => setActivePopup("kiosks") : undefined} />
+//           </div>
+
+//           <div className="relative min-h-0 w-full">
+//             <svg className="absolute inset-0 h-full w-full overflow-visible" viewBox="0 0 1000 28" preserveAspectRatio="none" fill="none" aria-hidden="true">
+//               <defs><marker id="kioskToBusductRefArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 1 L9 5 L0 9 Z" fill="#2C93A6" /></marker></defs>
+//               <path d="M875 -28 V12 H125 V32" stroke="#2C93A6" strokeWidth="2.5" vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round" markerEnd="url(#kioskToBusductRefArrow)" />
+//             </svg>
+//           </div>
+
+//           <div className="grid min-h-0 w-full grid-cols-[minmax(0,1fr)_clamp(18px,2.2vw,34px)_minmax(0,1fr)_clamp(18px,2.2vw,34px)_minmax(0,1fr)_clamp(18px,2.2vw,34px)_minmax(0,1fr)] items-stretch">
+//             <OverviewBox title="Busduct" subtitle="LT Busduct Distribution" icon={<Cable strokeWidth={1.9} className="drop-shadow-[0_3px_5px_rgba(124,74,87,0.20)]" />} accent="#7C4A57" badge="Active" badgeTone="active" onClick={canInteractWithFlow ? () => setActivePopup("busbars") : undefined} />
+//             <FlowLineH />
+//             <OverviewBox title="PCC" subtitle="Wing 1 + Wing 2" icon={<CircuitBoard strokeWidth={1.9} className="drop-shadow-[0_3px_5px_rgba(117,97,25,0.20)]" />} accent="#756119" badge="Active" badgeTone="active" onClick={canInteractWithFlow ? () => setActivePopup("pccMain") : undefined} />
+//             <FlowLineH />
+//             <OverviewBox title="Raising Main" subtitle="Vertical Distribution" icon={<TowerControl strokeWidth={1.9} className="drop-shadow-[0_3px_5px_rgba(34,106,141,0.22)]" />} accent="#226A8D" badge="Active" badgeTone="active" onClick={canInteractWithFlow ? () => setActivePopup("raisingMain") : undefined} />
+//             <FlowLineH />
+//             <OverviewBox title="Wing" subtitle="Wing A / Wing B" icon={<Building2 strokeWidth={1.9} className="drop-shadow-[0_3px_5px_rgba(40,123,97,0.20)]" />} accent="#287B61" badge="Active" badgeTone="warning" onClick={() => setActivePopup("buildings")} />
+//           </div>
+
+//           <div className="relative min-h-0 w-full">
+//             <svg className="absolute inset-0 h-full w-full overflow-visible" viewBox="0 0 1000 28" preserveAspectRatio="none" fill="none" aria-hidden="true">
+//               <defs><marker id="wingToDgRefArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 1 L9 5 L0 9 Z" fill="#2C93A6" /></marker></defs>
+//               <path d="M875 -28 V12 H125 V32" stroke="#2C93A6" strokeWidth="2.5" vectorEffect="non-scaling-stroke" strokeLinecap="round" strokeLinejoin="round" markerEnd="url(#wingToDgRefArrow)" />
+//             </svg>
+//           </div>
+
+//           <div className="grid min-h-0 w-full grid-cols-[minmax(0,1fr)_clamp(18px,2.2vw,34px)_minmax(0,1fr)_clamp(18px,2.2vw,34px)_minmax(0,1fr)_clamp(18px,2.2vw,34px)_minmax(0,1fr)] items-stretch">
+//             <OverviewBox title="DG" subtitle="Diesel Generator Supply" icon={<Factory strokeWidth={1.9} className="drop-shadow-[0_3px_5px_rgba(120,97,29,0.20)]" />} accent="#78611D" badge="Active" badgeTone="warning" onClick={canInteractWithFlow ? () => setActivePopup("dg") : undefined} />
+//             <FlowLineH />
+//             <OverviewBox title="HVAC" subtitle="HVAC Cooling Plant" icon={<Snowflake strokeWidth={1.9} className="drop-shadow-[0_3px_5px_rgba(43,113,145,0.22)]" />} accent="#2B7191" badge="Active" badgeTone="warning" />
+//             <FlowLineH />
+//             <OverviewBox title="Water Management" subtitle="Water Treatment Plant" icon={<Droplets strokeWidth={1.9} className="drop-shadow-[0_3px_5px_rgba(44,116,140,0.22)]" />} accent="#2C748C" onClick={canInteractWithFlow ? () => openPermittedPopup(USER_PERMISSIONS.LIVE_MONITORING_VIEW, "waterManagement") : undefined} />
+//             <FlowLineH />
+//             <OverviewBox
+//               title="Fire"
+//               subtitle="Fire & Life Safety"
+//               icon={<Flame strokeWidth={1.9} className="drop-shadow-[0_3px_5px_rgba(156,62,66,0.22)]" />}
+//               accent="#9C3E42"
+//               badge="Active"
+//               badgeTone="warning"
+//               onClick={
+//                 canInteractWithFlow
+//                   ? () =>
+//                       openPermittedPopup(
+//                         USER_PERMISSIONS.LIVE_MONITORING_VIEW,
+//                         "fire"
+//                       )
+//                   : undefined
+//               }
+//             />
+//           </div>
+//         </div>
+//       </section>
+
+// {canInteractWithFlow && (
+//   <>
+//     {activePopup === "source" && <SourcePopup />}
+//     {activePopup === "feeders" && <FeederPopup />}
+//     {activePopup === "transformers" && <TransformersPopup />}
+//     {activePopup === "kiosks" && <KioskPopup />}
+//     {activePopup === "dg" && <DgPopup />}
+//     {activePopup === "busbars" && <BusbarPopup />}
+//     {activePopup === "pccMain" && <PCCMainPopup />}
+//     {activePopup === "pcc1" && <Pcc1Popup />}
+//     {activePopup === "pcc2" && <Pcc2Popup />}
+//     {activePopup === "pcc3" && <Pcc3Popup />}
+//     {activePopup === "pcc4" && <Pcc4Popup />}
+//     {activePopup === "raisingMain" && <RaisingMainPopup />}
+//     {activePopup === "waterManagement" && <WaterManagementPopup />}
+//     {activePopup === "fire" && <FirePopup />}
+//     {activePopup === "overview" && <OverviewPopup />}
+//   </>
+// )}
+
 // {activePopup === "buildings" && <BuildingsPopup />}
 
 
@@ -22667,6 +33489,13 @@
 //     </>
 //   );
 // }
+
+
+
+
+
+
+
 
 
 
@@ -23014,6 +33843,8 @@ const sourceAnalytics = {
     kvah: "1,195",
     current: "420 A",
     voltage: "33.0 kV",
+    lm: "33.0 kV",
+    ll: "33.0 kV",
     pf: "0.98",
     load: 78,
     health: 94,
@@ -23027,6 +33858,8 @@ const sourceAnalytics = {
     kvah: "1,430",
     current: "460 A",
     voltage: "33.0 kV",
+    lm: "33.0 kV",
+    ll: "33.0 kV",
     pf: "0.99",
     load: 86,
     health: 96,
@@ -23040,6 +33873,8 @@ const sourceAnalytics = {
     kvah: "1,020",
     current: "390 A",
     voltage: "33.0 kV",
+    lm: "33.0 kV",
+    ll: "33.0 kV",
     pf: "0.97",
     load: 72,
     health: 92,
@@ -23053,6 +33888,8 @@ const sourceAnalytics = {
     kvah: "1,300",
     current: "435 A",
     voltage: "33.0 kV",
+    lm: "33.0 kV",
+    ll: "33.0 kV",
     pf: "0.98",
     load: 81,
     health: 95,
@@ -23066,6 +33903,8 @@ const sourceAnalytics = {
     kvah: "1,260",
     current: "410 A",
     voltage: "33.0 kV",
+    lm: "33.0 kV",
+    ll: "33.0 kV",
     pf: "0.97",
     load: 76,
     health: 93,
@@ -23768,7 +34607,8 @@ const SourceBox = ({
     ["kWh", "1,280"],
     ["kvah", "1,195"],
     ["PF", "0.98"],
-    ["Voltage", "33.0 kV"],
+    ["LM", "33.0 kV"],
+    ["LL", "33.0 kV"],
     ["Current", "420 A"],
   ];
 
@@ -23809,15 +34649,15 @@ const SourceBox = ({
       ) : (
         <div
           onClick={handleClick}
-          className="absolute inset-0 z-20 bg-[#081F5C] px-5 py-2.5"
+          className="absolute inset-0 z-20 bg-[#081F5C] px-4 py-2"
         >
-          <div className="text-center border-b border-[#2B5DA8] pb-1.5 mb-1.5">
+          <div className="text-center border-b border-[#2B5DA8] pb-1 mb-1">
             <h4 className="text-[11px] font-black text-white uppercase tracking-[0.14em] leading-none">
               {title}
             </h4>
           </div>
 
-          <div className="flex items-center justify-between mb-1.5">
+          <div className="flex items-center justify-between mb-1">
             <span className="text-[7px] font-bold text-blue-300 uppercase">
               {subtitle}
             </span>
@@ -23828,11 +34668,11 @@ const SourceBox = ({
             </span>
           </div>
 
-          <div className="px-2 space-y-[2px]">
+          <div className="px-2 space-y-0">
             {monitorData.map(([label, value]) => (
               <div
                 key={label}
-                className="flex items-center justify-between px-2"
+                className="flex items-center justify-between px-2 leading-[15px]"
               >
                 <span className="text-[9px] font-medium text-slate-300 tracking-wide">
                   {label}
@@ -23999,6 +34839,8 @@ const feederAnalytics = {
     kvah: "1,360",
     current: "430 A",
     voltage: "33.0 kV",
+    lm: "33.0 kV",
+    ll: "33.0 kV",
     pf: "0.98",
     load: 82,
     health: 95,
@@ -24012,6 +34854,8 @@ const feederAnalytics = {
     kvah: "910",
     current: "280 A",
     voltage: "33.0 kV",
+    lm: "33.0 kV",
+    ll: "33.0 kV",
     pf: "0.97",
     load: 68,
     health: 92,
@@ -24025,6 +34869,8 @@ const feederAnalytics = {
     kvah: "960",
     current: "295 A",
     voltage: "33.0 kV",
+    lm: "33.0 kV",
+    ll: "33.0 kV",
     pf: "0.98",
     load: 72,
     health: 94,
@@ -24038,6 +34884,8 @@ const feederAnalytics = {
     kvah: "1,040",
     current: "310 A",
     voltage: "33.0 kV",
+    lm: "33.0 kV",
+    ll: "33.0 kV",
     pf: "0.98",
     load: 76,
     health: 95,
@@ -24051,6 +34899,8 @@ const feederAnalytics = {
     kvah: "870",
     current: "265 A",
     voltage: "33.0 kV",
+    lm: "33.0 kV",
+    ll: "33.0 kV",
     pf: "0.96",
     load: 64,
     health: 91,
@@ -24064,6 +34914,8 @@ const feederAnalytics = {
     kvah: "990",
     current: "300 A",
     voltage: "33.0 kV",
+    lm: "33.0 kV",
+    ll: "33.0 kV",
     pf: "0.98",
     load: 74,
     health: 93,
@@ -24077,6 +34929,8 @@ const feederAnalytics = {
     kvah: "1,080",
     current: "325 A",
     voltage: "33.0 kV",
+    lm: "33.0 kV",
+    ll: "33.0 kV",
     pf: "0.99",
     load: 79,
     health: 96,
@@ -24233,7 +35087,8 @@ const IncomingFeederMonitorBox = ({
     ["kvah", "1,360"],
     ["PF", "0.98"],
     ["AMPS", "430 A"],
-    ["Voltage", "33.0 kV"],
+    ["LM", "33.0 kV"],
+    ["LL", "33.0 kV"],
   ];
 
   const handleClick = (event) => {
@@ -24337,7 +35192,8 @@ const FeederPopup = () => {
       ["kvah", "1,360"],
       ["PF", "0.98"],
       ["AMPS", "430 A"],
-      ["Voltage", "33.0 kV"],
+      ["LM", "33.0 kV"],
+      ["LL", "33.0 kV"],
     ],
   };
 
@@ -24352,7 +35208,8 @@ const FeederPopup = () => {
       ["kvah", `${910 + index * 35}`],
       ["PF", index % 2 === 0 ? "0.98" : "0.97"],
       ["AMPS", `${280 + index * 15} A`],
-      ["Voltage", "33.0 kV"],
+      ["LM", "33.0 kV"],
+      ["LL", "33.0 kV"],
     ],
   }));
 
@@ -25488,6 +36345,8 @@ const KioskAnalyticsView = ({ data, onBack, backLabel = "Back to LT Kiosk" }) =>
       kvah: Math.max(kvahNumber - 390, 0),
       amps: Math.max(currentNumber - 22, 0),
       voltage: voltageNumber - 5,
+      lm: voltageNumber - 5,
+      ll: voltageNumber - 5,
       pf: Math.max(pfNumber - 0.04, 0),
     },
     {
@@ -25496,6 +36355,8 @@ const KioskAnalyticsView = ({ data, onBack, backLabel = "Back to LT Kiosk" }) =>
       kvah: Math.max(kvahNumber - 345, 0),
       amps: Math.max(currentNumber - 17, 0),
       voltage: voltageNumber - 3,
+      lm: voltageNumber - 3,
+      ll: voltageNumber - 3,
       pf: Math.max(pfNumber - 0.03, 0),
     },
     {
@@ -25504,6 +36365,8 @@ const KioskAnalyticsView = ({ data, onBack, backLabel = "Back to LT Kiosk" }) =>
       kvah: Math.max(kvahNumber - 300, 0),
       amps: Math.max(currentNumber - 12, 0),
       voltage: voltageNumber - 1,
+      lm: voltageNumber - 1,
+      ll: voltageNumber - 1,
       pf: Math.max(pfNumber - 0.02, 0),
     },
     {
@@ -25512,6 +36375,8 @@ const KioskAnalyticsView = ({ data, onBack, backLabel = "Back to LT Kiosk" }) =>
       kvah: Math.max(kvahNumber - 250, 0),
       amps: Math.max(currentNumber - 7, 0),
       voltage: voltageNumber + 1,
+      lm: voltageNumber + 1,
+      ll: voltageNumber + 1,
       pf: Math.max(pfNumber - 0.01, 0),
     },
     {
@@ -25520,6 +36385,8 @@ const KioskAnalyticsView = ({ data, onBack, backLabel = "Back to LT Kiosk" }) =>
       kvah: Math.max(kvahNumber - 205, 0),
       amps: currentNumber + 3,
       voltage: voltageNumber + 2,
+      lm: voltageNumber + 2,
+      ll: voltageNumber + 2,
       pf: Math.min(pfNumber + 0.005, 1),
     },
     {
@@ -25528,6 +36395,8 @@ const KioskAnalyticsView = ({ data, onBack, backLabel = "Back to LT Kiosk" }) =>
       kvah: Math.max(kvahNumber - 160, 0),
       amps: currentNumber + 9,
       voltage: voltageNumber + 3,
+      lm: voltageNumber + 3,
+      ll: voltageNumber + 3,
       pf: Math.min(pfNumber + 0.01, 1),
     },
     {
@@ -25536,6 +36405,8 @@ const KioskAnalyticsView = ({ data, onBack, backLabel = "Back to LT Kiosk" }) =>
       kvah: Math.max(kvahNumber - 115, 0),
       amps: currentNumber + 15,
       voltage: voltageNumber + 2,
+      lm: voltageNumber + 2,
+      ll: voltageNumber + 2,
       pf: Math.min(pfNumber + 0.015, 1),
     },
     {
@@ -25544,6 +36415,8 @@ const KioskAnalyticsView = ({ data, onBack, backLabel = "Back to LT Kiosk" }) =>
       kvah: Math.max(kvahNumber - 70, 0),
       amps: currentNumber + 8,
       voltage: voltageNumber,
+      lm: voltageNumber,
+      ll: voltageNumber,
       pf: Math.min(pfNumber + 0.01, 1),
     },
     {
@@ -25552,6 +36425,8 @@ const KioskAnalyticsView = ({ data, onBack, backLabel = "Back to LT Kiosk" }) =>
       kvah: Math.max(kvahNumber - 30, 0),
       amps: currentNumber + 4,
       voltage: voltageNumber - 1,
+      lm: voltageNumber - 1,
+      ll: voltageNumber - 1,
       pf: pfNumber,
     },
     {
@@ -25560,6 +36435,8 @@ const KioskAnalyticsView = ({ data, onBack, backLabel = "Back to LT Kiosk" }) =>
       kvah: kvahNumber,
       amps: currentNumber,
       voltage: voltageNumber,
+      lm: voltageNumber,
+      ll: voltageNumber,
       pf: pfNumber,
     },
   ];
@@ -26095,7 +36972,8 @@ const KioskMonitorBox = ({
     ["kvah", "1,195"],
     ["PF", "0.98"],
     ["AMPS", "420 A"],
-    ["Voltage", "433 V"],
+    ["LM", "433 V"],
+    ["LL", "433 V"],
   ];
 
   const showMonitor = openedKiosks.includes(id);
@@ -26228,6 +37106,8 @@ const KioskPopup = () => {
                     kvah: `${1195 + index * 55}`,
                     current: `${420 + index * 8} A`,
                     voltage: "433 V",
+                    lm: "433 V",
+                    ll: "433 V",
                     pf: index % 2 === 0 ? "0.98" : "0.97",
                     load: 70 + index * 3,
                     health: 92 + index,
@@ -26282,7 +37162,8 @@ const DgMonitorBox = ({
     ["kvah", `${data.kvah}`],
     ["PF", `${data.pf}`],
     ["AMPS", `${data.current}`],
-    ["Voltage", `${data.voltage}`],
+    ["LM", `${data.lm ?? data.voltage}`],
+    ["LL", `${data.ll ?? data.voltage}`],
   ];
 
   const showMonitor = openedDgs.includes(id);
@@ -26322,9 +37203,9 @@ const DgMonitorBox = ({
       ) : (
         <div
           onClick={handleClick}
-          className="absolute inset-0 z-20 bg-[#081F5C] px-4 py-3"
+          className="absolute inset-0 z-20 bg-[#081F5C] px-4 py-2"
         >
-          <div className="text-center border-b border-[#2B5DA8] pb-2 mb-2">
+          <div className="text-center border-b border-[#2B5DA8] pb-1.5 mb-1.5">
             <h4 className="text-[12px] font-black text-white uppercase tracking-[0.12em] leading-none">
               {title}
             </h4>
@@ -26334,7 +37215,7 @@ const DgMonitorBox = ({
             </span>
           </div>
 
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center justify-between mb-1.5">
             <span className="text-[7px] font-bold text-blue-300 uppercase">
               {subtitle}
             </span>
@@ -26345,7 +37226,7 @@ const DgMonitorBox = ({
             </span>
           </div>
 
-          <div className="px-2 space-y-[4px]">
+          <div className="px-2 space-y-[2px]">
             {monitorData.map(([label, value]) => (
               <div
                 key={label}
@@ -26379,6 +37260,8 @@ const DgPopup = () => {
     kvah: `${1375 + index * 68}`,
     current: `${510 + index * 14} A`,
     voltage: "433 V",
+    lm: "433 V",
+    ll: "433 V",
     pf: index % 3 === 0 ? "0.97" : "0.98",
     load: 64 + index * 4,
     health: 94 + (index % 4),
@@ -27295,6 +38178,8 @@ const BusbarPopup = () => {
                     vibration: "Normal",
                     health: "ON",
                     voltage: "433 V",
+                    lm: "433 V",
+                    ll: "433 V",
                     load: 68 + index * 3,
                   };
 
@@ -28544,6 +39429,8 @@ const PccPanelAnalyticsView = ({ data, onBack }) => {
       kvah: Math.max(kvahNumber - 390, 0),
       current: Math.max(currentNumber - 24, 0),
       voltage: voltageNumber - 5,
+      lm: voltageNumber - 5,
+      ll: voltageNumber - 5,
       pf: Math.max(pfNumber - 0.04, 0),
     },
     {
@@ -28552,6 +39439,8 @@ const PccPanelAnalyticsView = ({ data, onBack }) => {
       kvah: Math.max(kvahNumber - 345, 0),
       current: Math.max(currentNumber - 18, 0),
       voltage: voltageNumber - 3,
+      lm: voltageNumber - 3,
+      ll: voltageNumber - 3,
       pf: Math.max(pfNumber - 0.03, 0),
     },
     {
@@ -28560,6 +39449,8 @@ const PccPanelAnalyticsView = ({ data, onBack }) => {
       kvah: Math.max(kvahNumber - 300, 0),
       current: Math.max(currentNumber - 12, 0),
       voltage: voltageNumber - 1,
+      lm: voltageNumber - 1,
+      ll: voltageNumber - 1,
       pf: Math.max(pfNumber - 0.02, 0),
     },
     {
@@ -28568,6 +39459,8 @@ const PccPanelAnalyticsView = ({ data, onBack }) => {
       kvah: Math.max(kvahNumber - 250, 0),
       current: Math.max(currentNumber - 6, 0),
       voltage: voltageNumber + 1,
+      lm: voltageNumber + 1,
+      ll: voltageNumber + 1,
       pf: Math.max(pfNumber - 0.01, 0),
     },
     {
@@ -28576,6 +39469,8 @@ const PccPanelAnalyticsView = ({ data, onBack }) => {
       kvah: Math.max(kvahNumber - 205, 0),
       current: currentNumber + 4,
       voltage: voltageNumber + 2,
+      lm: voltageNumber + 2,
+      ll: voltageNumber + 2,
       pf: Math.min(pfNumber + 0.005, 1),
     },
     {
@@ -28584,6 +39479,8 @@ const PccPanelAnalyticsView = ({ data, onBack }) => {
       kvah: Math.max(kvahNumber - 160, 0),
       current: currentNumber + 10,
       voltage: voltageNumber + 3,
+      lm: voltageNumber + 3,
+      ll: voltageNumber + 3,
       pf: Math.min(pfNumber + 0.01, 1),
     },
     {
@@ -28592,6 +39489,8 @@ const PccPanelAnalyticsView = ({ data, onBack }) => {
       kvah: Math.max(kvahNumber - 115, 0),
       current: currentNumber + 16,
       voltage: voltageNumber + 2,
+      lm: voltageNumber + 2,
+      ll: voltageNumber + 2,
       pf: Math.min(pfNumber + 0.015, 1),
     },
     {
@@ -28600,6 +39499,8 @@ const PccPanelAnalyticsView = ({ data, onBack }) => {
       kvah: Math.max(kvahNumber - 70, 0),
       current: currentNumber + 9,
       voltage: voltageNumber,
+      lm: voltageNumber,
+      ll: voltageNumber,
       pf: Math.min(pfNumber + 0.01, 1),
     },
     {
@@ -28608,6 +39509,8 @@ const PccPanelAnalyticsView = ({ data, onBack }) => {
       kvah: Math.max(kvahNumber - 30, 0),
       current: currentNumber + 4,
       voltage: voltageNumber - 1,
+      lm: voltageNumber - 1,
+      ll: voltageNumber - 1,
       pf: pfNumber,
     },
     {
@@ -28616,6 +39519,8 @@ const PccPanelAnalyticsView = ({ data, onBack }) => {
       kvah: kvahNumber,
       current: currentNumber,
       voltage: voltageNumber,
+      lm: voltageNumber,
+      ll: voltageNumber,
       pf: pfNumber,
     },
   ];
@@ -29161,6 +40066,8 @@ const createPccAnalyticsData = (title, panel, index) => ({
   kwh: `${1245 + index * 18}`,
   kvah: `${1180 + index * 15}`,
   voltage: "433 V",
+  lm: "433 V",
+  ll: "433 V",
   current: `${210 + index * 4} A`,
   pf: index % 2 === 0 ? "0.98" : "0.97",
   load: 70 + (index % 8),
@@ -29266,7 +40173,7 @@ const UpsMonitoringCard = ({ data, onAnalytics }) => {
               {data.title}
             </div>
 
-            <div className="mt-1 flex items-center justify-center gap-1.5">
+            <div className="mt-0.5 flex items-center justify-center gap-1.5">
               <span
                 className={`h-1.5 w-1.5 rounded-full ${
                   data.isActive
@@ -29294,7 +40201,7 @@ const UpsMonitoringCard = ({ data, onAnalytics }) => {
           ].map(([label, value]) => (
             <div
               key={label}
-              className="flex items-center justify-between gap-2 text-[9px] leading-[16px]"
+              className="flex items-center justify-between gap-2 text-[8px] leading-[14px]"
             >
               <span className="text-blue-200">{label}</span>
               <span className="font-medium text-white">{value}</span>
@@ -29876,7 +40783,8 @@ const SinglePccPopup = ({
     const values = [
       ["kWh", `${1245 + index * 18}`],
       ["kvah", `${1180 + index * 15}`],
-      ["V", "433V"],
+      ["LM", "433V"],
+      ["LL", "433V"],
       [
         "PF",
         index % 2 === 0
@@ -30554,17 +41462,17 @@ const PCCSimpleBox = ({
     >
       {isOpen &&
       incomings.length > 0 ? (
-        <div className="absolute inset-0 z-20 bg-[#081F5C] px-4 py-3">
+        <div className="absolute inset-0 z-20 bg-[#081F5C] px-4 py-2">
           {/* PCC HEADING */}
 
-          <div className="mb-2 border-b border-[#2B5DA8] pb-1 text-center">
+          <div className="mb-1 border-b border-[#2B5DA8] pb-0.5 text-center">
             <h4 className="text-[10px] font-black uppercase tracking-wide text-blue-300">
               {title}
             </h4>
           </div>
 
           {/* LIVE STATUS — same placement/style as other popups */}
-          <div className="mb-2 flex items-center justify-between">
+          <div className="mb-1 flex items-center justify-between">
             <span className="text-[7px] font-bold uppercase text-blue-300">
               Monitoring
             </span>
@@ -30604,7 +41512,7 @@ const PCCSimpleBox = ({
                       : ""
                   }`}
                 >
-                  <div className="mb-1 border-b border-[#2B5DA8] pb-1 text-center text-[9px] font-black uppercase text-cyan-300">
+                  <div className="mb-0.5 border-b border-[#2B5DA8] pb-0.5 text-center text-[8px] font-black uppercase text-cyan-300">
                     {incoming.name}
                   </div>
 
@@ -30618,8 +41526,12 @@ const PCCSimpleBox = ({
                       incoming.kvah,
                     ],
                     [
-                      "V",
-                      incoming.voltage,
+                      "LM",
+                      incoming.lm ?? incoming.voltage,
+                    ],
+                    [
+                      "LL",
+                      incoming.ll ?? incoming.voltage,
                     ],
                     [
                       "PF",
@@ -30803,6 +41715,8 @@ const PCCMainPopup = () => (
                 kwh: "1245",
                 kvah: "1180",
                 voltage: "433V",
+                lm: "433V",
+                ll: "433V",
                 pf: "0.98",
                 current: "210A",
               },
@@ -30811,6 +41725,8 @@ const PCCMainPopup = () => (
                 kwh: "1328",
                 kvah: "1254",
                 voltage: "432V",
+                lm: "432V",
+                ll: "432V",
                 pf: "0.97",
                 current: "224A",
               },
@@ -30832,6 +41748,8 @@ const PCCMainPopup = () => (
                 kwh: "1375",
                 kvah: "1298",
                 voltage: "433V",
+                lm: "433V",
+                ll: "433V",
                 pf: "0.98",
                 current: "218A",
               },
@@ -30840,6 +41758,8 @@ const PCCMainPopup = () => (
                 kwh: "1410",
                 kvah: "1332",
                 voltage: "431V",
+                lm: "431V",
+                ll: "431V",
                 pf: "0.97",
                 current: "229A",
               },
@@ -30861,6 +41781,8 @@ const PCCMainPopup = () => (
                 kwh: "1518",
                 kvah: "1435",
                 voltage: "434V",
+                lm: "434V",
+                ll: "434V",
                 pf: "0.98",
                 current: "236A",
               },
@@ -30882,6 +41804,8 @@ const PCCMainPopup = () => (
                 kwh: "1580",
                 kvah: "1492",
                 voltage: "433V",
+                lm: "433V",
+                ll: "433V",
                 pf: "0.98",
                 current: "242A",
               },
@@ -30923,6 +41847,8 @@ const RaisingMainAnalyticsView = ({ data, onBack }) => {
       kwh: Math.max(kwhNumber - 420, 0),
       kvah: Math.max(kvahNumber - 390, 0),
       voltage: voltageNumber - 6,
+      lm: voltageNumber - 6,
+      ll: voltageNumber - 6,
       pf: Math.max(pfNumber - 0.04, 0),
       amps: Math.max(currentNumber - 24, 0),
     },
@@ -30931,6 +41857,8 @@ const RaisingMainAnalyticsView = ({ data, onBack }) => {
       kwh: Math.max(kwhNumber - 375, 0),
       kvah: Math.max(kvahNumber - 345, 0),
       voltage: voltageNumber - 4,
+      lm: voltageNumber - 4,
+      ll: voltageNumber - 4,
       pf: Math.max(pfNumber - 0.03, 0),
       amps: Math.max(currentNumber - 18, 0),
     },
@@ -30939,6 +41867,8 @@ const RaisingMainAnalyticsView = ({ data, onBack }) => {
       kwh: Math.max(kwhNumber - 325, 0),
       kvah: Math.max(kvahNumber - 300, 0),
       voltage: voltageNumber - 2,
+      lm: voltageNumber - 2,
+      ll: voltageNumber - 2,
       pf: Math.max(pfNumber - 0.02, 0),
       amps: Math.max(currentNumber - 12, 0),
     },
@@ -30947,6 +41877,8 @@ const RaisingMainAnalyticsView = ({ data, onBack }) => {
       kwh: Math.max(kwhNumber - 275, 0),
       kvah: Math.max(kvahNumber - 250, 0),
       voltage: voltageNumber,
+      lm: voltageNumber,
+      ll: voltageNumber,
       pf: Math.max(pfNumber - 0.01, 0),
       amps: Math.max(currentNumber - 6, 0),
     },
@@ -30955,6 +41887,8 @@ const RaisingMainAnalyticsView = ({ data, onBack }) => {
       kwh: Math.max(kwhNumber - 225, 0),
       kvah: Math.max(kvahNumber - 205, 0),
       voltage: voltageNumber + 2,
+      lm: voltageNumber + 2,
+      ll: voltageNumber + 2,
       pf: Math.min(pfNumber + 0.005, 1),
       amps: currentNumber + 4,
     },
@@ -30963,6 +41897,8 @@ const RaisingMainAnalyticsView = ({ data, onBack }) => {
       kwh: Math.max(kwhNumber - 175, 0),
       kvah: Math.max(kvahNumber - 160, 0),
       voltage: voltageNumber + 3,
+      lm: voltageNumber + 3,
+      ll: voltageNumber + 3,
       pf: Math.min(pfNumber + 0.01, 1),
       amps: currentNumber + 10,
     },
@@ -30971,6 +41907,8 @@ const RaisingMainAnalyticsView = ({ data, onBack }) => {
       kwh: Math.max(kwhNumber - 125, 0),
       kvah: Math.max(kvahNumber - 115, 0),
       voltage: voltageNumber + 2,
+      lm: voltageNumber + 2,
+      ll: voltageNumber + 2,
       pf: Math.min(pfNumber + 0.015, 1),
       amps: currentNumber + 16,
     },
@@ -30979,6 +41917,8 @@ const RaisingMainAnalyticsView = ({ data, onBack }) => {
       kwh: Math.max(kwhNumber - 80, 0),
       kvah: Math.max(kvahNumber - 70, 0),
       voltage: voltageNumber + 1,
+      lm: voltageNumber + 1,
+      ll: voltageNumber + 1,
       pf: Math.min(pfNumber + 0.01, 1),
       amps: currentNumber + 9,
     },
@@ -30987,6 +41927,8 @@ const RaisingMainAnalyticsView = ({ data, onBack }) => {
       kwh: Math.max(kwhNumber - 35, 0),
       kvah: Math.max(kvahNumber - 30, 0),
       voltage: voltageNumber - 1,
+      lm: voltageNumber - 1,
+      ll: voltageNumber - 1,
       pf: pfNumber,
       amps: currentNumber + 4,
     },
@@ -30995,6 +41937,8 @@ const RaisingMainAnalyticsView = ({ data, onBack }) => {
       kwh: kwhNumber,
       kvah: kvahNumber,
       voltage: voltageNumber,
+      lm: voltageNumber,
+      ll: voltageNumber,
       pf: pfNumber,
       amps: currentNumber,
     },
@@ -31676,6 +42620,8 @@ const RaisingMainPopup = () => {
     kwh: `${1245 + index * 65}`,
     kvah: `${1180 + index * 58}`,
     voltage: "433 V",
+    lm: "433 V",
+    ll: "433 V",
     current: `${210 + index * 12} A`,
     pf: index % 2 === 0 ? "0.98" : "0.97",
     load: 72 + index * 4,
@@ -31697,7 +42643,8 @@ const RaisingMainPopup = () => {
   const monitorData = [
     ["kWh", "1245"],
     ["kvah", "1180"],
-    ["V", "433V"],
+    ["LM", "433V"],
+    ["LL", "433V"],
     ["PF", "0.98"],
     ["Amps", "210A"],
   ];
@@ -31729,9 +42676,9 @@ const RaisingMainPopup = () => {
       {hover && isOpened ? (
         <div
           onClick={handleClick}
-          className="absolute inset-0 z-20 bg-[#081F5C] px-4 py-3"
+          className="absolute inset-0 z-20 bg-[#081F5C] px-3 py-2"
         >
-          <div className="mb-2 border-b border-[#2B5DA8] pb-1">
+          <div className="mb-1 border-b border-[#2B5DA8] pb-0.5">
             <div className="text-center text-[9px] font-black text-blue-300 uppercase tracking-wide">
               {title}
             </div>
@@ -31761,7 +42708,7 @@ const RaisingMainPopup = () => {
           {monitorData.map(([label, value]) => (
             <div
               key={label}
-              className="flex justify-between text-[11px] leading-[20px]"
+              className="flex justify-between text-[9px] leading-[16px]"
             >
               <span className="text-blue-200">
                 {label}
