@@ -35033,8 +35033,8 @@ const FeederMonitorBox = ({
           </div>
         </div>
       ) : (
-        <div className="absolute inset-0 z-20 bg-[#081F5C] px-4 py-3">
-          <div className="mb-2 border-b border-[#2B5DA8] pb-2 text-center">
+        <div className="absolute inset-0 z-20 bg-[#081F5C] px-4 py-2">
+          <div className="mb-1.5 border-b border-[#2B5DA8] pb-1.5 text-center">
             <h4 className="text-[12px] font-black uppercase leading-none tracking-[0.12em] text-white">
               {title}
             </h4>
@@ -35044,7 +35044,7 @@ const FeederMonitorBox = ({
             </span>
           </div>
 
-          <div className="mb-2 flex items-center justify-between">
+          <div className="mb-1.5 flex items-center justify-between">
             <span className="text-[7px] font-bold uppercase text-blue-300">
               {subtitle}
             </span>
@@ -35055,7 +35055,7 @@ const FeederMonitorBox = ({
             </span>
           </div>
 
-          <div className="space-y-[4px] px-2">
+          <div className="space-y-[2px] px-2">
             {monitorData.map(([label, value]) => (
               <div
                 key={label}
@@ -35132,8 +35132,8 @@ const IncomingFeederMonitorBox = ({
           </div>
         </div>
       ) : (
-        <div className="absolute inset-0 z-20 bg-[#081F5C] px-4 py-3">
-          <div className="mb-2 border-b border-[#2B5DA8] pb-2 text-center">
+        <div className="absolute inset-0 z-20 bg-[#081F5C] px-4 py-2">
+          <div className="mb-1.5 border-b border-[#2B5DA8] pb-1.5 text-center">
             <h4 className="text-[12px] font-black uppercase leading-none tracking-[0.12em] text-white">
               INCOMING FEEDER 1
             </h4>
@@ -35143,7 +35143,7 @@ const IncomingFeederMonitorBox = ({
             </span>
           </div>
 
-          <div className="mb-2 flex items-center justify-between">
+          <div className="mb-1.5 flex items-center justify-between">
             <span className="text-[7px] font-bold uppercase text-blue-300">
               33kV Supply
             </span>
@@ -35154,7 +35154,7 @@ const IncomingFeederMonitorBox = ({
             </span>
           </div>
 
-          <div className="space-y-[4px] px-2">
+          <div className="space-y-[2px] px-2">
             {monitorData.map(([label, value]) => (
               <div
                 key={label}
@@ -37013,9 +37013,9 @@ const KioskMonitorBox = ({
       ) : (
         <div
           onClick={handleClick}
-          className="absolute inset-0 z-20 bg-[#081F5C] px-4 py-3"
+          className="absolute inset-0 z-20 bg-[#081F5C] px-4 py-2"
         >
-          <div className="text-center border-b border-[#2B5DA8] pb-2 mb-2">
+          <div className="text-center border-b border-[#2B5DA8] pb-1.5 mb-1.5">
             <h4 className="text-[12px] font-black text-white uppercase tracking-[0.12em] leading-none">
               {title}
             </h4>
@@ -37025,7 +37025,7 @@ const KioskMonitorBox = ({
             </span>
           </div>
 
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center justify-between mb-1.5">
             <span className="text-[7px] font-bold text-blue-300 uppercase">
               {subtitle}
             </span>
@@ -37036,7 +37036,7 @@ const KioskMonitorBox = ({
             </span>
           </div>
 
-          <div className="px-2 space-y-[4px]">
+          <div className="px-2 space-y-[2px]">
             {monitorData.map(([label, value]) => (
               <div
                 key={label}
